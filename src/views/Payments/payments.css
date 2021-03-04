@@ -1,0 +1,142 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,900,700,500);
+
+/* body {
+  padding: 60px 0;
+  background-color: rgba(178,209,229,0.7);
+  margin: 0 auto;
+  width: 600px;
+} */
+.payments .body-text {
+  padding: 0 20px 30px 20px;
+  font-family: "Roboto";
+  font-size: 1em;
+  color: #333;
+  text-align: center;
+  line-height: 1.2em;
+}
+.payments .form-container {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.payments .card-wrapper {
+  background-color: #6FB7E9;
+  width: 100%;
+  display: flex;
+
+}
+.payments .personal-information {
+  background-color: #3C8DC5;
+  color: #fff;
+  padding: 1px 0;
+  text-align: center;
+}
+.payments h1 {
+  font-size: 1.3em;
+  font-family: "Roboto"
+}
+.payments select {
+  margin: 1px 0;
+  padding-left: 3%;
+  font-size: 14px;
+  display: block;
+  height: 50px;
+  width: 100%;
+  border: none;
+  appearance: none;
+}
+.payments input {
+  margin: 1px 0;
+  padding-left: 3%;
+  font-size: 14px;
+}
+.payments input[type="date"]{
+  display: block;
+  height: 50px;
+  width: 97%;
+  border: none;
+}
+/* .payments input[type="date"]:in-range::-webkit-datetime-edit-year-field, input[type="date"]:in-range::-webkit-datetime-edit-month-field, input[type="date"]:in-range::-webkit-datetime-edit-day-field, input[type="date"]:in-range::-webkit-datetime-edit-text { 	color: transparent; } */
+.payments input[type="month"]{
+  display: block;
+  height: 50px;
+  width: 97%;
+  border: none;
+}
+.payments input[type="number"]{
+  display: block;
+  height: 50px;
+  width: 97%;
+  border: none;
+}
+.payments input[type="text"]{
+  display: block;
+  height: 50px;
+  width: 97%;
+  border: none;
+}
+.payments .submitButton{
+  display: block;
+  height: 60px;
+  width: 100%;
+  border: none;
+  background-color: #3C8DC5;
+  color: #fff;
+  margin-top: 2px;
+  cursor: pointer;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+}
+.payments input[type="submit"]:hover{
+  background-color: #6FB7E9;
+  transition: 0.3s ease;
+}
+.payments #column-left {
+  width: 46.5%;
+  float: left;
+  margin-bottom: 2px;
+}
+.payments #column-right {
+  width: 46.5%;
+  float: right;
+}
+
+@media only screen and (max-width: 480px){
+  .payments body {
+    width: 100%;
+    margin: 0 auto;
+  }
+  .payments .form-container {
+    margin: 0 2%;
+  }
+  .payments input {
+    font-size: 1em;
+  }
+  .payments #input-button {
+    width: 100%;
+  }
+  .payments #input-field {
+    width: 96.5%;
+  }
+  .payments h1 {
+    font-size: 1.2em;
+  }
+  .payments input {
+    margin: 2px 0;
+  }
+  .payments input[type="submit"]{
+    height: 50px;
+  }
+  .payments #column-left {
+    width: 96.5%;
+    display: block;
+    float: none;
+  }
+  .payments #column-right {
+    width: 96.5%;
+    display: block;
+    float: none;
+  }
+}
