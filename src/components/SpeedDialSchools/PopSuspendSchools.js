@@ -26,19 +26,24 @@ export default function PopSuspend({details}) {
   const addCook = userForm(sendToServer);
   const classes = useStyles();
   const { handleClickOpenSuspend, handleCloseSuspend } = useContext(dataContext);
+  const token = localStorage.getItem("token");
   
-  async function sendToServer() {
-    console.log(addCook.values);
-    console.log(addCook.formData());
+  async function sendToServer() { 
+    try {
+      // console.log(addCook.values);
     handleCloseSuspend();
-  const response = await postContent({
-    url:"/api/cooks/add_one/cook.php",
-    data: addCook.formData()
-  });
-  addCook.reset();
-  console.log(response);
-  //   const body = await result;
-  //   console.log(body);
+    const response = await postContent(
+      `https://nsfp.herokuapp.com/v1/school/${details._id}/suspend`,
+      addCook.values,
+      token
+    );
+    
+    console.log(response);
+    //   const body = await result;
+    //   console.log(body);
+    } catch ({message}) {
+      alert(message)
+    }
   }
 
   // const [reason, setReason] = useState({

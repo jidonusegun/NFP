@@ -28,17 +28,19 @@ export default function PopSuspend({details}) {
   const { handleClickOpenSuspend, handleCloseSuspend } = useContext(dataContext);
   
   async function sendToServer() {
-    console.log(addCook.values);
-    console.log(addCook.formData());
+    try {
+      console.log(addCook.values);
     handleCloseSuspend();
   const response = await postContent({
-    url:"/api/cooks/add_one/cook.php",
-    data: addCook.formData()
+    url:`https://nsfp.herokuapp.com/v1/admin/${details._id}/suspend`,
+    data: addCook.values
   });
-  addCook.reset();
   console.log(response);
   //   const body = await result;
   //   console.log(body);
+    } catch ({message}) {
+      alert(message)
+    }
   }
 
   const [reason, setReason] = useState({

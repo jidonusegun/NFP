@@ -18,9 +18,11 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { dataContext } from 'components/context/DataContext';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
-import {patchContent, getContent} from 'utils';
+import {patchContent, getContent, postContent, postImageContent} from 'utils';
 import loogos from "assets/img/loogos.png";
 import userForm from "../../hooks/useForm";
+import Loading from "components/isLoading";
+import Toast from "components/toast";
 
 const styles = {
   cardCategoryWhite: {
@@ -72,55 +74,62 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function EditSchool({title, subTitle, sendButton, details}) {
+export default function EditSchool({title, subTitle, sendButton, details, content }) {
   const addCook = userForm(sendToServer);
   const classes = useStyles();
+  const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [stateValue, setStatevalue] = useState([])
   const [lgaValue, setLgavalue] = useState([])
   const [stateID, setStateID] = useState()
+  const [imageUpload, setImageUpload] = useState({ image: "" });
   const [errorMessage, setErrorMessage] = useState("")
   // let errorMessage = "";
 
   const { handleClose } = useContext(dataContext)
   const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("id");
 // const { PatchSchool } = useContext(dataContext)
+
+const handleImageUpload = (e) => {
+  setImageUpload({ image: e.target.files[0] });
+};
   
   async function sendToServer() {
-    // console.log(addCook.values);
-    // console.log(addCook.formData());
-
-    if(!addCook.values.name) {
-      setErrorMessage("School name is required")
-    }
-    else if(!addCook.values.contactPerson) {
-      setErrorMessage("Contact Person is required")
-    }
-    else if(!addCook.values.phoneNumber) {
-      setErrorMessage("Contact Phone Number is required")
-    }
-    else if(!addCook.values.email) {
-      setErrorMessage("Email is required")
-    }
-    else if(!addCook.values.totalPulpil) {
-      setErrorMessage("Number of Pupils is required")
-    }
-    else if(!addCook.values.state) {
-      setErrorMessage("State is required")
-    }
-    else if(!addCook.values.lga) {
-      setErrorMessage("Lga is required")
-    }
-    else if(!addCook.values.address) {
-      setErrorMessage("Address is required")
-    }
     try {
-      const response = await patchContent(`https://nsfp.herokuapp.com/v1/school/${details._id}`,
+      setIsLoading(true);
+      const imageData = new FormData();
+      imageData.append("files", imageUpload?.image);
+
+      const exclude = ['address','lga','state','totalPulpil','email','phoneNumber','contactPerson','name'];
+      exclude.forEach((key) => {
+        if (!addCook.values[key]) {
+          setErrorMessage(`${key} is required`);
+        }
+      });
+      addCook.setData('registeredBy', userId)
+      delete addCook.values.filePicker;
+      delete addCook.values.files;
+
+      const {data} = await patchContent(`https://nsfp.herokuapp.com/v1/school/${details._id}`,
         addCook.values, token);
-      console.log(response);
+
+      if (imageUpload?.image) {
+        const imageResult = await postImageContent(
+          `https://nsfp.herokuapp.com/v1/school/upload-image/${data?._id}`,
+          imageData,
+          token
+        );
+      }
+// content.unshift(data)
+setMessage('Record sent for approval')
+      setIsLoading(false);
       handleClose();
+    } catch ({ message }) {
+      alert(message);
     }
-    catch(err) {
-      setErrorMessage(err)
+    finally {
+      setIsLoading(false);
     }
   }
 
@@ -346,7 +355,11 @@ export default function EditSchool({title, subTitle, sendButton, details}) {
               </GridContainer>
             </CardBody>
             <CardFooter>
-              <Button onClick={addCook.submit} color="primary">Edit Profile</Button>
+              <Button onClick={addCook.submit} color="primary">
+                Edit Profile
+                {isLoading && <Loading />}
+                </Button>
+                <Toast message={message} />
             </CardFooter>
           </Card>
         </GridItem>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useContext} from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -17,7 +17,12 @@ import CardBody from "components/Card/CardBody.js";
 import PublishIcon from '@material-ui/icons/Publish';
 import { patchContent } from "utils"; 
 import userForm from "../../hooks/useForm";
-// import { dataContext } from "components/context/DataContext";
+import ViewListIcon from '@material-ui/icons/ViewList';
+import Popover from 'components/Popover/Popover.js';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import { dataContext } from "components/context/DataContext";
 
 
 
@@ -26,26 +31,34 @@ const useStyles = makeStyles(styles);
 export default function NewlyRegisteredCooks({cooksList}) {
   const sendReport = userForm(sendToServer);
   const classes = useStyles();
-
+  const { handleClickPop, handleClosePop } = useContext(dataContext);
   const token = localStorage.getItem("token")
   const stateLogin = localStorage.getItem("stateAdminState")
     const lgaLogin = localStorage.getItem("stateAdminLga")
+    const [savedId, setSavedId] = useState()
+const approveCook = userForm(sendToServer);
 
-  async function sendToServer() {
-    console.log(sendReport.values);
-    // console.log(sendReport.formData());
-    const response = await patchContent(`https://nsfp.herokuapp.com/v1/cook/${stateLogin}/${lgaLogin}/send-for-approval`, sendReport.values, token);
-    // sendReport.reset();
-
-    alert("Your report has been sent")
-    
-  console.log(response);
-  //   const body = await result;
-  //   console.log(body);
-  }
+    async function sendToServer() {
+      handleClosePop()
+      const response = await patchContent(`https://nsfp.herokuapp.com/v1/cook/${savedId}/approve`, token);
+      // addCook.reset();
+      console.log(response);
+      //   const body = await result;
+      //   console.log(body);
+      }
 
   return (
     <div>
+      <Popover>
+          <List>
+            <ListItem button>
+              <ListItemText primary="Approve" onClick={approveCook.submit} />
+            </ListItem>
+            <ListItem button>
+              <ListItemText primary="Reject" onClick={handleClosePop} />
+            </ListItem>
+          </List>
+      </Popover>
       <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
         { cooksList.length > 0 ?
@@ -65,7 +78,7 @@ export default function NewlyRegisteredCooks({cooksList}) {
                 
                   <TableHead style={{color: "#9c27b0"}}>
                     <TableRow className={classes.tableHeadRow}>
-                      {/* <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>S/N</TableCell> */}
+                      <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>ACTION</TableCell>
                       <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>FIRST NAME</TableCell>
                       <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>LAST NAME</TableCell>
                       <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>GENDER</TableCell>
@@ -85,7 +98,9 @@ export default function NewlyRegisteredCooks({cooksList}) {
                 {cooksList.map(({_id, gender, firstName, lastName, birthday, accountNumber, bankName, bvn, phoneNumber, email, date_created_acc, state, address, lga, schoolName, image, status}) => {
                   return  status === "PENDING" ?
                     <TableRow key={_id} className={classes.tableBodyRow}>
-                      {/* <TableCell className={classes.tableCell} style={{display: "none"}}><input type="number" id="id" value={_id} style={{display: "none"}} onChange={sendReport.getData()} />{_id}</TableCell> */}
+                      <TableCell className={classes.tableCell}>
+                    <input type="number" id="approve" name="approve" onChange={approveCook.getData} value={_id} style={{display: "none"}}/>
+                      <ViewListIcon style={{cursor: "pointer"}} onMouseUp={function(event){setSavedId(_id)}} onClick={handleClickPop} /></TableCell>
                       <TableCell className={classes.tableCell}>{firstName}</TableCell>
                       <TableCell className={classes.tableCell}>{lastName}</TableCell>
                       <TableCell className={classes.tableCell}>{gender}</TableCell>

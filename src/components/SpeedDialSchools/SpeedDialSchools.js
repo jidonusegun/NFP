@@ -25,6 +25,7 @@ const useStyles = makeStyles({
 export default function SpeedDials({deleteContent, details}) {
   const classes = useStyles();
   const { handleClickOpenView, handleClickOpenDelete, handleClickOpenSuspend, handleClickOpen } = useContext(dataContext);
+  // console.log(details)
   return (
         <div>
           <List>
@@ -44,6 +45,7 @@ export default function SpeedDials({deleteContent, details}) {
               </ListItemAvatar> 
               <ListItemText primary="Edit" onClick={handleClickOpen} />
             </ListItem>
+            {details?.status === "suspend" ? null :
             <ListItem button>
               <ListItemAvatar className={classes.avatarContainer}>
                 <Avatar className={classes.avatar}>
@@ -52,6 +54,7 @@ export default function SpeedDials({deleteContent, details}) {
               </ListItemAvatar>
               <ListItemText primary="Suspend" onClick={handleClickOpenSuspend} />
             </ListItem>
+            }
             <ListItem button>
               <ListItemAvatar className={classes.avatarContainer}>
                 <Avatar className={classes.avatar}>

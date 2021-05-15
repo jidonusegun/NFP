@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
 // @material-ui/core components
@@ -15,9 +15,9 @@ import Snackbar from "components/Snackbar/Snackbar.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import DialogNotification from 'components/Dialog/DialogNotification.js';
-import { dataContext } from 'components/context/DataContext';
-import {getContent} from 'utils';
+import DialogNotification from "components/Dialog/DialogNotification.js";
+import { dataContext } from "components/context/DataContext";
+import { getContent } from "utils";
 
 const styles = {
   cardCategoryWhite: {
@@ -26,11 +26,11 @@ const styles = {
       margin: "0",
       fontSize: "14px",
       marginTop: "0",
-      marginBottom: "0"
+      marginBottom: "0",
     },
     "& a,& a:hover,& a:focus": {
-      color: "#FFFFFF"
-    }
+      color: "#FFFFFF",
+    },
   },
   cardTitleWhite: {
     color: "#FFFFFF",
@@ -44,114 +44,160 @@ const styles = {
       color: "#777",
       fontSize: "65%",
       fontWeight: "400",
-      lineHeight: "1"
-    }
-  }
+      lineHeight: "1",
+    },
+  },
 };
 
 const useStyles = makeStyles(styles);
 
 export default function Notifications() {
-  const [notification, setNotification] = useState([])
-  const { handleClickOpenNotification } = useContext(dataContext);
-  const token = localStorage.getItem("token")
+  const [notification, setNotification] = useState([]);
+  const classes = useStyles();
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("id");
+  const [state, setState] = useState({message: 'not at bottom'})
+  const prevScrollY = useRef(0);
+
+  const [goingUp, setGoingUp] = useState(false);
 
   useEffect(() => {
-    getContent("https://nsfp.herokuapp.com/v1/", token)
-    .then(data=>setNotification(data.data))
-  }, []);
+    getContent(
+      `https://nsfp.herokuapp.com/v1/notification/${userId}/${50}`,
+      token
+    ).then((data) => setNotification(data.data.notifications));
+
+    // const handleScroll = () => {
+    //   console.log("")
+    //   const currentScrollY = window.scrollY;
+    //   if (prevScrollY.current < currentScrollY && goingUp) {
+    //     setGoingUp(false);
+        
+    //   }
+    //   if (prevScrollY.current > currentScrollY && !goingUp) {
+    //     setGoingUp(true);
+    //   }
+
+    //   if(currentScrollY >= 6400){
+    //     console.log("call api");
+
+      
+    //   }
+    //   prevScrollY.current = currentScrollY;
+    //   console.log(goingUp, currentScrollY);
+    // };
+    
+    // window.addEventListener("scroll", handleScroll(), { passive: true });
+
+    // return () => window.removeEventListener("scroll", handleScroll());
+
+  }, [token, userId]);
 
 
-  const classes = useStyles();
-  const [tl, setTL] = React.useState(false);
-  const [tc, setTC] = React.useState(false);
-  const [tr, setTR] = React.useState(false);
-  const [bl, setBL] = React.useState(false);
-  const [bc, setBC] = React.useState(false);
-  const [br, setBR] = React.useState(false);
-  React.useEffect(() => {
-    // Specify how to clean up after this effect:
-    return function cleanup() {
-      // to stop the warning of calling setState of unmounted component
-      var id = window.setTimeout(null, 0);
-      while (id--) {
-        window.clearTimeout(id);
+
+  useEffect(() => {
+
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (prevScrollY.current < currentScrollY && goingUp) {
+        setGoingUp(false);
+        
       }
+      if (prevScrollY.current > currentScrollY && !goingUp) {
+        setGoingUp(true);
+      }
+      prevScrollY.current = currentScrollY;
+      console.log(goingUp, currentScrollY);
     };
-  });
-  const showNotification = place => {
-    switch (place) {
-      case "tl":
-        if (!tl) {
-          setTL(true);
-          setTimeout(function() {
-            setTL(false);
-          }, 6000);
-        }
-        break;
-      case "tc":
-        if (!tc) {
-          setTC(true);
-          setTimeout(function() {
-            setTC(false);
-          }, 6000);
-        }
-        break;
-      case "tr":
-        if (!tr) {
-          setTR(true);
-          setTimeout(function() {
-            setTR(false);
-          }, 6000);
-        }
-        break;
-      case "bl":
-        if (!bl) {
-          setBL(true);
-          setTimeout(function() {
-            setBL(false);
-          }, 6000);
-        }
-        break;
-      case "bc":
-        if (!bc) {
-          setBC(true);
-          setTimeout(function() {
-            setBC(false);
-          }, 6000);
-        }
-        break;
-      case "br":
-        if (!br) {
-          setBR(true);
-          setTimeout(function() {
-            setBR(false);
-          }, 6000);
-        }
-        break;
-      default:
-        break;
-    }
-  };
+
+    window.addEventListener("scroll", handleScroll(), { passive: true });
+
+    // return () => window.removeEventListener("scroll", handleScroll());
+
+  },[goingUp])
+
+
+
+    
+  //   // const handleScroll = () => {
+  //   //   const currentScrollY = window.scrollY;
+  //   //   if (prevScrollY.current < currentScrollY && goingUp) {
+  //   //     setGoingUp(false);
+  //   //     console.log("Now at the bottom")
+  //   //   }
+  //   //   if (prevScrollY.current > currentScrollY && !goingUp) {
+  //   //     setGoingUp(true);
+  //   //     console.log("Now at the top")
+  //   //   }
+  //   //   // console.log(`scroll, ${window.ScrollY}`)
+  //   //   prevScrollY.current = currentScrollY;
+  //   //   console.log(goingUp, currentScrollY);
+  //   // };
+
+  //   // window.addEventListener("scroll", handleScroll, { passive: true });
+
+  //   // return () => window.removeEventListener("scroll", handleScroll);
+  // }, [goingUp]);
+//   console.log(notification)
+//   // document.body.scrollHeight.scrollTo()
+//   // window.scrollTop() >= document.height() - window.height() - 10
+
+
+const scrollCheck = (event) => {
+  const target = event.target
+  if(target.scrollHeight - target.scrollTop === target.clientHeight){
+    alert("You are at the bottom")
+  }
+}
+
+// function handleScroll() {
+//   const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
+//   const body = document.body;
+//   const html = document.documentElement;
+//   const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight,  html.scrollHeight, html.offsetHeight);
+//   const windowBottom = windowHeight + window.pageYOffset;
+  
+//   if (windowBottom >= docHeight) {
+//     setState({
+//       message:'bottom reached'
+//     });console.log(docHeight, windowBottom)
+//   } else {
+//     setState({
+//       message:'not at bottom'
+//     });
+//   }
+// }
+
+// window.addEventListener("scroll", handleScroll());
+
+// document.documentElement.getBoundingClientRect.bo
 
   return (
-    <Card>
+    <div style={{height: '500px', overflowY: 'scroll'}} onScroll={() => scrollCheck()} >
+    <Card  >
       <CardHeader color="primary">
         <h4 className={classes.cardTitleWhite}>Notifications</h4>
       </CardHeader>
       <CardBody>
-        {notification.map(({content, id}) => {
-          <div key={id}>
-            <DialogNotification noButton="No" yesButton="Yes" id={id} title="Delete" children="Are you sure you want to Delete?" />
-            <SnackbarContent
-              message={content}
-              close
-              handleClick={handleClickOpenNotification}
-              icon={AddAlert}
-            />
-          </div>
-        })}
+        {notification?.length > 0 ? (
+          <>
+            {notification.map(({ message, _id }) => {
+              return (
+                <div key={_id} onScroll={(e) => scrollCheck(e)}>
+                  <SnackbarContent
+                    message={message}
+                    icon={AddAlert}
+                  />
+                </div>
+              );
+            })}
+          </>
+        ) : (
+          <div>No New Notification</div>
+        )}
       </CardBody>
     </Card>
+    </div>
   );
 }

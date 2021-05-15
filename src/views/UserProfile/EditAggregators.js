@@ -9,18 +9,20 @@ import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
-import CardAvatar from "components/Card/CardAvatar.js";
+// import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-import IconButton from '@material-ui/core/IconButton';
+// import IconButton from '@material-ui/core/IconButton';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { dataContext } from 'components/context/DataContext';
-import PhotoCamera from '@material-ui/icons/PhotoCamera';
-import {patchContent, getContent} from 'utils';
-import loogos from "assets/img/loogos.png"; 
+// import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import {patchContent, getContent, postContent, postImageContent} from 'utils';
+// import loogos from "assets/img/loogos.png"; 
 import userForm from "../../hooks/useForm";
+import Loading from "components/isLoading";
+import Toast from "components/toast";
 
 const styles = {
   cardCategoryWhite: {
@@ -72,9 +74,11 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function EditAggregator({title, subTitle, sendButton, details}) {
+export default function EditAggregator({title, subTitle, sendButton, details, content}) {
   const addCook = userForm(sendToServer);
   const classes = useStyles();
+  const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [stateValue, setStatevalue] = useState([])
   const [lgaValue, setLgavalue] = useState([])
   const [stateID, setStateID] = useState()
@@ -83,64 +87,35 @@ export default function EditAggregator({title, subTitle, sendButton, details}) {
 
   const { handleClose } = useContext(dataContext)
   const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("id");
 // const { PatchAggregator } = useContext(dataContext)
 
   async function sendToServer() {
-    // console.log(addCook.values);
-    // console.log(addCook.formData());
-
-    if(!addCook.values.firstName) {
-      setErrorMessage("First name is required")
-    }
-    else if(!addCook.values.lastName) {
-      setErrorMessage("Last name is required")
-    }
-    else if(!addCook.values.gender) {
-      setErrorMessage("Gender is required")
-    }
-    else if(!addCook.values.birthday) {
-      setErrorMessage("Date of birth is required")
-    }
-    else if(!addCook.values.accountNumber) {
-      setErrorMessage("Account number is required")
-    }
-    else if(!addCook.values.bankName) {
-      setErrorMessage("Bank name is required")
-    }
-    else if(!addCook.values.bvn) {
-      setErrorMessage("Bvn is required")
-    }
-    else if(!addCook.values.phoneNumber) {
-      setErrorMessage("Phone number is required")
-    }
-    else if(!addCook.values.items) {
-      setErrorMessage("Items is required")
-    }
-    else if(!addCook.values.email) {
-      setErrorMessage("Email is required")
-    }
-    else if(!addCook.values.state) {
-      setErrorMessage("State is required")
-    }
-    else if(!addCook.values.lga) {
-      setErrorMessage("Lga is required")
-    }
-    else if(!addCook.values.schoolName) {
-      setErrorMessage("School name is required")
-    }
-    else if(!addCook.values.address) {
-      setErrorMessage("Address is required")
-    }
-
-    const value = addCook.values.items.split(',')
-    addCook.values.items = value;
 
     try {
-      patchContent(`https://nsfp.herokuapp.com/v1/aggregator/${details._id}`, addCook.values, token);
+      setIsLoading(true);
+      const exclude = ['address','schoolName','lga','state','email','items','phoneNumber','bvn','bankName','accountNumber','birthday','gender','lastName','firstName',];
+      exclude.forEach((key) => {
+        if (!addCook.values[key]) {
+          setErrorMessage(`${key} is required`);
+        }
+      });
+
+      const value = addCook.values.items.split(",");
+      addCook.values.items = value;
+
+      addCook.setData('registeredBy', userId)
+
+      const {data} = await patchContent(`https://nsfp.herokuapp.com/v1/aggregator/${details._id}`, addCook.values, token);
+      setMessage('Record sent for approval')
+content.unshift(data)
+      setIsLoading(false);
       handleClose();
+    } catch ({ message }) {
+      alert(message);
     }
-    catch(err) {
-      setErrorMessage(err)
+    finally {
+      setIsLoading(false);
     }
   }
 
@@ -153,36 +128,36 @@ export default function EditAggregator({title, subTitle, sendButton, details}) {
     setStateID(option)
   }
 
-  const [imageFile, setImageFile] = useState({file: '',imagePreviewUrl: ''});
+  // const [imageFile, setImageFile] = useState({file: '',imagePreviewUrl: ''});
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('handle uploading-', imageFile.file);
-      }
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     console.log('handle uploading-', imageFile.file);
+    //   }
 
-      const handleImageChange = (e) => {
-        e.preventDefault();
+    //   const handleImageChange = (e) => {
+    //     e.preventDefault();
     
-        let reader = new FileReader();
-        let file = e.target.files[0];
+    //     let reader = new FileReader();
+    //     let file = e.target.files[0];
     
-        reader.onloadend = () => {
-          setImageFile({
-            file: file,
-            imagePreviewUrl: reader.result
-          });
-        }
+    //     reader.onloadend = () => {
+    //       setImageFile({
+    //         file: file,
+    //         imagePreviewUrl: reader.result
+    //       });
+    //     }
     
-        reader.readAsDataURL(file)
-      }
+    //     reader.readAsDataURL(file)
+    //   }
 
-      let {imagePreviewUrl} = imageFile
-      let $imagePreview = null;
-      if (imagePreviewUrl) {
-        $imagePreview = (<img src={imagePreviewUrl} alt="upload" className={classes.img} />);
-      } else {
-        $imagePreview = (<div className="previewText" style={{borderRadius: "50%", margin: "0"}}><img src={loogos} alt="logo" /></div>);
-      }
+      // let {imagePreviewUrl} = imageFile
+      // let $imagePreview = null;
+      // if (imagePreviewUrl) {
+      //   $imagePreview = (<img src={imagePreviewUrl} alt="upload" className={classes.img} />);
+      // } else {
+      //   $imagePreview = (<div className="previewText" style={{borderRadius: "50%", margin: "0"}}><img src={loogos} alt="logo" /></div>);
+      // }
 
       useEffect(() => {
         getContent("https://nsfp.herokuapp.com/v1/settings/states", token)
@@ -192,6 +167,15 @@ export default function EditAggregator({title, subTitle, sendButton, details}) {
         .then(data=>setLgavalue(data.data))
 
       },[token, stateID])
+
+      // Aggregator's Company Name,
+      // Items to Supply,
+      // Unit Post,
+      // Day for Consumption,
+      // Number of Pupils,
+      // Bank,
+      // Acct. Number,
+      // TIN
    
   return (
     <div>
@@ -204,7 +188,7 @@ export default function EditAggregator({title, subTitle, sendButton, details}) {
             </CardHeader>
             <CardBody>
             <div style={{color: "red", textAlign: "center", width: "100%"}}>{`${errorMessage}`}</div>
-            <GridContainer>
+            {/* <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                 <CardAvatar profile style={{marginTop: "2rem"}}>
                   <form onSubmit={handleSubmit}>
@@ -225,7 +209,7 @@ export default function EditAggregator({title, subTitle, sendButton, details}) {
                   </form>
                 </CardAvatar>
                 </GridItem>
-              </GridContainer>
+              </GridContainer> */}
               <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -460,7 +444,11 @@ export default function EditAggregator({title, subTitle, sendButton, details}) {
               </GridContainer>
               </CardBody>
             <CardFooter>
-              <Button onClick={addCook.submit} color="primary">{sendButton ? sendButton : "Edit Profile"}</Button>
+              <Button onClick={addCook.submit} color="primary">
+                {sendButton ? sendButton : "Edit Profile"}
+                {isLoading && <Loading />}
+                </Button>
+                <Toast message={message} />
             </CardFooter>
           </Card>
         </GridItem>

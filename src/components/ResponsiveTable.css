@@ -1,0 +1,106 @@
+/* Responsive table */
+@media
+only screen and (max-width: 1500px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+  thead tr { 
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+  tr { border: 1px solid #ccc; }
+  td {
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 200px;
+    margin-left: 150px;
+  }
+  td:before {
+    position: absolute;
+    top: 12px;
+    left: 6px;
+    width: 200px;
+    padding-right: 40px;
+    white-space: nowrap;
+    margin-left: -150px;
+  }
+  td:nth-of-type(1):before { content: "Option"; }
+  td:nth-of-type(2):before { content: "Description"; }
+  td:nth-of-type(3):before { content: "Type"; }
+  td:nth-of-type(4):before { content: "Default";}
+}
+
+
+/* 
+Max width before this PARTICULAR table gets nasty
+This query will take effect for any screen smaller than 760px
+and also iPads specifically.
+*/
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+	/* Force table to not be like tables anymore */
+	table, thead, tbody, th, td, tr { 
+		display: block; 
+	}
+	
+	/* Hide table headers (but not display: none;, for accessibility) */
+	thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	
+	tr { border: 1px solid #ccc; }
+	
+	td { 
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee; 
+		position: relative;
+		padding-left: 50%; 
+	}
+	
+	td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%; 
+		padding-right: 10px; 
+		white-space: nowrap;
+	}
+	
+	/*
+	Label the data
+	*/
+	td:nth-of-type(1):before { content: "First Name"; }
+	td:nth-of-type(2):before { content: "Last Name"; }
+	td:nth-of-type(3):before { content: "Job Title"; }
+	td:nth-of-type(4):before { content: "Favorite Color"; }
+	td:nth-of-type(5):before { content: "Wars of Trek?"; }
+	td:nth-of-type(6):before { content: "Secret Alias"; }
+	td:nth-of-type(7):before { content: "Date of Birth"; }
+	td:nth-of-type(8):before { content: "Dream Vacation City"; }
+	td:nth-of-type(9):before { content: "GPA"; }
+	td:nth-of-type(10):before { content: "Arbitrary Data"; }
+}
+
+
+
+/* for using system font for website */
+body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+	"Roboto", "Oxygen", "Ubuntu", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  /* for using system font with emojis for website */
+  body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+	"Oxygen", "Ubuntu", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
+	"Segoe UI Emoji", "Segoe UI Symbol";
+  }

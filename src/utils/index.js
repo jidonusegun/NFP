@@ -6,7 +6,6 @@ export async function getContent(url,token,method='GET'){
 			'Authorization': `Bearer ${token}` 
 		  }
 		});
-		console.log(result)
 		return result.data;
 		
 	} catch(err){
@@ -34,7 +33,21 @@ export async function postContent(url,data,token,method='POST'){
 	} catch(err){
 		throw err;
 	}
-} 
+}
+
+export async function postImageContent(url,data,token,method='POST'){
+	try{
+		// console.log(data)
+		const result = await Axios({url,method,data, headers: {
+				'content-type': 'multipart/form-data',
+			  	'Authorization': `Bearer ${token}` 
+			}
+		});
+		return result.data;
+	} catch(err){
+		throw err;
+	}
+}
  
 export async function postContentLogin(url,data,method='POST'){
 	try{

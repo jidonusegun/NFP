@@ -2,7 +2,12 @@ import React, {useState, useEffect} from 'react';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
-import {getContent} from 'utils';
+import Logo from 'assets/img/loogos.png';
+import {getContent, postContent} from 'utils';
+import userForm from "../../../hooks/useForm";
+import Dialog from 'components/useDialog';
+import useDialog from 'components/useDialog/useHook';
+import Loading from "components/isLoading";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -63,20 +68,47 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AdminAccountView({details}) {
     const classes = useStyles();
+    const addCook = userForm(sendToServer);
     var token = localStorage.getItem("token");
-
+    const { openDialog, closeDialog, isOpen } = useDialog();
     const [result, setResult] = useState([]);
+    const [isLoading, setIsLoading] = useState(false)
+    const newImage = details?.image?.split('/').pop()
 
     useEffect(() => {
         getContent(`https://nsfp.herokuapp.com/v1/aggregator/${details._id}`, token)
         .then(data => setResult(data.data))
     },[token, details._id])
+
+    async function sendToServer() {
+        try {
+            const imageUpload = await postContent(
+                `/cook/${details._id}/reactivate`, token
+              );
+        } catch ({message}) {
+            alert(message)
+        }
+    }
     
     return ( 
         <div>
+            <Dialog
+                open={isOpen}
+                handleClose={closeDialog}
+                title="Active User"
+                size="sm"
+                buttons={[
+                    {
+                        value: <>Active {isLoading && <Loading />}</>,
+                        onClick: addCook.submit,
+                    },
+                ]}
+            >
+                Are you sure you want to active ?
+            </Dialog>
             <div className={classes.topDiv}>
                 <div className={classes.imageContainer}>
-                    <img src={result.status} alt={result.firstName} className={classes.img} />
+                    <img src={result?.image ? newImage: Logo} alt={result.firstName} className={classes.img} />
                 </div>
                 <div className={classes.profileContent}>
                     <div className={classes.widthp}>
@@ -98,6 +130,15 @@ export default function AdminAccountView({details}) {
                                         </Button>
                                     </ThemeProvider>
                                 </span>
+                                <div>
+                                <span className={classes.span}>
+                                    <ThemeProvider theme={theme}>
+                                        <Button onClick={() => openDialog()} variant="contained" size="small" color="primary">
+                                            Active 
+                                        </Button>
+                                    </ThemeProvider>
+                                </span>
+                                </div>
                             </div>
                             :
                             <div className={classes.widthp} style={{textAlign: "left"}}>

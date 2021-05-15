@@ -66,7 +66,7 @@ export default function ImageUploader() {
                 <PhotoCamera fontSize="large" className={classes.fileInput} />
               </IconButton>
             </label>
-            <input id="filePicker" style={{visibility:"hidden"}} 
+            <input id="filePicker" style={{visibility:"hidden"}}  
               type="file" 
               onChange={handleImageChange} />
           </form>

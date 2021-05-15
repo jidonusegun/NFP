@@ -21,7 +21,7 @@ import DialogContainer from 'components/Dialog/DialogContainer.js';
 import DialogNotification from 'components/Dialog/DialogNotification.js';
 import { dataContext } from 'components/context/DataContext';
 import userForm from "../../hooks/useForm";
-import {getContent, postContent} from 'utils';
+import {getContent, postContent, patchContent} from 'utils';
 
 const styles = {
   cardCategoryWhite: {
@@ -56,222 +56,152 @@ const styles = {
 const useStyles = makeStyles(styles);
 
 export default function GeneralAdminNotifications() {
-  const deleteNotifyPost = userForm(sendDeleteNotifyPostToServer);
-  const publishNotifyPost = userForm(sendPublishNotifyPostToServer);
+  // const deleteNotifyPost = userForm(sendDeleteNotifyPostToServer);
+  // const publishNotifyPost = userForm(sendPublishNotifyPostToServer);
   const suspendNotification = userForm(sendSuspendNotificationToServer);
-  const DeleteNotification = userForm(sendDeleteNotificationToServer);
-  const EditNotification = userForm(sendEditNotificationToServer);
-
-  const [notification, setNotification] = useState([])
+  // const DeleteNotification = userForm(sendDeleteNotificationToServer);
+  // const EditNotification = userForm(sendEditNotificationToServer);
+  const [activeContent, setActiveContent] = useState({id: '', action: '', type: ''})
+  const [notification, setNotification] = useState()
   const [editId, setEditId] = useState({id: ""})
   const { handleClickOpen, handleClickOpenNotification, handleCloseNotification } = useContext(dataContext);
-
+  const userId = localStorage.getItem("id");
   const token = localStorage.getItem("token")
 
+
   useEffect(() => {
-    getContent("https://nsfp.herokuapp.com/v1/", token)
+    getContent(`https://nsfp.herokuapp.com/v1/notification/${userId}/${50}`, token)
     .then(data=>setNotification(data.data))
-  }, []);
+  }, [token]);
 
+  console.log(activeContent)
 
-  async function sendDeleteNotifyPostToServer() {
-    handleCloseNotification()
-    console.log(sendDeleteNotifyPostToServer.values);
-    const response = await postContent("https://nsfp.herokuapp.com/v1/", token);
+  // async function sendDeleteNotifyPostToServer() {
+  //   handleCloseNotification()
+  //   console.log(sendDeleteNotifyPostToServer.values);
+  //   const response = await postContent("https://nsfp.herokuapp.com/v1/", token);
+  //   // addCook.reset();
+  //   console.log(response);
+  // }
+
+  // async function sendPublishNotifyPostToServer() {
+  //   console.log(sendPublishNotifyPostToServer.values);
+  //   const response = await postContent("https://nsfp.herokuapp.com/v1/", token);
+  //   // addCook.reset();
+  //   console.log(response);
+  // }
+
+  // async function sendDeleteNotificationToServer() {
+  //   console.log(sendSuspendNotificationToServer.values);
+  //   const response = await postContent("https://nsfp.herokuapp.com/v1/", token);
+  //   // addCook.reset();
+  //   console.log(response);
+  // }
+
+  // async function sendEditNotificationToServer() {
+  //   console.log(sendSuspendNotificationToServer.values);
+  //   const response = await postContent("https://nsfp.herokuapp.com/v1/", token);
+  //   // addCook.reset();
+  //   console.log(response);
+  // }
+
+  async function sendSuspendNotificationToServer(id, action, type) {
+    try {
+
+      suspendNotification.setData('actionTaken',activeContent.action)
+      suspendNotification.setData('type',activeContent.type)
+      if(activeContent?.id){
+        
+      }
+      alert(activeContent?.id)
+    // const response = await patchContent(`https://nsfp.herokuapp.com/v1/notification/${activeContent?.id}`, suspendNotification.values, token);
     // addCook.reset();
+    // alert("Approved Successfully")
     console.log(response);
-  }
-
-  async function sendPublishNotifyPostToServer() {
-    console.log(sendPublishNotifyPostToServer.values);
-    const response = await postContent("https://nsfp.herokuapp.com/v1/", token);
-    // addCook.reset();
-    console.log(response);
-  }
-
-  async function sendDeleteNotificationToServer() {
-    console.log(sendSuspendNotificationToServer.values);
-    const response = await postContent("https://nsfp.herokuapp.com/v1/", token);
-    // addCook.reset();
-    console.log(response);
-  }
-
-  async function sendEditNotificationToServer() {
-    console.log(sendSuspendNotificationToServer.values);
-    const response = await postContent("https://nsfp.herokuapp.com/v1/", token);
-    // addCook.reset();
-    console.log(response);
-  }
-
-  async function sendSuspendNotificationToServer() {
-    console.log(sendSuspendNotificationToServer.values);
-    const response = await postContent("https://nsfp.herokuapp.com/v1/", token);
-    // addCook.reset();
-    console.log(response);
+    } catch ({message}) {
+      alert(message)
+    }
   }
 
   const classes = useStyles();
-  const [tl, setTL] = React.useState(false);
-  const [tc, setTC] = React.useState(false);
-  const [tr, setTR] = React.useState(false);
-  const [bl, setBL] = React.useState(false);
-  const [bc, setBC] = React.useState(false);
-  const [br, setBR] = React.useState(false);
-  React.useEffect(() => {
-    // Specify how to clean up after this effect:
-    return function cleanup() {
-      // to stop the warning of calling setState of unmounted component
-      var id = window.setTimeout(null, 0);
-      while (id--) {
-        window.clearTimeout(id);
-      }
-    };
-  });
-  const showNotification = place => {
-    switch (place) {
-      case "tl":
-        if (!tl) {
-          setTL(true);
-          setTimeout(function() {
-            setTL(false);
-          }, 6000);
-        }
-        break;
-      case "tc":
-        if (!tc) {
-          setTC(true);
-          setTimeout(function() {
-            setTC(false);
-          }, 6000);
-        }
-        break;
-      case "tr":
-        if (!tr) {
-          setTR(true);
-          setTimeout(function() {
-            setTR(false);
-          }, 6000);
-        }
-        break;
-      case "bl":
-        if (!bl) {
-          setBL(true);
-          setTimeout(function() {
-            setBL(false);
-          }, 6000);
-        }
-        break;
-      case "bc":
-        if (!bc) {
-          setBC(true);
-          setTimeout(function() {
-            setBC(false);
-          }, 6000);
-        }
-        break;
-      case "br":
-        if (!br) {
-          setBR(true);
-          setTimeout(function() {
-            setBR(false);
-          }, 6000);
-        }
-        break;
-      default:
-        break;
-    }
-  };
+  
   return (
     <Card>
-        <DialogContainer title="Add Post" children= {<EditPost details={editId} />} />
+        <DialogContainer title="Edit Post" children= {<EditPost details={editId} />} />
       <CardHeader color="primary">
         <h4 className={classes.cardTitleWhite}>Notifications</h4>
       </CardHeader>
       <CardBody>
-        {notification.map(({content, title, id, stateAdmin}) => {
-          setEditId({id: id})
-
+        {notification?.notifications.map(({message, type, title, _id, stateAdmin, recipient, isSeen, user_id, actionTaken}) => {
+          
           const renderContent = () => {
-            if(title) {
-              return (
-                <div key={id}>
-                  <DialogContainer title="Edit Post" children= {<EditPost id={id} />} />
-                  <DialogNotification noButton="No" yesButton="Yes" id={id} title="Delete" children="Are you sure you want to Delete?" handleDelete={deleteNotifyPost.submit} />
-                  <SnackbarContent
-                    message={
-                      <div>
-                          <h3>{title}</h3>
-                          <p>{content}</p>
-                          <p style={{textAlign: "right", fontWeight: "bold",
-                          margin: ".8rem .5rem 0",}}>From <span style={{fontWeight: "normal"}} >
-                              - {stateAdmin}</span></p>
+            // if(title) {
+            //   return (
+            //     <div key={id}>
+            //       <DialogContainer title="Edit Post" children= {<EditPost id={id} />} />
+            //       <DialogNotification noButton="No" yesButton="Yes" id={id} title="Delete" children="Are you sure you want to Delete?" handleDelete={deleteNotifyPost.submit} />
+            //       <SnackbarContent
+            //         message={
+            //           <div>
+            //               <h3>{title}</h3>
+            //               <p>{message}</p>
+            //               <p style={{textAlign: "right", fontWeight: "bold",
+            //               margin: ".8rem .5rem 0",}}>From <span style={{fontWeight: "normal"}} >
+            //                   - {recipient}</span></p>
                           
-                          <ButtonGroup size="small" aria-label="small outlined button group">
-                              <Button onClick={publishNotifyPost.submit}>Publish</Button>
-                              {/* <Button>Unpublish</Button> */}
-                              <Button onClick={handleClickOpen}>Edit</Button>
-                          </ButtonGroup>
-                      </div>
-                    }
-                    close
-                    handleClick={handleClickOpenNotification}
-                    icon={AddAlert}
-                  />
-                </div>
-              )
-            }
-            else if (suspend) {
-              <SnackbarContent
+            //               <ButtonGroup size="small" aria-label="small outlined button group">
+            //                   <Button onClick={publishNotifyPost.submit}>Publish</Button>
+            //                   {/* <Button>Unpublish</Button> */}
+            //                   <Button onClick={handleClickOpen}>Edit</Button>
+            //               </ButtonGroup>
+            //           </div>
+            //         }
+            //         close
+            //         handleClick={handleClickOpenNotification}
+            //         icon={AddAlert}
+            //       />
+            //     </div>
+            //   )
+            // }
+            if (type === "REGULAR") {
+              return <SnackbarContent
                 message={
                   <div>
-                      <h3>Notification for Suspension</h3>
-                      <p>{content}</p>
-                      <ButtonGroup size="small" aria-label="small outlined button group">
-                          <Button onClick={suspendNotification.submit}>Approve</Button>
-                          <Button onClick={suspendNotification}>Reject</Button>
-                      </ButtonGroup>
-                  </div>
-                }
-                close
-                // handleClick={handleClickOpenNotification}
-                icon={AddAlert}
-              />
-            }
-            else if (edit) {
-              <SnackbarContent
-                message={
-                  <div>
-                      <h3>Notification for Editing</h3>
-                      <p>{content}</p>
-                      <ButtonGroup size="small" aria-label="small outlined button group">
+                      <h3>{title}</h3>
+                      <p>{message}</p>
+                      <p style={{textAlign: "right", fontWeight: "bold",
+                          margin: ".8rem .5rem 0",}}>From <span style={{fontWeight: "normal"}} >
+                              - {recipient}</span></p>
+                      {/* <ButtonGroup size="small" aria-label="small outlined button group">
                           <Button onClick={EditNotification.submit}>Approve</Button>
                           <Button onClick={EditNotification}>Reject</Button>
-                      </ButtonGroup>
+                      </ButtonGroup> */}
                   </div>
                 }
-                close
-                // handleClick={handleClickOpenNotification}
                 icon={AddAlert}
               />
             }
-            else if (Notifydelete) {<SnackbarContent
-              message={
-                <div>
-                    <h3>Notification for Deleting</h3>
-                    <p>{content}</p>
-                    <ButtonGroup size="small" aria-label="small outlined button group">
-                        <Button onClick={DeleteNotification.submit}>Approve</Button>
-                        <Button onClick={DeleteNotification}>Reject</Button>
-                    </ButtonGroup>
-                </div>
-              }
-              close
-              // handleClick={handleClickOpenNotification}
-              icon={AddAlert}
-            />}
+             else {
+              return <SnackbarContent
+                message={
+                  <div>
+                      <h3>{title}</h3>
+                      <p>{message}</p>
+                      <p style={{textAlign: "right", fontWeight: "bold",
+                          margin: ".8rem .5rem 0",}}>From <span style={{fontWeight: "normal"}} >
+                              - {recipient}</span></p>
+                      <ButtonGroup size="small" aria-label="small outlined button group">
+                          <Button onClick={(e) => {suspendNotification.submit(e); setActiveContent({id: _id, action: actionTaken, type: type})}}>Approve</Button>
+                          <Button onClick={(e) => {suspendNotification.submit(e); setActiveContent({id: _id, action: actionTaken, type: type})}}>Reject</Button>
+                      </ButtonGroup>
+                  </div>
+                }
+                icon={AddAlert}
+              />
+            }
 
           }
-          return notification ?
+          return notification?.notifications ?
             renderContent()
           : 
           <div>No Notification Yet</div>

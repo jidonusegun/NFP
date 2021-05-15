@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import image from 'assets/img/faces/marc.jpg';
 // import { green } from '@material-ui/core/colors';
 // import { dataContext } from 'components/context/DataContext';
+import Logo from 'assets/img/loogos.png';
 import {getContent} from 'utils';
 
 const useStyles = makeStyles((theme) => ({
@@ -68,6 +69,8 @@ export default function GenralAdminView() {
     const token = localStorage.getItem("token")
     const [account, setAccount] = useState([])
 
+    const newImage = details?.image?.split('/').pop()
+
     useEffect(() => {
         	getContent(`https://nsfp.herokuapp.com/v1/`, token)
     		.then(data=>setAccount(data.data))
@@ -77,7 +80,7 @@ export default function GenralAdminView() {
         <div>
             <div className={classes.topDiv}>
                 <div className={classes.imageContainer}>
-                    <img src={image} alt="Profile Account" className={classes.img} />
+                    <img src={result?.image ? newImage: Logo} alt="Profile Account" className={classes.img} />
                 </div>
                 <div className={classes.profileContent}>
                     <div className={classes.bioData}>

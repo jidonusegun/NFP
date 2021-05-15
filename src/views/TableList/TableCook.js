@@ -23,7 +23,13 @@ import { dataContext } from 'components/context/DataContext';
 import SpeedDialCook from 'components/SpeedDialCooks/SpeedDialCook.js';
 // icon components
 import ViewListIcon from '@material-ui/icons/ViewList';
-import {getContent} from 'utils';
+import userForm from "../../hooks/useForm"; 
+import {postContent, getContent, postImageContent} from 'utils';
+import SaveAltIcon from "@material-ui/icons/SaveAlt";
+import Dialog from 'components/useDialog';
+import useDialog from 'components/useDialog/useHook';
+import Loading from "components/isLoading";
+import Toast from "components/toast";
 // import {Link, Router} from 'react-router-dom';
 
 
@@ -31,33 +37,98 @@ const useStyles = makeStyles(styles);
 
 export default function TableList(props) {
   const classes = useStyles();
+  const { openDialog, closeDialog, isOpen } = useDialog();
+  // const uploadExcel = userForm(sendToServer);
   const { handleClickPop, handleClickOpen } = useContext(dataContext);
-  const [loading, setLoading] = useState(false)
+  const [cookDetails, setCookDetails] = useState();
+  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [account, setAccount] = useState([]) 
+  const [message, setMessage] = useState('')
   const token = localStorage.getItem("token")
+  const userId = localStorage.getItem("id")
   const stateLogin = localStorage.getItem("state")
   const lgaLogin = localStorage.getItem("lga")
+  const [imageUpload, setImageUpload] = useState({image: ''})
 
   useEffect(() => {
-    setLoading(true);
+    setIsLoading(true);
       getContent(`https://nsfp.herokuapp.com/v1/cooks?state=${stateLogin}&lga=${lgaLogin}`, token)
       .then(data=>setAccount(data.data))
-    setLoading(false);
+    setIsLoading(false);
   }, [token, stateLogin, lgaLogin]);
 
-  const [cookDetails, setCookDetails] = useState();
+  // async function sendToServer() {
+  //   try {
+  //     setLoading(true);
+  //     const data = new FormData()
+  //     data.append('files', uploadExcel.values)
+  //     const result = await postImageContent(`https://nsfp.herokuapp.com/v1/cook/uploadcsv/${userId}`, data, token);
+  //     setLoading(false);
+  //     // const newAccount = result.data
+  //     // setAccount({...account, newAccount})
+  //     closeDialog();
+  //     window.location.reload()
+  //   } catch ({message}) {
+  //     setMessage(message)
+  //     setLoading(false);
+  //   }
+  // }
 
-  console.log(account)
+  const handleChange = (e) => {
+    setImageUpload({image: e.target.files[0]})
+  }
+
+  async function submitUpload() {
+    try {
+      setLoading(true);
+      const data = new FormData()
+      data.append('files', imageUpload.image)
+    const result = await postImageContent(`https://nsfp.herokuapp.com/v1/aggregator/uploadcsv/${userId}`, data, token);
+    alert("Cook list has been sent for approval")
+    closeDialog();
+    }
+    catch ({message}) {
+      setMessage(message)
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
+  // console.log(account)
 
   return (
     <div>
-      <DialogContainer children= {<AddCooks />} />
+      <DialogContainer children= {<AddCooks content={account} />} />
+      <Dialog
+                open={isOpen}
+                handleClose={closeDialog}
+                title="Upload Cook's List in Excel"
+                size="sm"
+                buttons={[
+                    {
+                        value: <>Upload {loading && <Loading />}</>,
+                        onClick: () => submitUpload(),
+                    },
+                ]}
+            >
+                <form>
+                    <input
+                        id="files"
+                        onChange={(e) => handleChange(e)}
+                        type="file"
+                        name="files"
+                        placeholder="Upload Aggregators"
+                        accept=".xlsx, .xls, .csv"
+                    />
+                </form>
+            </Dialog>
       <Popover children={<SpeedDialCook details={cookDetails} />} /> 
       <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
-        {loading ? <div>Loading... Please wait</div> :
+        {isLoading ? <Loading /> :
           <div>
-            { account.length > 0 ?
             <Card>
               <CardHeader color="primary" className={classes.cardHeader}>
                 <div>
@@ -66,8 +137,17 @@ export default function TableList(props) {
                     List of all Cooks
                   </p>
                 </div>
+                <div>
+                      <SaveAltIcon
+                      onClick={() => openDialog()}
+                        fontSize="large"
+                        style={{ marginRight: "30px", cursor: "pointer" }}
+                      />
+                      <p style={{margin: "0px", padding: "0px"}}>Excel Upload</p>
+                    </div>
               </CardHeader>
               <CardBody> 
+              { account.length > 0 ?
                     <Table className={classes.table}>
                   
                     <TableHead style={{color: "#9c27b0"}}>
@@ -114,17 +194,17 @@ export default function TableList(props) {
                     })}
                   </TableBody>
                 </Table>
+              :
+              <div>No Data yet</div> }
               </CardBody>
             </Card>
-          :
-            <div>No Data yet</div>}
           </div>
           
         }
       </GridItem>
             
     </GridContainer>
-
+    <Toast message={message} />
         <AddButton handleClickOpen={handleClickOpen} />
     </div>
   );

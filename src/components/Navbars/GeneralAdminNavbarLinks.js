@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classNames from "classnames";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -19,7 +19,8 @@ import Search from "@material-ui/icons/Search";
 // core components
 import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
-import {kCount} from 'utils';
+import { kCount } from "utils";
+import { getContent } from "utils";
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 
 const useStyles = makeStyles(styles);
@@ -27,8 +28,19 @@ const useStyles = makeStyles(styles);
 export default function AdminNavbarLinks() {
   const classes = useStyles();
   const [openNotification, setOpenNotification] = React.useState(null);
+  const [notificationCount, setNotificationCount] = React.useState();
   const [openProfile, setOpenProfile] = React.useState(null);
-  const handleClickNotification = event => {
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("id");
+
+  useEffect(() => {
+    getContent(
+      `https://nsfp.herokuapp.com/v1/notification/${userId}/${50}`,
+      token
+    ).then((data) => setNotificationCount(data.data));
+  }, [token, userId]);
+
+  const handleClickNotification = (event) => {
     if (openNotification && openNotification.contains(event.target)) {
       setOpenNotification(null);
     } else {
@@ -38,7 +50,7 @@ export default function AdminNavbarLinks() {
   const handleCloseNotification = () => {
     setOpenNotification(null);
   };
-  const handleClickProfile = event => {
+  const handleClickProfile = (event) => {
     if (openProfile && openProfile.contains(event.target)) {
       setOpenProfile(null);
     } else {
@@ -48,25 +60,25 @@ export default function AdminNavbarLinks() {
   const handleCloseProfile = () => {
     setOpenProfile(null);
   };
-  return ( 
+  return (
     <div>
       <div className={classes.searchWrapper}>
         <CustomInput
           formControlProps={{
-            className: classes.margin + " " + classes.search
+            className: classes.margin + " " + classes.search,
           }}
           inputProps={{
             placeholder: "Search",
             inputProps: {
-              "aria-label": "Search"
-            }
+              "aria-label": "Search",
+            },
           }}
         />
         <Button color="white" aria-label="edit" justIcon round>
           <Search />
         </Button>
       </div>
-      <Link to="/admin/home" style={{color: "black"}}>
+      <Link to="/admin/home" style={{ color: "black" }}>
         <Button
           color={window.innerWidth > 959 ? "transparent" : "white"}
           justIcon={window.innerWidth > 959}
@@ -80,7 +92,7 @@ export default function AdminNavbarLinks() {
           </Hidden>
         </Button>
       </Link>
-      
+
       <div className={classes.manager}>
         <Button
           color={window.innerWidth > 959 ? "transparent" : "white"}
@@ -92,7 +104,9 @@ export default function AdminNavbarLinks() {
           className={classes.buttonLink}
         >
           <Notifications className={classes.icons} />
-          <span className={classes.notifications}>{kCount(2)}</span>
+          <span className={classes.notifications}>
+            {kCount(notificationCount?.notificationCounts)}
+          </span>
           <Hidden mdUp implementation="css">
             <p onClick={handleCloseNotification} className={classes.linkText}>
               Notification
@@ -116,24 +130,22 @@ export default function AdminNavbarLinks() {
               id="notification-menu-list-grow"
               style={{
                 transformOrigin:
-                  placement === "bottom" ? "center top" : "center bottom"
+                  placement === "bottom" ? "center top" : "center bottom",
               }}
             >
               <Paper>
                 <ClickAwayListener onClickAway={handleCloseNotification}>
                   <MenuList role="menu">
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={classes.dropdownItem}
-                    >
-                      Your mail has been posted
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={classes.dropdownItem}
-                    >
-                      Mail rejected
-                    </MenuItem>
+                    {notificationCount?.notifications.map(({ message }) => {
+                      return (
+                        <MenuItem
+                          onClick={handleCloseNotification}
+                          className={classes.dropdownItem}
+                        >
+                          {message}
+                        </MenuItem>
+                      )
+                    })}
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
@@ -173,7 +185,7 @@ export default function AdminNavbarLinks() {
               id="profile-menu-list-grow"
               style={{
                 transformOrigin:
-                  placement === "bottom" ? "center top" : "center bottom"
+                  placement === "bottom" ? "center top" : "center bottom",
               }}
             >
               <Paper>

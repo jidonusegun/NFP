@@ -3,15 +3,17 @@ import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import Button from "components/CustomButtons/Button.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
-import IconButton from '@material-ui/core/IconButton';
+// import IconButton from '@material-ui/core/IconButton';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import { dataContext } from 'components/context/DataContext';
+// import { dataContext } from 'components/context/DataContext';
 import {patchContent, getContent} from 'utils';
-import PhotoCamera from '@material-ui/icons/PhotoCamera';
+// import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import { makeStyles } from "@material-ui/core/styles";
 import userForm from "../../hooks/useForm";
+import Loading from "components/isLoading";
+import Toast from "components/toast";
 
 const useStyles = makeStyles((theme) => ({
     imgPreview: {
@@ -51,70 +53,43 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-export default function UpdateAdmin({details}) {
+export default function UpdateAdmin({details, content}) {
   const addCook = userForm(sendToServer);
     const classes = useStyles();
     // const { token } = useContext(dataContext)
+    const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
     const [stateValue, setStatevalue] = useState([])
   const [lgaValue, setLgavalue] = useState([])
   const [stateID, setStateID] = useState()
     const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("id");
     const [errorMessage, setErrorMessage] = useState("")
     // let errorMessage = "";
 
     async function sendToServer() {
-      // console.log(addCook.values);
-      // console.log(addCook.formData());
-      if(!addCook.values.firstName) {
-        setErrorMessage("First name is required")
-      }
-      else if(!addCook.values.lastName) {
-        setErrorMessage("Last name is required")
-      }
-      else if(!addCook.values.gender) {
-        setErrorMessage("Gender is required")
-      }
-      else if(!addCook.values.birthday) {
-        setErrorMessage("Date of birth is required")
-      }
-      else if(!addCook.values.accountNumber) {
-        setErrorMessage("Account number is required")
-      }
-      else if(!addCook.values.bankName) {
-        setErrorMessage("Bank name is required")
-      }
-      else if(!addCook.values.bvn) {
-        setErrorMessage("Bvn is required")
-      }
-      else if(!addCook.values.phoneNumber) {
-        setErrorMessage("Phone number is required")
-      }
-      else if(!addCook.values.items) {
-        setErrorMessage("Items is required")
-      }
-      else if(!addCook.values.email) {
-        setErrorMessage("Email is required")
-      }
-      else if(!addCook.values.state) {
-        setErrorMessage("State is required")
-      }
-      else if(!addCook.values.lga) {
-        setErrorMessage("Lga is required")
-      }
-      else if(!addCook.values.schoolName) {
-        setErrorMessage("School name is required")
-      }
-      else if(!addCook.values.address) {
-        setErrorMessage("Address is required")
-      }
-      const value = addCook.values.items.split(',')
-      addCook.values.items = value;
-      
+
       try {
-        patchContent(`https://nsfp.herokuapp.com/v1/aggregator/${details._id}`, addCook.values, token);
+        setIsLoading(true);
+
+        const exclude = ['address','schoolName','lga','state','email','items','phoneNumber','bvn','bankName','accountNumber','birthday','gender','lastName','firstName',];
+      exclude.forEach((key) => {
+        if (!addCook.values[key]) {
+          setErrorMessage(`${key} is required`);
+        }
+      });
+
+      const value = addCook.values.items.split(",");
+      addCook.values.items = value;
+      addCook.setData('registeredBy', userId)
+
+      const {data} = await patchContent(`https://nsfp.herokuapp.com/v1/aggregator/${details._id}`, addCook.values, token);
+      setMessage('Record edited successfully')
+      content.unshift(data)
+      setIsLoading(false)
       }
-      catch(err) {
-        setErrorMessage(err)
+      catch({message}) {
+        setMessage(message)
       }
     }
 
@@ -127,36 +102,36 @@ export default function UpdateAdmin({details}) {
       setStateID(option)
     }
 
-    const [imageFile, setImageFile] = useState({file: '',imagePreviewUrl: ''});
+    // const [imageFile, setImageFile] = useState({file: '',imagePreviewUrl: ''});
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('handle uploading-', imageFile.file);
-      }
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     console.log('handle uploading-', imageFile.file);
+    //   }
 
-      const handleImageChange = (e) => {
-        e.preventDefault();
+      // const handleImageChange = (e) => {
+      //   e.preventDefault();
     
-        let reader = new FileReader();
-        let file = e.target.files[0];
+      //   let reader = new FileReader();
+      //   let file = e.target.files[0];
     
-        reader.onloadend = () => {
-          setImageFile({
-            file: file,
-            imagePreviewUrl: reader.result
-          });
-        }
+      //   reader.onloadend = () => {
+      //     setImageFile({
+      //       file: file,
+      //       imagePreviewUrl: reader.result
+      //     });
+      //   }
     
-        reader.readAsDataURL(file)
-      }
+      //   reader.readAsDataURL(file)
+      // }
 
-      let {imagePreviewUrl} = imageFile;
-      let $imagePreview = null;
-      if (imagePreviewUrl) {
-        $imagePreview = (<img src={imagePreviewUrl} alt="upload" className={classes.img} />);
-      } else {
-        $imagePreview = (<div className="previewText"></div>);
-      }
+      // let {imagePreviewUrl} = imageFile;
+      // let $imagePreview = null;
+      // if (imagePreviewUrl) {
+      //   $imagePreview = (<img src={imagePreviewUrl} alt="upload" className={classes.img} />);
+      // } else {
+      //   $imagePreview = (<div className="previewText"></div>);
+      // }
 
 
   useEffect(() => {
@@ -169,6 +144,15 @@ export default function UpdateAdmin({details}) {
 
   },[token, stateID])
 
+  // Aggregator's Company Name,
+  // Items to Supply,
+  // Unit Post,
+  // Day for Consumption,
+  // Number of Pupils,
+  // Bank,
+  // Acct. Number,
+  // TIN
+
 return (
 <div>
   <GridContainer>
@@ -180,7 +164,7 @@ return (
         </CardHeader>
         <CardBody>
         <div style={{color: "red", textAlign: "center", width: "100%"}}>{`${errorMessage}`}</div>
-        <GridContainer>
+        {/* <GridContainer>
             <GridItem xs={12} sm={12} md={4}>
             <CardAvatar profile style={{marginTop: "2rem"}}>
               <form onSubmit={handleSubmit}>
@@ -201,7 +185,7 @@ return (
               </form>
             </CardAvatar>
             </GridItem>
-          </GridContainer>
+          </GridContainer> */}
           <GridContainer>
             <GridItem xs={12} sm={12} md={4}>
               <CustomInput
@@ -436,7 +420,11 @@ return (
           </GridContainer>
           </CardBody>
         <CardFooter>
-          <Button onClick={addCook.submit} color="primary">{sendButton ? sendButton : "Edit Profile"}</Button>
+          <Button onClick={addCook.submit} color="primary">
+            {sendButton ? sendButton : "Edit Profile"}
+            {isLoading && <Loading />}
+            </Button>
+            <Toast message={message} />
         </CardFooter>
       </Card>
     </GridItem>

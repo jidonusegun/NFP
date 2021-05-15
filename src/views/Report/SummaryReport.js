@@ -64,7 +64,7 @@ export default function SummaryReport({summaryTable}) {
     <div>
       <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
-        {summaryTable.length > 0 ? 
+        {summaryTable?.length > 0 ? 
           <Card>
             <CardHeader color="primary" className={classes.cardHeader}>
               <div>

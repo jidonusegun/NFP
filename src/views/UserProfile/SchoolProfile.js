@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // import InputLabel from "@material-ui/core/InputLabel";
@@ -12,15 +12,17 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-import IconButton from '@material-ui/core/IconButton';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import { dataContext } from 'components/context/DataContext';
-import PhotoCamera from '@material-ui/icons/PhotoCamera';
-import {postContent, getContent} from 'utils';
+import IconButton from "@material-ui/core/IconButton";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import { dataContext } from "components/context/DataContext";
+import PhotoCamera from "@material-ui/icons/PhotoCamera";
+import { postContent, getContent, postImageContent } from "utils";
 import loogos from "assets/img/loogos.png";
 import userForm from "../../hooks/useForm";
+import Loading from "components/isLoading";
+import Toast from "components/toast";
 
 const styles = {
   cardCategoryWhite: {
@@ -28,7 +30,7 @@ const styles = {
     margin: "0",
     fontSize: "14px",
     marginTop: "0",
-    marginBottom: "0"
+    marginBottom: "0",
   },
   cardTitleWhite: {
     color: "#FFFFFF",
@@ -40,7 +42,7 @@ const styles = {
     textDecoration: "none",
   },
   input: {
-    display: 'none',
+    display: "none",
     top: "4rem",
   },
   upload: {
@@ -62,112 +64,148 @@ const styles = {
   underline: {
     "&:hover:not($disabled):before,&:before": {
       borderColor: "#D2D2D2 !important",
-      borderWidth: "1px !important"
+      borderWidth: "1px !important",
     },
     "&:after": {
-      borderColor: "#9c27b0"
-    }
+      borderColor: "#9c27b0",
+    },
   },
 };
 
 const useStyles = makeStyles(styles);
 
-export default function SchoolProfile({title, subTitle, sendButton}) {
+export default function SchoolProfile({
+  title,
+  subTitle,
+  sendButton,
+  content,
+}) {
   const addCook = userForm(sendToServer);
   const classes = useStyles();
+  const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { handleClose } = useContext(dataContext);
+  const [stateValue, setStatevalue] = useState([]);
+  const [lgaValue, setLgavalue] = useState([]);
+  const [stateID, setStateID] = useState();
+  const [imageUpload, setImageUpload] = useState({ image: "" });
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("id");
+  const [errorMessage, setErrorMessage] = useState("");
+  // let errorMessage = "";
 
-    const { handleClose } = useContext(dataContext)
-    const [stateValue, setStatevalue] = useState([])
-    const [lgaValue, setLgavalue] = useState([])
-    const [stateID, setStateID] = useState()
-    const token = localStorage.getItem("token");
-    const [errorMessage, setErrorMessage] = useState("")
-    // let errorMessage = "";
+  const handleImageUpload = (e) => {
+    setImageUpload({ image: e.target.files[0] });
+  };
 
-    async function sendToServer() {
-      // console.log(addCook.values);
-      // console.log(addCook.formData());
-
-      if(!addCook.values.name) {
-        setErrorMessage("School name is required")
-      }
-      else if(!addCook.values.contactPerson) {
-        setErrorMessage("Contact Person is required")
-      }
-      else if(!addCook.values.phoneNumber) {
-        setErrorMessage("Contact Phone Number is required")
-      }
-      else if(!addCook.values.email) {
-        setErrorMessage("Email is required")
-      }
-      else if(!addCook.values.totalPulpil) {
-        setErrorMessage("Number of Pupils is required")
-      }
-      else if(!addCook.values.state) {
-        setErrorMessage("State is required")
-      }
-      else if(!addCook.values.lga) {
-        setErrorMessage("Lga is required")
-      }
-      else if(!addCook.values.address) {
-        setErrorMessage("Address is required")
-      }
-      try {
-        postContent("https://nsfp.herokuapp.com/v1/school", addCook.values, token);
-        handleClose();
-      }
-      catch(err) {
-        setErrorMessage(err)
-      }
-    }
-
-    const handleChange = (e) => {
-
-      var index = e.target.selectedIndex;
-      var optionElement = e.target.childNodes[index]
-      var option =  optionElement.getAttribute('id');
-  
-      setStateID(option)
-    }
-
-  const [imageFile, setImageFile] = useState({file: '',imagePreviewUrl: ''});
-
-
-      const handleImageChange = (e) => {
-        e.preventDefault();
-    
-        let reader = new FileReader();
-        let file = e.target.files[0];
-    
-        reader.onloadend = () => {
-          setImageFile({
-            file: file,
-            imagePreviewUrl: reader.result
-          });
-        }
-    
-        reader.readAsDataURL(file)
-      }
-
-      let {imagePreviewUrl} = imageFile
-      let $imagePreview = null;
-      if (imagePreviewUrl) {
-        $imagePreview = (<img src={imagePreviewUrl} alt="upload" className={classes.img} />);
-      } else {
-        $imagePreview = (<div className="previewText" style={{borderRadius: "50%", margin: "0"}}><img src={loogos} alt="logo" /></div>);
-      }
-
-      useEffect(() => {
-        getContent("https://nsfp.herokuapp.com/v1/settings/states", token)
-        .then(data=>setStatevalue(data.data))
-
-        getContent(`https://nsfp.herokuapp.com/v1/settings/state/${stateID}/lgas`, token)
-      .then(data=>setLgavalue(data.data))
+  async function sendToServer() {
+    try {
+      setIsLoading(true);
+      const imageData = new FormData();
+      imageData.append("files", imageUpload?.image);
       
-      },[token, stateID]) 
+      
+      const exclude = [
+        "address",
+        "lga",
+        "state",
+        "totalPulpil",
+        "email",
+        "phoneNumber",
+        "contactPerson",
+        "name",
+      ];
+      exclude.forEach((key) => {
+        if (!addCook.values[key]) {
+          setErrorMessage(`${key} is required`);
+        }
+      });
 
-      // console.log(lgaValue)
-  
+      // addCook.values.totalPulpil = parseInt(addCook.values.totalPulpil)
+      addCook.setData("registeredBy", userId);
+      delete addCook.values.filePicker
+      delete addCook.values.files;
+
+      const { data } = await postContent(
+        "https://nsfp.herokuapp.com/v1/school",
+        addCook.values,
+        token
+      );
+
+      if (imageUpload?.image) {
+        const imageResult = await postImageContent(
+          `https://nsfp.herokuapp.com/v1/school/upload-image/${data?._id}`,
+          imageData,
+          token
+        );
+      }
+      // content.unshift(data);
+      setMessage("Record sent for approval");
+      setIsLoading(false);
+      handleClose();
+      window.location.reload();
+    } catch ({ message }) {
+      alert(message);
+    }
+    finally {
+      setIsLoading(false);
+    }
+  }
+
+  const handleChange = (e) => {
+    var index = e.target.selectedIndex;
+    var optionElement = e.target.childNodes[index];
+    var option = optionElement.getAttribute("id");
+
+    setStateID(option);
+  };
+
+  const [imageFile, setImageFile] = useState({ file: "", imagePreviewUrl: "" });
+
+  const handleImageChange = (e) => {
+    e.preventDefault();
+
+    let reader = new FileReader();
+    let file = e.target.files[0];
+
+    reader.onloadend = () => {
+      setImageFile({
+        file: file,
+        imagePreviewUrl: reader.result,
+      });
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  let { imagePreviewUrl } = imageFile;
+  let $imagePreview = null;
+  if (imagePreviewUrl) {
+    $imagePreview = (
+      <img src={imagePreviewUrl} alt="upload" className={classes.img} />
+    );
+  } else {
+    $imagePreview = (
+      <div className="previewText" style={{ borderRadius: "50%", margin: "0" }}>
+        <img src={loogos} alt="logo" />
+      </div>
+    );
+  }
+
+  useEffect(() => {
+    getContent(
+      "https://nsfp.herokuapp.com/v1/settings/states",
+      token
+    ).then((data) => setStatevalue(data.data));
+
+    getContent(
+      `https://nsfp.herokuapp.com/v1/settings/state/${stateID}/lgas`,
+      token
+    ).then((data) => setLgavalue(data.data));
+  }, [token, stateID]);
+
+  // console.log(lgaValue)
+
   return (
     <div>
       <GridContainer>
@@ -178,27 +216,40 @@ export default function SchoolProfile({title, subTitle, sendButton}) {
               <p className={classes.cardCategoryWhite}>{subTitle}</p>
             </CardHeader>
             <CardBody>
-            <div style={{color: "red", textAlign: "center", width: "100%"}}>{`${errorMessage}`}</div>
-            <GridContainer>
+              <div
+                style={{ color: "red", textAlign: "center", width: "100%" }}
+              >{`${errorMessage}`}</div>
+              <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
-                <CardAvatar profile style={{marginTop: "2rem"}}>
-                  <form>
-                    <label htmlFor="filePicker">
-                      <IconButton color="primary"  style={{margin: "0", padding: "0"}} aria-label="upload picture" component="span">
-                        <div style={{borderRadius: "50%", margin: "0"}}>
-                          {$imagePreview}
-                        </div>
-                      <PhotoCamera className={classes.upload} />
-                      </IconButton>
-                    </label>
-                    <input id="filePicker" style={{visibility:"hidden"}} 
-                      type="file" name="uploadPicture"  className={classes.input}
-                      onChange={(e)=>{
-                        addCook.getFile(e)
-                        handleImageChange(e)
-                      }} accept="image/*" />
-                  </form>
-                </CardAvatar>
+                  <CardAvatar profile style={{ marginTop: "2rem" }}>
+                    <form>
+                      <label htmlFor="filePicker">
+                        <IconButton
+                          color="primary"
+                          style={{ margin: "0", padding: "0" }}
+                          aria-label="upload picture"
+                          component="span"
+                        >
+                          <div style={{ borderRadius: "50%", margin: "0" }}>
+                            {$imagePreview}
+                          </div>
+                          <PhotoCamera className={classes.upload} />
+                        </IconButton>
+                      </label>
+                      <input
+                        id="filePicker"
+                        style={{ visibility: "hidden" }}
+                        type="file"
+                        name="uploadPicture"
+                        className={classes.input}
+                        onChange={(e) => {
+                          addCook.getFile(e);
+                          handleImageChange(e);
+                        }}
+                        accept="image/*"
+                      />
+                    </form>
+                  </CardAvatar>
                 </GridItem>
               </GridContainer>
               <GridContainer>
@@ -212,7 +263,7 @@ export default function SchoolProfile({title, subTitle, sendButton}) {
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                   />
                 </GridItem>
@@ -226,7 +277,7 @@ export default function SchoolProfile({title, subTitle, sendButton}) {
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                   />
                 </GridItem>
@@ -240,7 +291,7 @@ export default function SchoolProfile({title, subTitle, sendButton}) {
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                   />
                 </GridItem>
@@ -256,7 +307,7 @@ export default function SchoolProfile({title, subTitle, sendButton}) {
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                   />
                 </GridItem>
@@ -270,51 +321,67 @@ export default function SchoolProfile({title, subTitle, sendButton}) {
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                   />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="state" style={{color: "#D2D2D2", fontWeight: "normal"}}>State</InputLabel>
+                    <InputLabel
+                      htmlFor="state"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      State
+                    </InputLabel>
                     <Select
                       native
                       value={addCook.values.state}
-                      onChange={(e) =>{handleChange(e)
-                        addCook.getData(e)}}
+                      onChange={(e) => {
+                        handleChange(e);
+                        addCook.getData(e);
+                      }}
                       className={classes.underline}
-                      style={{width: "100%"}}
+                      style={{ width: "100%" }}
                       inputProps={{
-                        name: 'state',
-                        id: 'state',
+                        name: "state",
+                        id: "state",
                       }}
                     >
                       <option aria-label="None" value="" />
-                      {stateValue.map(({name, _id}) => {
-                        return <option value={name} id={_id}>{name}</option>
+                      {stateValue.map(({ name, _id }) => {
+                        return (
+                          <option value={name} id={_id}>
+                            {name}
+                          </option>
+                        );
                       })}
                     </Select>
                   </FormControl>
                 </GridItem>
-                </GridContainer>
-                <GridContainer>
+              </GridContainer>
+              <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="lga" style={{color: "#D2D2D2", fontWeight: "normal"}}>LGA</InputLabel>
+                    <InputLabel
+                      htmlFor="lga"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      LGA
+                    </InputLabel>
                     <Select
                       native
                       value={addCook.values.lga}
                       onChange={addCook.getData}
                       className={classes.underline}
-                      style={{width: "100%"}}
+                      style={{ width: "100%" }}
                       inputProps={{
-                        name: 'lga',
-                        id: 'lga',
+                        name: "lga",
+                        id: "lga",
                       }}
                     >
                       <option aria-label="None" value="" />
-                      {lgaValue.map(lga => {
-                        return <option value={lga}>{lga}</option>
+                      {lgaValue.map((lga) => {
+                        return <option value={lga}>{lga}</option>;
                       })}
                     </Select>
                   </FormControl>
@@ -326,7 +393,7 @@ export default function SchoolProfile({title, subTitle, sendButton}) {
                     labelText="Address"
                     id="address"
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                     inputProps={{
                       multiline: true,
@@ -340,7 +407,11 @@ export default function SchoolProfile({title, subTitle, sendButton}) {
               </GridContainer>
             </CardBody>
             <CardFooter>
-              <Button onClick={addCook.submit} color="primary">Submit</Button>
+              <Button onClick={addCook.submit} color="primary">
+                Submit
+                {isLoading && <Loading />}
+              </Button>
+              <Toast message={message} />
             </CardFooter>
           </Card>
         </GridItem>

@@ -27,7 +27,8 @@ import CustomInput from "components/CustomInput/CustomInput.js";
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
 import image from "assets/img/bg7.jpg";
 import userForm from "../../hooks/useForm"; 
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Loading from 'components/isLoading';
+import Toast from 'components/toast';
 
   const useStyles = makeStyles(styles);
 
@@ -40,7 +41,8 @@ export default function LoginPage(props) {
   const [validate, setValidate] = useState(false)
   const [passwordCheck, setPasswordCheck] = useState(false)
   const [loggedIn, setLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const { handleClickOpenSuspend, handleCloseSuspend, setToken } = useContext(dataContext);
 
@@ -61,7 +63,8 @@ export default function LoginPage(props) {
 
 
   async function sendLoginToServer() {
-    setLoading(true);
+    try {
+      setIsLoading(true);
 
   const response = await postContentLogin('https://nsfp.herokuapp.com/v1/admin/login', addLogin.values);
 
@@ -85,7 +88,10 @@ export default function LoginPage(props) {
       setValidate(true)
     }
 
-    setLoading(false);
+    setIsLoading(false);
+    } catch ({message}) {
+      setMessage(message)
+    }
   }
 
   setTimeout(function() {
@@ -191,7 +197,7 @@ export default function LoginPage(props) {
                           type: "text",
                           name: "usernames",
                           onChange: (e) => addLogin.getData(e),
-                          value: addLogin.values.username,
+                          // value: addLogin.values.username,
                           endAdornment: (
                             <InputAdornment position="end">
                               <People className={classes.inputIconsColor} />
@@ -209,7 +215,7 @@ export default function LoginPage(props) {
                           type: "password",
                           name: "passwords",
                           onChange: (e) => addLogin.getData(e),
-                          value: addLogin.values.password,
+                          // value: addLogin.values.password,
                           endAdornment: (
                             <InputAdornment position="end">
                               <LockOpenIcon className={classes.inputIconsColor} />
@@ -226,8 +232,8 @@ export default function LoginPage(props) {
                         Login
                       </Button>
                     {/* </Link> */}
-                    {loading ? <CircularProgress size={20} /> : null}
-                    
+                    {isLoading && <Loading />}
+                    <Toast message={message} />
                   </CardFooter>
                   <div className={classes.forgotPasswordContainer}>Forgotten Password? <span onClick={handleClickOpenSuspend} className={classes.forgotPassword}>Click here</span></div>
                 </form> 

@@ -26,14 +26,18 @@ import Admin from "layouts/Admin.js";
 import GeneralAdmin from "layouts/GeneralAdmin.js";
 import LandingPage from "layouts/LandingPage.js";
 import LoginPage from "views/LoginPage/LoginPage.js";
+// import { Provider } from 'react-redux';
+// import store from '../redux/store';
 import FederalLoginPage from "views/LoginPage/FederalLoginPage.js";
 import DataContext from './components/context/DataContext';
 
 import "assets/css/material-dashboard-react.css?v=1.9.0";
 
-const hist = createBrowserHistory();
+const hist = createBrowserHistory(); 
 
 ReactDOM.render(
+  // <Provider store={store}>
+  
   <DataContext>
     <Router history={hist}>
       <Switch>
@@ -45,5 +49,6 @@ ReactDOM.render(
       </Switch>
     </Router> 
   </DataContext>,
+  // {/* </Provider>, */}
   document.getElementById("root")
 );
