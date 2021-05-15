@@ -46,11 +46,12 @@ export default function TableAggregator() {
   const userId = localStorage.getItem("id")
   const stateLogin = localStorage.getItem("state")
   const [imageUpload, setImageUpload] = useState({image: ''})
+  const baseUrl = localStorage.getItem("baseUrl")
 
 
   useEffect(() => {
       setIsLoading(true);
-      getContent(`https://nsfp.herokuapp.com/v1/aggregators?state=${stateLogin}`, token)
+      getContent(`${baseUrl}/aggregators?state=${stateLogin}`, token)
       .then(data=>setAccount(data.data))
     setIsLoading(false);
   }, [token, stateLogin]);
@@ -81,7 +82,7 @@ export default function TableAggregator() {
       setLoading(true);
       const data = new FormData()
       data.append('files', imageUpload.image)
-    const result = await postImageContent(`https://nsfp.herokuapp.com/v1/aggregator/uploadcsv/${userId}`, data, token);
+    const result = await postImageContent(`${baseUrl}/aggregator/uploadcsv/${userId}`, data, token);
     alert("Aggregator list has been sent for approval")
     closeDialog();
     }

@@ -118,6 +118,7 @@ export default function BlogPosts() {
   const { handleClickOpen, handleClickOpenDelete, handleCloseDelete } = useContext(dataContext);
   const token = localStorage.getItem("token")
   const [cssActive, setCssActive] = useState({active: false})
+  const baseUrl = localStorage.getItem("baseUrl")
 
   const toggleClass = () => {
     const currentState = cssActive.active;
@@ -132,19 +133,19 @@ export default function BlogPosts() {
   const [limit, setLimit] = useState(3)
 
   useEffect(() => {
-      getContent(`https://nsfp.herokuapp.com/v1/blogs?limit=${limit}&pageId=${pageId.value}`, token)
+      getContent(`${baseUrl}/blogs?limit=${limit}&pageId=${pageId.value}`, token)
       .then(data=>setPosts(data.data.blogs))
 
-      getContent(`https://nsfp.herokuapp.com/v1/blogs?limit=${limit}&pageId=${pageId.value}`, token)
+      getContent(`${baseUrl}/blogs?limit=${limit}&pageId=${pageId.value}`, token)
       .then(data=>setTotalCount(data.data.totalCount))
 
-      getContent(`https://nsfp.herokuapp.com/v1/blogs?limit=${limit}&pageId=${pageId.value}`, token)
+      getContent(`${baseUrl}/blogs?limit=${limit}&pageId=${pageId.value}`, token)
       .then(data=>setPageId({value: data.data.pageId}))
 
-      getContent(`https://nsfp.herokuapp.com/v1/blogs?limit=${limit}&pageId=${pageId.value}`, token)
+      getContent(`${baseUrl}/blogs?limit=${limit}&pageId=${pageId.value}`, token)
       .then(data=>setPageCount(data.data.pageCount))
 
-      getContent(`https://nsfp.herokuapp.com/v1/blogs?limit=${limit}&pageId=${pageId.value}`, token)
+      getContent(`${baseUrl}/blogs?limit=${limit}&pageId=${pageId.value}`, token)
       .then(data=>setLimit(data.data.limit))
   }, [token, limit, pageId.value]);
 
@@ -153,7 +154,7 @@ const indexOfFirstPost = indexOfLastPost - limit + 1
 // console.log(indexOfLastPost)
   async function sendToServer() {
     handleCloseDelete()
-    const response = await deleteContent(`https://nsfp.herokuapp.com/v1/blog/${deletePost}`, token);
+    const response = await deleteContent(`${baseUrl}/blog/${deletePost}`, token);
     // addPost.reset();
     console.log(response);
   }

@@ -88,6 +88,7 @@ export default function EditCooks({title, subTitle, sendButton, details, content
   const { handleClose } = useContext(dataContext)
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
+  const baseUrl = localStorage.getItem("baseUrl")
 // const { PatchCook } = useContext(dataContext)
 
 const handleImageUpload = (e) => {
@@ -110,12 +111,12 @@ const handleImageUpload = (e) => {
       delete addCook.values.filePicker;
       delete addCook.values.files;
 
-      const {data} = await patchContent(`https://nsfp.herokuapp.com/v1/cook/${details._id}`,
+      const {data} = await patchContent(`${baseUrl}/cook/${details._id}`,
         addCook.values, token);
 
       if (imageUpload?.image) {
         const imageResult = await postImageContent(
-          `https://nsfp.herokuapp.com/v1/cook/upload-image/${data?._id}`,
+          `${baseUrl}/cook/upload-image/${data?._id}`,
           imageData,
           token
         );

@@ -27,13 +27,14 @@ export default function PopSuspend({details}) {
   const classes = useStyles();
   const { handleClickOpenSuspend, handleCloseSuspend } = useContext(dataContext);
   const token = localStorage.getItem("token");
+  const baseUrl = localStorage.getItem("baseUrl")
   
   async function sendToServer() { 
     try {
       // console.log(addCook.values);
     handleCloseSuspend();
     const response = await postContent(
-      `https://nsfp.herokuapp.com/v1/school/${details._id}/suspend`,
+      `${baseUrl}/school/${details._id}/suspend`,
       addCook.values,
       token
     );

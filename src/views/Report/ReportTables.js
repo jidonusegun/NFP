@@ -19,16 +19,17 @@ export default function ReportTables() {
   const [loading, setLoading] = useState(false) 
   const [aggregator, setAggregator] = useState([]) 
   const token = localStorage.getItem("token")
+  const baseUrl = localStorage.getItem("baseUrl")
 
   useEffect(() => {
     setLoading(true);
-    getContent("https://nsfp.herokuapp.com/v1/cooks?state=lagos&lga=badagry&status=AWAITING_APPROVAL", token)
+    getContent(`${baseUrl}/cooks?state=lagos&lga=badagry&status=AWAITING_APPROVAL`, token)
     .then(data=>setCook(data.data))
 
-    getContent("https://nsfp.herokuapp.com/v1/aggregators?state=lagos&lga=badagry&status=AWAITING_APPROVAL", token)
+    getContent(`${baseUrl}/aggregators?state=lagos&lga=badagry&status=AWAITING_APPROVAL`, token)
     .then(data=>setAggregator(data.data))
 
-    getContent("https://nsfp.herokuapp.com/v1/schools?state=lagos&lga=badagry&status=AWAITING_APPROVAL", token)
+    getContent(`${baseUrl}/schools?state=lagos&lga=badagry&status=AWAITING_APPROVAL`, token)
     .then(data=>setSchool(data.data))
     setLoading(false);
   }, [token]);

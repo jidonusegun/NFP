@@ -25,6 +25,8 @@ const useStyles = makeStyles((theme) => ({
 export default function PopSuspend({details}) {
   const addCook = userForm(sendToServer);
   const classes = useStyles();
+  const baseUrl = localStorage.getItem("baseUrl")
+  const token = localStorage.getItem("token")
   const { handleClickOpenSuspend, handleCloseSuspend } = useContext(dataContext);
   
   async function sendToServer() {
@@ -32,8 +34,8 @@ export default function PopSuspend({details}) {
     console.log(addCook.formData());
     handleCloseSuspend();
   const response = await postContent({
-    url:"/api/cooks/add_one/cook.php",
-    data: addCook.formData()
+    url:`${baseUrl}/`,
+    data: addCook.values, token
   });
   addCook.reset();
   console.log(response);

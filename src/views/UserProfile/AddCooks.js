@@ -88,15 +88,16 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
   const { handleClose } = useContext(dataContext);
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
+  const baseUrl = localStorage.getItem("baseUrl")
 
   useEffect(() => {
     getContent(
-      "https://nsfp.herokuapp.com/v1/settings/states",
+      `${baseUrl}/settings/states`,
       token
     ).then((data) => setStatevalue(data.data));
 
     getContent(
-      `https://nsfp.herokuapp.com/v1/settings/state/${stateID}/lgas`,
+      `${baseUrl}/settings/state/${stateID}/lgas`,
       token
     ).then((data) => setLgavalue(data.data));
   }, [token, stateID]);
@@ -136,13 +137,13 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
       delete addCook.values.filePicker;
       delete addCook.values.files;
       const { data } = await postContent(
-        "https://nsfp.herokuapp.com/v1/cook",
+        `${baseUrl}/cook`,
         addCook.values,
         token
       );
       if (imageUpload?.image) {
         const imageResult = await postImageContent(
-          `https://nsfp.herokuapp.com/v1/cook/upload-image/${data?._id}`,
+          `${baseUrl}/cook/upload-image/${data?._id}`,
           imageData,
           token
         );

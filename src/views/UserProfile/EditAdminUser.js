@@ -85,6 +85,7 @@ const [stateValue, setStatevalue] = useState([])
   const [stateID, setStateID] = useState()
   const [errorMessage, setErrorMessage] = useState("")
   const userId = localStorage.getItem("id");
+  const baseUrl = localStorage.getItem("baseUrl")
   // let errorMessage = "";
 
   const handleImageUpload = (e) => {
@@ -109,12 +110,12 @@ const [stateValue, setStatevalue] = useState([])
       delete addCook.values.filePicker;
       delete addCook.values.files;
 
-      const {data} = await patchContent(`https://nsfp.herokuapp.com/v1/admin/${details._id}`,
+      const {data} = await patchContent(`${baseUrl}/admin/${details._id}`,
         addCook.values, token);
 
       if (imageUpload?.image) {
         const imageResult = await postImageContent(
-          `https://nsfp.herokuapp.com/v1/admin/upload-image/${data?._id}`,
+          `${baseUrl}/admin/upload-image/${data?._id}`,
           imageData,
           token
         );

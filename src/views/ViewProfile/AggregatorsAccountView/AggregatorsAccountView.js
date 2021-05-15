@@ -69,21 +69,22 @@ const useStyles = makeStyles((theme) => ({
 export default function AdminAccountView({details}) {
     const classes = useStyles();
     const addCook = userForm(sendToServer);
-    var token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
     const { openDialog, closeDialog, isOpen } = useDialog();
     const [result, setResult] = useState([]);
+    const baseUrl = localStorage.getItem("baseUrl")
     const [isLoading, setIsLoading] = useState(false)
     const newImage = details?.image?.split('/').pop()
 
     useEffect(() => {
-        getContent(`https://nsfp.herokuapp.com/v1/aggregator/${details._id}`, token)
+        getContent(`${baseUrl}/aggregator/${details._id}`, token)
         .then(data => setResult(data.data))
     },[token, details._id])
 
     async function sendToServer() {
         try {
             const imageUpload = await postContent(
-                `/cook/${details._id}/reactivate`, token
+                `${baseUrl}/cook/${details._id}/reactivate`, token
               );
         } catch ({message}) {
             alert(message)

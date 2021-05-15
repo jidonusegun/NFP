@@ -28,11 +28,12 @@ export default function NewlyRegisteredCooks({cookPaymentDetails}) {
   const classes = useStyles();
   // const [status, setStatus] = useState({})
   const token = localStorage.getItem("token")
+  const baseUrl = localStorage.getItem("baseUrl")
 
   async function sendToServer() {
     console.log(sendReport.values);
     // console.log(sendReport.formData());
-    const response = await postContent("https://nsfp.herokuapp.com/v1/",
+    const response = await postContent(`${baseUrl}/`,
       sendReport.values, token);
     // sendReport.reset();
 

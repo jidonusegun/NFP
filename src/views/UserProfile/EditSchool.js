@@ -84,6 +84,7 @@ export default function EditSchool({title, subTitle, sendButton, details, conten
   const [stateID, setStateID] = useState()
   const [imageUpload, setImageUpload] = useState({ image: "" });
   const [errorMessage, setErrorMessage] = useState("")
+  const baseUrl = localStorage.getItem("baseUrl")
   // let errorMessage = "";
 
   const { handleClose } = useContext(dataContext)
@@ -111,12 +112,12 @@ const handleImageUpload = (e) => {
       delete addCook.values.filePicker;
       delete addCook.values.files;
 
-      const {data} = await patchContent(`https://nsfp.herokuapp.com/v1/school/${details._id}`,
+      const {data} = await patchContent(`${baseUrl}/school/${details._id}`,
         addCook.values, token);
 
       if (imageUpload?.image) {
         const imageResult = await postImageContent(
-          `https://nsfp.herokuapp.com/v1/school/upload-image/${data?._id}`,
+          `${baseUrl}/school/upload-image/${data?._id}`,
           imageData,
           token
         );

@@ -17,13 +17,14 @@ export default function GeneralAdminPayments() {
     const [aggregators, setAggregators] = useState([])
     // const { token } = useContext(dataContext);
     const token = localStorage.getItem("token")
+    const baseUrl = localStorage.getItem("baseUrl")
 
     useEffect(() => { 
         setLoading(true);
-        getContent("https://nsfp.herokuapp.com/v1/", token)
+        getContent(`${baseUrl}/`, token)
         .then(data=>setCooks(data.data))
 
-      getContent("https://nsfp.herokuapp.com/v1/", token)
+      getContent(`${baseUrl}/`, token)
       .then(data=>setAggregators(data.data))
         setLoading(false);
     }, [token]);

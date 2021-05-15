@@ -64,8 +64,19 @@ export default function UpdateAdmin({details, content}) {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("id");
     const [errorMessage, setErrorMessage] = useState("")
+    const baseUrl = localStorage.getItem("baseUrl")
     // let errorMessage = "";
 
+    useEffect(() => {
+      getContent(`${baseUrl}/settings/states`, token)
+      .then(data=>setStatevalue(data.data))
+  
+  
+      getContent(`${baseUrl}/settings/state/${stateID}/lgas`, token)
+      .then(data=>setLgavalue(data.data))
+  
+    },[token, stateID])
+    
     const handleImageUpload = (e) => {
       setImageUpload({ image: e.target.files[0] });
     };
@@ -86,12 +97,12 @@ export default function UpdateAdmin({details, content}) {
       delete addCook.values.filePicker;
       delete addCook.values.files;
 
-        const {data} = await patchContent(`https://nsfp.herokuapp.com/v1/cook/${details._id}`,
+        const {data} = await patchContent(`${baseUrl}/cook/${details._id}`,
         addCook.values, token);
 
           if (imageUpload?.image) {
         const imageResult = await postImageContent(
-          `https://nsfp.herokuapp.com/v1/cook/upload-image/${data?._id}`,
+          `${baseUrl}/cook/upload-image/${data?._id}`,
           imageData,
           token
         );
@@ -146,17 +157,6 @@ export default function UpdateAdmin({details, content}) {
       } else {
         $imagePreview = (<div className="previewText"></div>);
       }   
-
-
-  useEffect(() => {
-    getContent("https://nsfp.herokuapp.com/v1/settings/states", token)
-    .then(data=>setStatevalue(data.data))
-
-
-    getContent(`https://nsfp.herokuapp.com/v1/settings/state/${stateID}/lgas`, token)
-    .then(data=>setLgavalue(data.data))
-
-  },[token, stateID])
 
 return (
 <div>

@@ -50,10 +50,11 @@ export default function TableList(props) {
   const userId = localStorage.getItem("id")
   const stateLogin = localStorage.getItem("state")
   const [imageUpload, setImageUpload] = useState({image: ''})
+  const baseUrl = localStorage.getItem("baseUrl")
 
   useEffect(() => {
     setIsLoading(true);
-      getContent(`https://nsfp.herokuapp.com/v1/cooks?state=${stateLogin}`, token)
+      getContent(`${baseUrl}/cooks?state=${stateLogin}`, token)
       .then(data=>setAccount(data.data))
     setIsLoading(false);
   }, [token, stateLogin]);
@@ -84,7 +85,7 @@ export default function TableList(props) {
       setLoading(true);
       const data = new FormData()
       data.append('files', imageUpload.image)
-    const result = await postImageContent(`https://nsfp.herokuapp.com/v1/aggregator/uploadcsv/${userId}`, data, token);
+    const result = await postImageContent(`${baseUrl}/aggregator/uploadcsv/${userId}`, data, token);
     alert("Cook list has been sent for approval")
     closeDialog();
     }

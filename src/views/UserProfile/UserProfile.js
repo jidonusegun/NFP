@@ -65,6 +65,7 @@ export default function UserProfile({title, subTitle, sendButton, details, conte
   const [stateID, setStateID] = useState()
   const [imageUpload, setImageUpload] = useState({ image: "" });
   const [errorMessage, setErrorMessage] = useState("")
+  const baseUrl = localStorage.getItem("baseUrl")
   // let errorMessage = "";
 
   const token = localStorage.getItem("token");
@@ -92,12 +93,12 @@ export default function UserProfile({title, subTitle, sendButton, details, conte
       delete addCook.values.filePicker;
       delete addCook.values.files;
 
-      const {data} = await patchContent(`https://nsfp.herokuapp.com/v1/admin/${details.id}`,
+      const {data} = await patchContent(`${baseUrl}/admin/${details.id}`,
       addCook.values, token);
 
     if (imageUpload?.image) {
         const imageResult = await postImageContent(
-          `https://nsfp.herokuapp.com/v1/cook/upload-image/${data?._id}`,
+          `${baseUrl}/cook/upload-image/${data?._id}`,
           imageData,
           token
         );

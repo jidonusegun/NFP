@@ -25,6 +25,8 @@ const useStyles = makeStyles((theme) => ({
 export default function PopSuspend({details}) {
   const addCook = userForm(sendToServer);
   const classes = useStyles();
+  const token = localStorage.getItem("token");
+  const baseUrl = localStorage.getItem("baseUrl")
   const { handleClickOpenSuspend, handleCloseSuspend } = useContext(dataContext);
   
   async function sendToServer() {
@@ -32,8 +34,8 @@ export default function PopSuspend({details}) {
       console.log(addCook.values);
     handleCloseSuspend();
   const response = await postContent({
-    url:`https://nsfp.herokuapp.com/v1/admin/${details._id}/suspend`,
-    data: addCook.values
+    url:`${baseUrl}/admin/${details._id}/suspend`,
+    data: addCook.values, token
   });
   console.log(response);
   //   const body = await result;

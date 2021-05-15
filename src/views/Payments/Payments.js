@@ -41,6 +41,7 @@ export default function Payments() {
     const token = localStorage.getItem("token")
     const [errorMessage, setErrorMessage] = useState([])
     const [paymentInput, setPaymentInput] = useState({pulpilFeed: "", Days: ""})
+    const baseUrl = localStorage.getItem("baseUrl")
 
     const handlePaymentChange = (e) => {
         setPaymentInput({[e.target.name]: e.target.value});
@@ -108,20 +109,20 @@ export default function Payments() {
 
       useEffect(() => {
         setLoading(true)
-        getContent('https://nsfp.herokuapp.com/v1/payment-report?state=lagos&lga=badagry&month=january', token)
+        getContent(`${baseUrl}/payment-report?state=lagos&lga=badagry&month=january`, token)
         .then(data=>setCookPayment(data.data))
 
-        getContent('https://nsfp.herokuapp.com/v1/payment-report?state=lagos&lga=badagry&month=january', token)
+        getContent(`${baseUrl}/payment-report?state=lagos&lga=badagry&month=january`, token)
         .then(data=>setAggregatorPayment(data.data))
 
-        getContent('https://nsfp.herokuapp.com/v1/', token)
+        getContent(`${baseUrl}/`, token)
         .then(data=>setSummary(data.data))
         setLoading(false)
 
-        getContent("https://nsfp.herokuapp.com/v1/settings/states", token)
+        getContent(`${baseUrl}/settings/states`, token)
         .then(data=>setStatevalue(data.data))
     
-        getContent(`https://nsfp.herokuapp.com/v1/settings/state/${stateID}/lgas`, token)
+        getContent(`${baseUrl}/settings/state/${stateID}/lgas`, token)
         .then(data=>setLgavalue(data.data))
 
       },[token, stateID])

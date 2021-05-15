@@ -83,6 +83,7 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
   const [lgaValue, setLgavalue] = useState([])
   const [stateID, setStateID] = useState()
   const [errorMessage, setErrorMessage] = useState("")
+  const baseUrl = localStorage.getItem("baseUrl")
   // let errorMessage = "";
 
   const { handleClose } = useContext(dataContext)
@@ -106,7 +107,7 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
 
       addCook.setData('registeredBy', userId)
 
-      const {data} = await patchContent(`https://nsfp.herokuapp.com/v1/aggregator/${details._id}`, addCook.values, token);
+      const {data} = await patchContent(`${baseUrl}/aggregator/${details._id}`, addCook.values, token);
       setMessage('Record sent for approval')
 content.unshift(data)
       setIsLoading(false);

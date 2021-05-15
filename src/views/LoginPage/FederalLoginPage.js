@@ -55,7 +55,7 @@ export default function LoginPage(props) {
     }
     handleCloseSuspend();
     const response = await postContent(
-      "/api/cooks/add_one/cook.php",
+      "http://164.160.129.145:3000",
       addCook.values,
       token
     );
@@ -68,7 +68,7 @@ export default function LoginPage(props) {
     try {
       setIsLoading(true);
       const response = await postContentLogin(
-        "https://nsfp.herokuapp.com/v1/admin/login",
+        "http://164.160.129.145:3000/admin/login",
         addLogin.values
       );
 
@@ -80,6 +80,7 @@ export default function LoginPage(props) {
       localStorage.setItem("state", body.data.state);
       localStorage.setItem("lga", body.data.lga);
       localStorage.setItem("id", body.data._id);
+      localStorage.setItem("baseUrl", 'http://164.160.129.145:3000')
 
       if (body.success === true && body.data.role === "SUPER_ADMIN") {
         setLoggedIn(true);
@@ -89,8 +90,9 @@ export default function LoginPage(props) {
 
       setIsLoading(false);
     } catch ({ message }) {
-      setMessage(message);
+      alert(message);
     }
+    setIsLoading(false);
   }
 
   setTimeout(function () {

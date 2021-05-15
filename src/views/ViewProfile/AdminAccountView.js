@@ -74,9 +74,10 @@ export default function AdminAccountView({details}) {
     const addCook = userForm(sendToServer);
     const newImage = details?.image?.split('/').pop()
     const [isLoading, setIsLoading] = useState(false)
+    const baseUrl = localStorage.getItem("baseUrl")
 
     useEffect(() => {
-        getContent(`https://nsfp.herokuapp.com/v1/admin/${details._id}`, token)
+        getContent(`${baseUrl}/admin/${details._id}`, token)
         .then(data => setResult(data.data))
     },[token])
     

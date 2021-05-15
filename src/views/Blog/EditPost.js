@@ -7,12 +7,12 @@ import {patchContent} from 'utils';
 
 export default function AddNewPost({details}) {
   const addPost = userForm(sendToServer);
-  // const { token } = useContext(dataContext);
+  const baseUrl = localStorage.getItem("baseUrl")
   const token = localStorage.getItem("token")
 
   async function sendToServer() {
     
-    const response = await patchContent(`https://nsfp.herokuapp.com/v1/${details.id}`, addPost.values, token);
+    const response = await patchContent(`${baseUrl}/${details.id}`, addPost.values, token);
     // addPost.reset();
     console.log(response);
   }

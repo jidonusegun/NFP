@@ -34,10 +34,11 @@ const { handleClickPop, handleClosePop, } = useContext(dataContext);
 const token = localStorage.getItem("token");
 const approveAggregator = userForm(sendToServer);
 const [savedId, setSavedId] = useState()
+const baseUrl = localStorage.getItem("baseUrl")
 
 async function sendToServer() {
   handleClosePop()
-  const response = await patchContent(`https://nsfp.herokuapp.com/v1/aggregator/${savedId}/approve`, token);
+  const response = await patchContent(`${baseUrl}/aggregator/${savedId}/approve`, token);
   // addCook.reset();
   console.log(response);
   //   const body = await result;

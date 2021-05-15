@@ -92,6 +92,7 @@ export default function SchoolProfile({
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
   const [errorMessage, setErrorMessage] = useState("");
+  const baseUrl = localStorage.getItem("baseUrl")
   // let errorMessage = "";
 
   const handleImageUpload = (e) => {
@@ -127,14 +128,14 @@ export default function SchoolProfile({
       delete addCook.values.files;
 
       const { data } = await postContent(
-        "https://nsfp.herokuapp.com/v1/school",
+        `${baseUrl}/school`,
         addCook.values,
         token
       );
 
       if (imageUpload?.image) {
         const imageResult = await postImageContent(
-          `https://nsfp.herokuapp.com/v1/school/upload-image/${data?._id}`,
+          `${baseUrl}/school/upload-image/${data?._id}`,
           imageData,
           token
         );

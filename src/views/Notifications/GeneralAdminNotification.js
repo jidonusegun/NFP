@@ -67,10 +67,11 @@ export default function GeneralAdminNotifications() {
   const { handleClickOpen, handleClickOpenNotification, handleCloseNotification } = useContext(dataContext);
   const userId = localStorage.getItem("id");
   const token = localStorage.getItem("token")
+  const baseUrl = localStorage.getItem("baseUrl")
 
 
   useEffect(() => {
-    getContent(`https://nsfp.herokuapp.com/v1/notification/${userId}/${50}`, token)
+    getContent(`${baseUrl}/notification/${userId}/${50}`, token)
     .then(data=>setNotification(data.data))
   }, [token]);
 
@@ -114,7 +115,7 @@ export default function GeneralAdminNotifications() {
         
       }
       alert(activeContent?.id)
-    // const response = await patchContent(`https://nsfp.herokuapp.com/v1/notification/${activeContent?.id}`, suspendNotification.values, token);
+    // const response = await patchContent(`${baseUrl}/notification/${activeContent?.id}`, suspendNotification.values, token);
     // addCook.reset();
     // alert("Approved Successfully")
     console.log(response);

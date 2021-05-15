@@ -89,17 +89,18 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
   const [stateID, setStateID] = useState();
   const [errorMessage, setErrorMessage] = useState("");
   const userId = localStorage.getItem("id");
+  const baseUrl = localStorage.getItem("baseUrl")
 
   // let errorMessage = "";
 
   useEffect(() => {
     getContent(
-      "https://nsfp.herokuapp.com/v1/settings/states",
+      `${baseUrl}/settings/states`,
       token
     ).then((data) => setStatevalue(data.data));
 
     getContent(
-      `https://nsfp.herokuapp.com/v1/settings/state/${stateID}/lgas`,
+      `${baseUrl}/settings/state/${stateID}/lgas`,
       token
     ).then((data) => setLgavalue(data.data));
   }, [token, stateID]);
@@ -122,7 +123,7 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
       addCook.setData('registeredBy', userId)
 
       const {data} = await postContent(
-        "https://nsfp.herokuapp.com/v1/aggregator",
+        `${baseUrl}/aggregator`,
         addCook.values,
         token
       );

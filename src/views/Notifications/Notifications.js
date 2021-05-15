@@ -58,12 +58,13 @@ export default function Notifications() {
   const userId = localStorage.getItem("id");
   const [state, setState] = useState({message: 'not at bottom'})
   const prevScrollY = useRef(0);
+  const baseUrl = localStorage.getItem("baseUrl")
 
   const [goingUp, setGoingUp] = useState(false);
 
   useEffect(() => {
     getContent(
-      `https://nsfp.herokuapp.com/v1/notification/${userId}/${50}`,
+      `${baseUrl}/notification/${userId}/${50}`,
       token
     ).then((data) => setNotification(data.data.notifications));
 

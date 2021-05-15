@@ -28,9 +28,10 @@ export default function CooksPaymentsList({ state, lga, userData, handlePaymentC
     // const [ids, setIds] = useState([])
     // const { token } = useContext(dataContext);
     const token = localStorage.getItem("token") 
+    const baseUrl = localStorage.getItem("baseUrl")
 
   useEffect(() => {
-      getContent(`https://nsfp.herokuapp.com/v1/cooks/${state}/${lga}/payment-list`, token)
+      getContent(`${baseUrl}/cooks/${state}/${lga}/payment-list`, token)
     .then(data=>{
         setAccount(data.data);
         

@@ -52,6 +52,7 @@ export default function UpdateAdmin({ details }) {
   const [errorMessage, setErrorMessage] = useState("");
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
+  const baseUrl = localStorage.getItem("baseUrl")
   // let errorMessage = "";
 
   const handleImageUpload = (e) => {
@@ -88,13 +89,13 @@ export default function UpdateAdmin({ details }) {
       delete addCook.values.files;
 
       const { data } = await patchContent(
-        `https://nsfp.herokuapp.com/v1/admin/${details._id}`,
+        `${baseUrl}/admin/${details._id}`,
         addCook.values,
         token
       );
       if (imageUpload?.image) {
         const imageResult = await postImageContent(
-          `https://nsfp.herokuapp.com/v1/cook/upload-image/${data?._id}`,
+          `${baseUrl}/cook/upload-image/${data?._id}`,
           imageData,
           token
         );

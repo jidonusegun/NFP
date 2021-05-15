@@ -97,17 +97,18 @@ export default function StateView(props) {
   // const [, setStatevalue] = useState([])
   // const [status, setStatus] = useState()
   var token = localStorage.getItem("token");
+  const baseUrl = localStorage.getItem("baseUrl")
 
   async function sendToServer() {
-  // const response = await postContent("https://nsfp.herokuapp.com/v1/cook", addLga.values, token);
+  // const response = await postContent("${baseUrl}/cook", addLga.values, token);
   }
 
   useEffect(() => {
     setLoading(true);
-      getContent(`https://nsfp.herokuapp.com/v1/admins?state=${stateName}`, token)
+      getContent(`${baseUrl}/admins?state=${stateName}`, token)
       .then(data=>setAccount(data.data))
 
-      // getContent("https://nsfp.herokuapp.com/v1/settings/states", token)
+      // getContent("${baseUrl}/settings/states", token)
       // .then(data=>setStatevalue(data.data))
     setLoading(false);
   }, [token, stateName]);

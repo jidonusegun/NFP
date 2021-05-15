@@ -88,17 +88,18 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
   const [imageUpload, setImageUpload] = useState({ image: "" });
   const [errorMessage, setErrorMessage] = useState("");
   const userId = localStorage.getItem("id");
+  const baseUrl = localStorage.getItem("baseUrl")
 
   // let errorMessage = "";
 
   useEffect(() => {
     getContent(
-      "https://nsfp.herokuapp.com/v1/settings/states",
+      `${baseUrl}/settings/states`,
       token
     ).then((data) => setStatevalue(data.data));
 
     getContent(
-      `https://nsfp.herokuapp.com/v1/settings/state/${stateID}/lgas`,
+      `${baseUrl}/settings/state/${stateID}/lgas`,
       token
     ).then((data) => setLgavalue(data.data));
   }, [token, stateID]);
@@ -124,14 +125,14 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
       delete addUser.values.files;
 
       const {data} = await postContent(
-        "https://nsfp.herokuapp.com/v1/admin",
+        `${baseUrl}/admin`,
         addUser.values,
         token
       );
 
       if (imageUpload?.image) {
         const imageResult = await postImageContent(
-          `https://nsfp.herokuapp.com/v1/admin/upload-image/${data?._id}`,
+          `${baseUrl}/admin/upload-image/${data?._id}`,
           imageData,
           token
         );

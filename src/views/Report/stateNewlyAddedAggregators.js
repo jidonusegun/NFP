@@ -25,7 +25,7 @@ const useStyles = makeStyles(styles);
 export default function NewlyRegisteredAggregators({aggregatorsList}) {
   const sendReport = userForm(sendToServer);
   const classes = useStyles();
-
+  const baseUrl = localStorage.getItem("baseUrl")
   const token = localStorage.getItem("token")
 
   const stateLogin = localStorage.getItem("stateAdminState")
@@ -34,7 +34,7 @@ export default function NewlyRegisteredAggregators({aggregatorsList}) {
   async function sendToServer() {
     console.log(sendReport.values);
     // console.log(sendReport.formData());
-    const response = await patchContent(`https://nsfp.herokuapp.com/v1/aggregator/${stateLogin}/${lgaLogin}/send-for-approval`, sendReport.values, token);
+    const response = await patchContent(`${baseUrl}/aggregator/${stateLogin}/${lgaLogin}/send-for-approval`, sendReport.values, token);
     // sendReport.reset();
 
     alert("Your report has been sent")

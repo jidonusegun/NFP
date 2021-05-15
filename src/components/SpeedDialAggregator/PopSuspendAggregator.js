@@ -25,6 +25,8 @@ const useStyles = makeStyles((theme) => ({
 export default function PopSuspend({ details }) {
   const addCook = userForm(sendToServer);
   const classes = useStyles();
+  const baseUrl = localStorage.getItem("baseUrl")
+  const token = localStorage.getItem("token")
   const { handleClickOpenSuspend, handleCloseSuspend } = useContext(
     dataContext
   );
@@ -34,8 +36,8 @@ export default function PopSuspend({ details }) {
       console.log(addCook.values);
       handleCloseSuspend();
       const response = await postContent({
-        url: `https://nsfp.herokuapp.com/v1/aggregator/${details._id}/suspend`,
-        data: addCook.values,
+        url: `${baseUrl}/aggregator/${details._id}/suspend`,
+        data: addCook.values, token
       });
     } catch ({message}) {
       alert(message)

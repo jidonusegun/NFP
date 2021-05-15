@@ -47,11 +47,12 @@ export default function TableAggregator(props) {
   const lgaLogin = localStorage.getItem("lga");
   const [imageUpload, setImageUpload] = useState({image: ''})
   const [account, setAccount] = useState([]);
+  const baseUrl = localStorage.getItem("baseUrl")
 
   useEffect(() => {
     setIsLoading(true);
     getContent(
-      `https://nsfp.herokuapp.com/v1/schools?state=${stateLogin}&lga=${lgaLogin}`,
+      `${baseUrl}/schools?state=${stateLogin}&lga=${lgaLogin}`,
       token
     ).then((data) => setAccount(data.data));
     setIsLoading(false);
@@ -85,7 +86,7 @@ export default function TableAggregator(props) {
       setLoading(true);
       const data = new FormData()
       data.append('files', imageUpload.image)
-    const result = await postImageContent(`https://nsfp.herokuapp.com/v1/aggregator/uploadcsv/${userId}`, data, token);
+    const result = await postImageContent(`${baseUrl}/aggregator/uploadcsv/${userId}`, data, token);
     alert("School list has been sent for approval")
     closeDialog();
     }

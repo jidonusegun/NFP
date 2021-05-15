@@ -40,15 +40,16 @@ export default function Dashboard() {
   const token = localStorage.getItem("token");
   const stateLogin = localStorage.getItem("state")
   const lgaLogin = localStorage.getItem("lga")
+  const baseUrl = localStorage.getItem("baseUrl")
 
   useEffect(() => {  
-      getContent(`https://nsfp.herokuapp.com/v1/schools?state=${stateLogin}&lga=${lgaLogin}`, token)
+      getContent(`${baseUrl}/schools?state=${stateLogin}&lga=${lgaLogin}`, token)
       .then(data=>setSchool(data.data))
 
-      getContent(`https://nsfp.herokuapp.com/v1/cooks?state=${stateLogin}&lga=${lgaLogin}`, token)
+      getContent(`${baseUrl}/cooks?state=${stateLogin}&lga=${lgaLogin}`, token)
       .then(data=>setCook(data.data))
 
-      getContent(`https://nsfp.herokuapp.com/v1/aggregators?state=${stateLogin}&lga=${lgaLogin}`, token)
+      getContent(`${baseUrl}/aggregators?state=${stateLogin}&lga=${lgaLogin}`, token)
       .then(data=>setAggregator(data.data))
   }, [token, stateLogin, lgaLogin]);
 

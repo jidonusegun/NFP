@@ -26,7 +26,7 @@ const useStyles = makeStyles(styles);
 export default function NewlyRegisteredCooks({schoolsList}) {
   const sendReport = userForm(sendToServer);
   const classes = useStyles();
-
+  const baseUrl = localStorage.getItem("baseUrl")
   const token = localStorage.getItem("token")
 
   const stateLogin = localStorage.getItem("stateAdminState")
@@ -35,7 +35,7 @@ export default function NewlyRegisteredCooks({schoolsList}) {
   async function sendToServer() {
     console.log(sendReport.values);
     // console.log(sendReport.formData());
-    const response = await patchContent(`https://nsfp.herokuapp.com/v1/school/${stateLogin}/${lgaLogin}/send-for-approval`, sendReport.value, token);
+    const response = await patchContent(`${baseUrl}/school/${stateLogin}/${lgaLogin}/send-for-approval`, sendReport.value, token);
     // sendReport.reset();
 
     alert("Your report has been sent")

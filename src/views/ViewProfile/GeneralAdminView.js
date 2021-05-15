@@ -68,11 +68,12 @@ export default function GenralAdminView() {
     // const { admins } = useContext(dataContext)
     const token = localStorage.getItem("token")
     const [account, setAccount] = useState([])
+    const baseUrl = localStorage.getItem("baseUrl")
 
     const newImage = details?.image?.split('/').pop()
 
     useEffect(() => {
-        	getContent(`https://nsfp.herokuapp.com/v1/`, token)
+        	getContent(`${baseUrl}/`, token)
     		.then(data=>setAccount(data.data))
     }, [token]);
     

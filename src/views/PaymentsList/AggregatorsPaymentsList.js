@@ -25,11 +25,12 @@ export default function AggregatorsPaymentsList({ state, lga, userData }) {
     const [account, setAccount] = useState([])
     // const [ids, setIds] = useState()
     const token = localStorage.getItem("token")
+    const baseUrl = localStorage.getItem("baseUrl")
 
     // localStorage.setItem("aggregatorPaymentId", ids)
 
     useEffect(() => {
-        getContent(`https://nsfp.herokuapp.com/v1/aggregators/${state}/${lga}/payment-list`, token)
+        getContent(`${baseUrl}/aggregators/${state}/${lga}/payment-list`, token)
       .then(data=>{
         setAccount(data.data);
         

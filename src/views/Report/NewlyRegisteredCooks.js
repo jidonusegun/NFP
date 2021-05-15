@@ -36,10 +36,11 @@ const { handleClickPop, handleClosePop } = useContext(dataContext);
 const token = localStorage.getItem("token");
 const [savedId, setSavedId] = useState()
 const approveCook = userForm(sendToServer);
+const baseUrl = localStorage.getItem("baseUrl")
 
 async function sendToServer() {
   handleClosePop()
-  const response = await patchContent(`https://nsfp.herokuapp.com/v1/cook/${savedId}/approve`, token);
+  const response = await patchContent(`${baseUrl}/cook/${savedId}/approve`, token);
   // addCook.reset();
   console.log(response);
   //   const body = await result;

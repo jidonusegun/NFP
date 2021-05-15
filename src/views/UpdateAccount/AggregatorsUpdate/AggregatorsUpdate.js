@@ -65,8 +65,19 @@ export default function UpdateAdmin({details, content}) {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("id");
     const [errorMessage, setErrorMessage] = useState("")
+    const baseUrl = localStorage.getItem("baseUrl")
     // let errorMessage = "";
 
+    useEffect(() => {
+      getContent(`${baseUrl}/settings/states`, token)
+      .then(data=>setStatevalue(data.data))
+  
+  
+      getContent(`${baseUrl}/settings/state/${stateID}/lgas`, token)
+      .then(data=>setLgavalue(data.data))
+  
+    },[token, stateID])
+    
     async function sendToServer() {
 
       try {
@@ -83,7 +94,7 @@ export default function UpdateAdmin({details, content}) {
       addCook.values.items = value;
       addCook.setData('registeredBy', userId)
 
-      const {data} = await patchContent(`https://nsfp.herokuapp.com/v1/aggregator/${details._id}`, addCook.values, token);
+      const {data} = await patchContent(`${baseUrl}/aggregator/${details._id}`, addCook.values, token);
       setMessage('Record edited successfully')
       content.unshift(data)
       setIsLoading(false)
@@ -132,17 +143,6 @@ export default function UpdateAdmin({details, content}) {
       // } else {
       //   $imagePreview = (<div className="previewText"></div>);
       // }
-
-
-  useEffect(() => {
-    getContent("https://nsfp.herokuapp.com/v1/settings/states", token)
-    .then(data=>setStatevalue(data.data))
-
-
-    getContent(`https://nsfp.herokuapp.com/v1/settings/state/${stateID}/lgas`, token)
-    .then(data=>setLgavalue(data.data))
-
-  },[token, stateID])
 
   // Aggregator's Company Name,
   // Items to Supply,

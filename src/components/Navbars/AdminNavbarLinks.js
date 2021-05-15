@@ -32,10 +32,11 @@ export default function AdminNavbarLinks() {
   const [openProfile, setOpenProfile] = React.useState(null);
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
+  const baseUrl = localStorage.getItem("baseUrl")
 
   useEffect(() => {
     getContent(
-      `https://nsfp.herokuapp.com/v1/notification/${userId}/${50}`,
+      `${baseUrl}/notification/${userId}/${50}`,
       token
     ).then((data) => setNotificationCount(data.data));
     // setNotificationCount(data.data.notificationCounts)

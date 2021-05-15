@@ -25,13 +25,14 @@ export default function PopDelete({details}) {
   const classes = useStyles();
   const { handleClickOpenDelete, handleCloseDelete  } = useContext(dataContext);
   const token = localStorage.getItem("token")
+  const baseUrl = localStorage.getItem("baseUrl")
 
 async function sendToServer() {
   // console.log(addCook.values);
   // console.log(addCook.formData());
   handleCloseDelete();
  
-const response = await deleteContent(`https://nsfp.herokuapp.com/v1/admin/${details.id}`, token);
+const response = await deleteContent(`${baseUrl}/admin/${details.id}`, token);
 // addCook.reset();
 console.log(response);
 //   const body = await result;

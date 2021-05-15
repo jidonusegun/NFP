@@ -107,6 +107,8 @@ export default function BlogPosts() {
   // const contentholder = readCheck.content
   const [cssActive, setCssActive] = useState({active: false})
   const token = localStorage.getItem("token")
+  const baseUrl = localStorage.getItem("baseUrl")
+
   const toggleClass = () => {
     const currentState = cssActive.active;
     setCssActive({ active: !currentState });
@@ -119,19 +121,19 @@ export default function BlogPosts() {
   const [limit, setLimit] = useState(3)
 
   useEffect(() => {
-    getContent(`https://nsfp.herokuapp.com/v1/blogs?limit=${limit}&pageId=${pageId.value}`, token)
+    getContent(`${baseUrl}/blogs?limit=${limit}&pageId=${pageId.value}`, token)
     .then(data=>setPosts(data.data.blogs))
 
-    getContent(`https://nsfp.herokuapp.com/v1/blogs?limit=${limit}&pageId=${pageId.value}`, token)
+    getContent(`${baseUrl}/blogs?limit=${limit}&pageId=${pageId.value}`, token)
     .then(data=>setTotalCount(data.data.totalCount))
 
-    getContent(`https://nsfp.herokuapp.com/v1/blogs?limit=${limit}&pageId=${pageId.value}`, token)
+    getContent(`${baseUrl}/blogs?limit=${limit}&pageId=${pageId.value}`, token)
     .then(data=>setPageId({value: data.data.pageId}))
 
-    getContent(`https://nsfp.herokuapp.com/v1/blogs?limit=${limit}&pageId=${pageId.value}`, token)
+    getContent(`${baseUrl}/blogs?limit=${limit}&pageId=${pageId.value}`, token)
     .then(data=>setPageCount(data.data.pageCount))
 
-    getContent(`https://nsfp.herokuapp.com/v1/blogs?limit=${limit}&pageId=${pageId.value}`, token)
+    getContent(`${baseUrl}/blogs?limit=${limit}&pageId=${pageId.value}`, token)
     .then(data=>setLimit(data.data.limit))
 }, [token, limit, pageId.value]);
 

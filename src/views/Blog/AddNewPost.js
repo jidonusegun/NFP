@@ -12,6 +12,7 @@ export default function AddNewPost() {
   const { handleClose } = useContext(dataContext);
   const token = localStorage.getItem("token")
   const stateId = localStorage.getItem("id")
+  const baseUrl = localStorage.getItem("baseUrl")
   
   async function sendToServer() {
     addPost.setData("content", value)
@@ -23,7 +24,7 @@ export default function AddNewPost() {
       setErrorMessage("Content is required")
     }
     else {
-      postContent("https://nsfp.herokuapp.com/v1/blog", addPost.values, token);
+      postContent(`${baseUrl}/blog`, addPost.values, token);
       handleClose()
     }
   }

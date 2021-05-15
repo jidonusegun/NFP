@@ -12,13 +12,14 @@ export default function TableList() {
   const [aggregator, setAggregator] = useState([]) 
   const [loading, setLoading] = useState(false)
   const token = localStorage.getItem("token")
+  const baseUrl = localStorage.getItem("baseUrl")
 
   useEffect(() => {
     setLoading(true);
-      getContent("https://nsfp.herokuapp.com/v1/", token)
+      getContent(`${baseUrl}/`, token)
       .then(data=>setCook(data.data))
 
-    getContent("https://nsfp.herokuapp.com/v1/", token)
+    getContent(`${baseUrl}/`, token)
     .then(data=>setAggregator(data.data))
     setLoading(false);
   }, []);

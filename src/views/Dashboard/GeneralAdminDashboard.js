@@ -35,12 +35,12 @@ const useStyles = makeStyles(styles);
 export default function GeneralAdminDashboard() {
   const classes = useStyles();
   const [user, setUser] = useState([])
-
+  const baseUrl = localStorage.getItem("baseUrl")
   const token = localStorage.getItem("token")
   const stateLogin = localStorage.getItem("state")
 
   useEffect(() => {
-      getContent(`https://nsfp.herokuapp.com/v1/admins?state=${stateLogin}`, token)
+      getContent(`${baseUrl}/admins?state=${stateLogin}`, token)
       .then(data=>setUser(data.data))
   }, [token, stateLogin]);
   return (
