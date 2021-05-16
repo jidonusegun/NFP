@@ -4,6 +4,7 @@ import {getContent} from 'utils';
 import { dataContext } from 'components/context/DataContext';
 import NewAggregator from 'views/Report/NewlyRegisteredAggregators';
 import NewCook from 'views/Report/NewlyRegisteredCooks';
+import config from 'utils/config';
 // core components
 
 export default function TableList() {
@@ -12,7 +13,7 @@ export default function TableList() {
   const [aggregator, setAggregator] = useState([]) 
   const [loading, setLoading] = useState(false)
   const token = localStorage.getItem("token")
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
 
   useEffect(() => {
     setLoading(true);

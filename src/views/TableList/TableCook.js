@@ -24,6 +24,7 @@ import SpeedDialCook from 'components/SpeedDialCooks/SpeedDialCook.js';
 // icon components
 import ViewListIcon from '@material-ui/icons/ViewList';
 import userForm from "../../hooks/useForm"; 
+import config from 'utils/config';
 import {postContent, getContent, postImageContent} from 'utils';
 import SaveAltIcon from "@material-ui/icons/SaveAlt";
 import Dialog from 'components/useDialog';
@@ -50,7 +51,7 @@ export default function TableList(props) {
   const stateLogin = localStorage.getItem("state")
   const lgaLogin = localStorage.getItem("lga")
   const [imageUpload, setImageUpload] = useState({image: ''})
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
 
   useEffect(() => {
     setIsLoading(true);

@@ -11,6 +11,7 @@ import CustomTabs from "components/CustomTabs/CustomTabs.js";
 import { makeStyles } from '@material-ui/core/styles';
 import {postContent, getContent} from 'utils';
 import userForm from "../../hooks/useForm"; 
+import config from 'utils/config';
 
 const useStyles = makeStyles((theme) => ({
     dNone: { 
@@ -41,7 +42,7 @@ export default function Payments() {
     const token = localStorage.getItem("token")
     const [errorMessage, setErrorMessage] = useState([])
     const [paymentInput, setPaymentInput] = useState({pulpilFeed: "", Days: ""})
-    const baseUrl = localStorage.getItem("baseUrl")
+    const baseUrl = config.API_URL
 
     const handlePaymentChange = (e) => {
         setPaymentInput({[e.target.name]: e.target.value});

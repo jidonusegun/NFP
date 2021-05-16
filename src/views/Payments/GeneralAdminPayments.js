@@ -10,6 +10,7 @@ import AggregatorsPaymentsReport from "views/Report/AggregatorsPaymentsReport.js
 import SummaryReport from "views/Report/SummaryReport.js";
 // import { dataContext } from 'components/context/DataContext';
 import {getContent} from 'utils';
+import config from 'utils/config';
  
 export default function GeneralAdminPayments() {
     const [loading, setLoading] = useState(false)
@@ -17,7 +18,7 @@ export default function GeneralAdminPayments() {
     const [aggregators, setAggregators] = useState([])
     // const { token } = useContext(dataContext);
     const token = localStorage.getItem("token")
-    const baseUrl = localStorage.getItem("baseUrl")
+    const baseUrl = config.API_URL
 
     useEffect(() => { 
         setLoading(true);

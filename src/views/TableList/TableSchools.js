@@ -22,6 +22,7 @@ import { dataContext } from "components/context/DataContext";
 import SpeedDialSchools from "components/SpeedDialSchools/SpeedDialSchools.js";
 // icon components
 import ViewListIcon from "@material-ui/icons/ViewList";
+import config from 'utils/config';
 import userForm from "../../hooks/useForm";
 import { postContent, getContent, postImageContent } from "utils";
 import SaveAltIcon from "@material-ui/icons/SaveAlt";
@@ -47,7 +48,7 @@ export default function TableAggregator(props) {
   const lgaLogin = localStorage.getItem("lga");
   const [imageUpload, setImageUpload] = useState({image: ''})
   const [account, setAccount] = useState([]);
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
 
   useEffect(() => {
     setIsLoading(true);

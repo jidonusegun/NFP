@@ -8,6 +8,7 @@ import CustomTabs from "components/CustomTabs/CustomTabs.js";
 import NewlyRegisteredCooks from "views/Report/NewlyRegisteredCooks.js";
 import NewlyRegisteredSchools from "views/Report/NewlyRegisteredSchools.js";
 import NewlyRegisteredAggregators from "views/Report/NewlyRegisteredAggregators.js";
+import config from 'utils/config';
 // import { dataContext } from "components/context/DataContext";
 import {getContent} from 'utils';
 
@@ -19,7 +20,7 @@ export default function ReportTables() {
   const [loading, setLoading] = useState(false) 
   const [aggregator, setAggregator] = useState([]) 
   const token = localStorage.getItem("token")
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
 
   useEffect(() => {
     setLoading(true);

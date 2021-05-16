@@ -22,7 +22,7 @@ import {patchContent, getContent, postImageContent} from 'utils';
 import userForm from "../../hooks/useForm";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
-
+import config from 'utils/config';
 import loogos from "assets/img/loogos.png";
 
 const styles = {
@@ -65,7 +65,7 @@ export default function UserProfile({title, subTitle, sendButton, details, conte
   const [stateID, setStateID] = useState()
   const [imageUpload, setImageUpload] = useState({ image: "" });
   const [errorMessage, setErrorMessage] = useState("")
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
   // let errorMessage = "";
 
   const token = localStorage.getItem("token");

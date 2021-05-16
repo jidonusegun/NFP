@@ -23,6 +23,7 @@ import { dataContext } from 'components/context/DataContext';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import userForm from "../../hooks/useForm";
 import {patchContent} from 'utils';
+import config from 'utils/config';
 // icon components
 
 const useStyles = makeStyles(styles);
@@ -34,7 +35,7 @@ const { handleClickPop, handleClosePop, } = useContext(dataContext);
 const token = localStorage.getItem("token");
 const approveAggregator = userForm(sendToServer);
 const [savedId, setSavedId] = useState()
-const baseUrl = localStorage.getItem("baseUrl")
+const baseUrl = config.API_URL
 
 async function sendToServer() {
   handleClosePop()

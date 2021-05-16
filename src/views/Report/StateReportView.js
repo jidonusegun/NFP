@@ -22,6 +22,7 @@ import { dataContext } from 'components/context/DataContext';
 import SpeedDial from 'components/SpeedDial/SpeedDial.js';
 import ImageCard from 'components/ImageCard/ImageCard';
 import {Link} from 'react-router-dom';
+import config from 'utils/config';
 // icon components
 
 const useStyles = makeStyles((theme) => ({
@@ -85,7 +86,7 @@ export default function StateReportView(props) {
   const [loading, setLoading] = useState(false) 
   const [aggregator, setAggregator] = useState([]) 
   const token = localStorage.getItem("token")
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
 
   useEffect(() => {
     setLoading(true);

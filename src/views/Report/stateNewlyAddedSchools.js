@@ -17,6 +17,7 @@ import CardBody from "components/Card/CardBody.js";
 import PublishIcon from '@material-ui/icons/Publish';
 import { patchContent } from "utils"; 
 import userForm from "../../hooks/useForm";
+import config from 'utils/config';
 // import { dataContext } from "components/context/DataContext";
 
 
@@ -26,7 +27,7 @@ const useStyles = makeStyles(styles);
 export default function NewlyRegisteredCooks({schoolsList}) {
   const sendReport = userForm(sendToServer);
   const classes = useStyles();
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
   const token = localStorage.getItem("token")
 
   const stateLogin = localStorage.getItem("stateAdminState")

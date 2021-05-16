@@ -4,6 +4,7 @@ import ImageCard from 'components/ImageCard/ImageCard';
 import {Link} from 'react-router-dom';
 import {dataContext} from 'components/context/DataContext';
 
+
 const useStyles = makeStyles((theme) => ({
     cardContainer: {
         display: "flex",

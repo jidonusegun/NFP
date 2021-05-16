@@ -8,6 +8,7 @@ import Dialog from 'components/useDialog';
 import useDialog from 'components/useDialog/useHook';
 import Loading from "components/isLoading";
 import userForm from "../../../hooks/useForm";
+import config from 'utils/config';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -74,7 +75,7 @@ export default function AdminAccountView({details}) {
     const addCook = userForm(sendToServer);
     const [result, setResult] = useState([]);
     const [isLoading, setIsLoading] = useState(false)
-    const baseUrl = localStorage.getItem("baseUrl")
+    const baseUrl = config.API_URL
     const newImage = details?.image?.split('/').pop()
 
     useEffect(() => {

@@ -23,6 +23,7 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 // import { dataContext } from 'components/context/DataContext';
 import {getContent, kCount} from 'utils';
+import config from 'utils/config';
 
 // import { bugs, website, server } from "variables/general.js";
 
@@ -35,7 +36,7 @@ const useStyles = makeStyles(styles);
 export default function GeneralAdminDashboard() {
   const classes = useStyles();
   const [user, setUser] = useState([])
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
   const token = localStorage.getItem("token")
   const stateLogin = localStorage.getItem("state")
 

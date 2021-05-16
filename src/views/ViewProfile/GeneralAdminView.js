@@ -5,6 +5,7 @@ import image from 'assets/img/faces/marc.jpg';
 // import { dataContext } from 'components/context/DataContext';
 import Logo from 'assets/img/loogos.png';
 import {getContent} from 'utils';
+import config from 'utils/config';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -68,7 +69,7 @@ export default function GenralAdminView() {
     // const { admins } = useContext(dataContext)
     const token = localStorage.getItem("token")
     const [account, setAccount] = useState([])
-    const baseUrl = localStorage.getItem("baseUrl")
+    const baseUrl = config.API_URL
 
     const newImage = details?.image?.split('/').pop()
 

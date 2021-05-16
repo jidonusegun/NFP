@@ -3,6 +3,7 @@ import {Switch, Route} from 'react-router-dom';
 import StateReportView from "views/Report/StateReportView.js";
 import StateReport from "views/Report/StateReport.js";
 import ReportTables from "views/Report/ReportTables.js";
+import config from 'utils/config';
 
 export default function ReportContainer() {
     return (

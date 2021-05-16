@@ -29,6 +29,7 @@ import image from "assets/img/bg7.jpg";
 import userForm from "../../hooks/useForm";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
+import config from 'utils/config';
 
 const useStyles = makeStyles(styles);
 
@@ -45,7 +46,7 @@ export default function LoginPage(props) {
   const { handleClickOpenSuspend, handleCloseSuspend, setToken } = useContext(
     dataContext
   );
-
+  const baseUrl = config.API_URL
   var token = localStorage.getItem("token");
 
   async function sendToServer() {
@@ -55,7 +56,7 @@ export default function LoginPage(props) {
     }
     handleCloseSuspend();
     const response = await postContent(
-      "http://164.160.129.145:3000",
+      `${baseUrl}`,
       addCook.values,
       token
     );
@@ -68,7 +69,7 @@ export default function LoginPage(props) {
     try {
       setIsLoading(true);
       const response = await postContentLogin(
-        "http://164.160.129.145:3000/admin/login",
+        `${baseUrl}/admin/login`,
         addLogin.values
       );
 
@@ -80,7 +81,6 @@ export default function LoginPage(props) {
       localStorage.setItem("state", body.data.state);
       localStorage.setItem("lga", body.data.lga);
       localStorage.setItem("id", body.data._id);
-      localStorage.setItem("baseUrl", 'http://164.160.129.145:3000')
 
       if (body.success === true && body.data.role === "SUPER_ADMIN") {
         setLoggedIn(true);

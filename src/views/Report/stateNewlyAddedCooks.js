@@ -23,6 +23,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { dataContext } from "components/context/DataContext";
+import config from 'utils/config';
 
 
 
@@ -37,7 +38,7 @@ export default function NewlyRegisteredCooks({cooksList}) {
     const lgaLogin = localStorage.getItem("stateAdminLga")
     const [savedId, setSavedId] = useState()
 const approveCook = userForm(sendToServer);
-const baseUrl = localStorage.getItem("baseUrl")
+const baseUrl = config.API_URL
 
     async function sendToServer() {
       handleClosePop()

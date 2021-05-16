@@ -5,6 +5,7 @@ import DialogSuspend from 'components/Dialog/DialogSuspend.js';
 import CustomInput from "components/CustomInput/CustomInput.js";
 import { dataContext } from 'components/context/DataContext';
 import { postContent } from "utils";
+import config from 'utils/config';
 import userForm from "../../hooks/useForm"; 
 // import AddNewPost from 'views/Blog/AddNewPost';
 
@@ -27,7 +28,7 @@ export default function PopSuspend({details}) {
   const classes = useStyles();
   const { handleClickOpenSuspend, handleCloseSuspend } = useContext(dataContext);
   const token = localStorage.getItem("token");
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
   
   async function sendToServer() { 
     try {

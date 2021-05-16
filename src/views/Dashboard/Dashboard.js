@@ -22,6 +22,7 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 // import { dataContext } from 'components/context/DataContext';
 import {getContent, kCount} from 'utils';
+import config from 'utils/config';
 
 // import { bugs, website, server } from "variables/general.js";
 
@@ -40,7 +41,7 @@ export default function Dashboard() {
   const token = localStorage.getItem("token");
   const stateLogin = localStorage.getItem("state")
   const lgaLogin = localStorage.getItem("lga")
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
 
   useEffect(() => {  
       getContent(`${baseUrl}/schools?state=${stateLogin}&lga=${lgaLogin}`, token)

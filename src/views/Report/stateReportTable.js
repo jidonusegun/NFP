@@ -10,6 +10,7 @@ import GridItem from "components/Grid/GridItem.js";
 import CustomTabs from "components/CustomTabs/CustomTabs.js";
 import NewSchool from 'views/Report/stateNewlyAddedSchools';
 import NewCook from 'views/Report/stateNewlyAddedCooks'; 
+import config from 'utils/config';
 // import { dataContext } from "components/context/DataContext";
 // core components
 
@@ -20,7 +21,7 @@ export default function TableList() {
   const [loading, setLoading] = useState(false) 
   const [aggregator, setAggregator] = useState([]) 
   const token = localStorage.getItem("token")
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
 
   useEffect(() => {
     setLoading(true);

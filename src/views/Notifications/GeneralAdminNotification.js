@@ -21,6 +21,7 @@ import DialogContainer from 'components/Dialog/DialogContainer.js';
 import DialogNotification from 'components/Dialog/DialogNotification.js';
 import { dataContext } from 'components/context/DataContext';
 import userForm from "../../hooks/useForm";
+import config from 'utils/config';
 import {getContent, postContent, patchContent} from 'utils';
 
 const styles = {
@@ -67,7 +68,7 @@ export default function GeneralAdminNotifications() {
   const { handleClickOpen, handleClickOpenNotification, handleCloseNotification } = useContext(dataContext);
   const userId = localStorage.getItem("id");
   const token = localStorage.getItem("token")
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
 
 
   useEffect(() => {

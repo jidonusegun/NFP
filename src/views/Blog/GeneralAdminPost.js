@@ -12,6 +12,7 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import {getContent, deleteContent} from 'utils';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import config from 'utils/config';
 
 const useStyles = makeStyles((theme) => ({
   cardContainer: {
@@ -118,7 +119,7 @@ export default function BlogPosts() {
   const { handleClickOpen, handleClickOpenDelete, handleCloseDelete } = useContext(dataContext);
   const token = localStorage.getItem("token")
   const [cssActive, setCssActive] = useState({active: false})
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
 
   const toggleClass = () => {
     const currentState = cssActive.active;

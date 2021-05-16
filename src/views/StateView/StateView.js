@@ -26,6 +26,7 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import userForm from "../../hooks/useForm";
 import {getContent} from 'utils';
+import config from 'utils/config';
 // icon components
 
 const useStyles = makeStyles((theme) => ({
@@ -97,7 +98,7 @@ export default function StateView(props) {
   // const [, setStatevalue] = useState([])
   // const [status, setStatus] = useState()
   var token = localStorage.getItem("token");
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
 
   async function sendToServer() {
   // const response = await postContent("${baseUrl}/cook", addLga.values, token);

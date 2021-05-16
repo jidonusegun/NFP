@@ -18,6 +18,7 @@ import CardBody from "components/Card/CardBody.js";
 import DialogNotification from "components/Dialog/DialogNotification.js";
 import { dataContext } from "components/context/DataContext";
 import { getContent } from "utils";
+import config from 'utils/config';
 
 const styles = {
   cardCategoryWhite: {
@@ -58,7 +59,7 @@ export default function Notifications() {
   const userId = localStorage.getItem("id");
   const [state, setState] = useState({message: 'not at bottom'})
   const prevScrollY = useRef(0);
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
 
   const [goingUp, setGoingUp] = useState(false);
 

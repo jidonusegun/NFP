@@ -22,7 +22,7 @@ import userForm from "../../hooks/useForm";
 import { postContent, getContent } from "utils";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
-
+import config from 'utils/config';
 // import loogos from "assets/img/loogos.png";
 
 const styles = {
@@ -89,7 +89,7 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
   const [stateID, setStateID] = useState();
   const [errorMessage, setErrorMessage] = useState("");
   const userId = localStorage.getItem("id");
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
 
   // let errorMessage = "";
 

@@ -23,6 +23,7 @@ import {patchContent, getContent, postContent, postImageContent} from 'utils';
 import userForm from "../../hooks/useForm";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
+import config from 'utils/config';
 
 const styles = {
   cardCategoryWhite: {
@@ -83,7 +84,7 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
   const [lgaValue, setLgavalue] = useState([])
   const [stateID, setStateID] = useState()
   const [errorMessage, setErrorMessage] = useState("")
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
   // let errorMessage = "";
 
   const { handleClose } = useContext(dataContext)

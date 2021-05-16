@@ -17,6 +17,7 @@ import CardBody from "components/Card/CardBody.js";
 import PublishIcon from '@material-ui/icons/Publish';
 import { postContent } from "utils"; 
 import userForm from "../../hooks/useForm";
+import config from 'utils/config';
 // import { dataContext } from "components/context/DataContext";
 // import SpeedDial from 'components/SpeedDial/SpeedDial.js';
 // icon components
@@ -28,7 +29,7 @@ export default function NewlyRegisteredCooks({cookPaymentDetails}) {
   const classes = useStyles();
   // const [status, setStatus] = useState({})
   const token = localStorage.getItem("token")
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
 
   async function sendToServer() {
     console.log(sendReport.values);

@@ -17,6 +17,7 @@ import CardBody from "components/Card/CardBody.js";
 import { makeStyles } from '@material-ui/core/styles';
 // import { dataContext } from "components/context/DataContext";
 import {getContent} from 'utils';
+import config from 'utils/config';
 
 const useStyles = makeStyles(styles); 
 // const userData = [];
@@ -28,7 +29,7 @@ export default function CooksPaymentsList({ state, lga, userData, handlePaymentC
     // const [ids, setIds] = useState([])
     // const { token } = useContext(dataContext);
     const token = localStorage.getItem("token") 
-    const baseUrl = localStorage.getItem("baseUrl")
+    const baseUrl = config.API_URL
 
   useEffect(() => {
       getContent(`${baseUrl}/cooks/${state}/${lga}/payment-list`, token)

@@ -14,6 +14,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import userForm from "../../hooks/useForm";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
+import config from 'utils/config';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -63,7 +64,7 @@ export default function UpdateAdmin({details, content}) {
   const [errorMessage, setErrorMessage] = useState("")
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("id");
-    const baseUrl = localStorage.getItem("baseUrl")
+    const baseUrl = config.API_URL
 
     useEffect(() => {
       getContent(`${baseUrl}/settings/states`, token)

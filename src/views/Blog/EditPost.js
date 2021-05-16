@@ -4,10 +4,11 @@ import 'react-quill/dist/quill.snow.css'; // ES6
 // import { dataContext } from 'components/context/DataContext';
 import userForm from "../../hooks/useForm";
 import {patchContent} from 'utils';
+import config from 'utils/config';
 
 export default function AddNewPost({details}) {
   const addPost = userForm(sendToServer);
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
   const token = localStorage.getItem("token")
 
   async function sendToServer() {

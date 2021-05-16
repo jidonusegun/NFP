@@ -8,6 +8,7 @@ import userForm from "../../../hooks/useForm";
 import Dialog from 'components/useDialog';
 import useDialog from 'components/useDialog/useHook';
 import Loading from "components/isLoading";
+import config from 'utils/config';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -72,7 +73,7 @@ export default function AdminAccountView({details}) {
     const token = localStorage.getItem("token");
     const { openDialog, closeDialog, isOpen } = useDialog();
     const [result, setResult] = useState([]);
-    const baseUrl = localStorage.getItem("baseUrl")
+    const baseUrl = config.API_URL
     const [isLoading, setIsLoading] = useState(false)
     const newImage = details?.image?.split('/').pop()
 

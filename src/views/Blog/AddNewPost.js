@@ -4,6 +4,7 @@ import 'react-quill/dist/quill.snow.css'; // ES6
 import {postContent} from 'utils';
 import { dataContext } from 'components/context/DataContext';
 import userForm from "../../hooks/useForm";
+import config from 'utils/config';
 
 export default function AddNewPost() {
   const [value, setValue] = useState("");
@@ -12,7 +13,7 @@ export default function AddNewPost() {
   const { handleClose } = useContext(dataContext);
   const token = localStorage.getItem("token")
   const stateId = localStorage.getItem("id")
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
   
   async function sendToServer() {
     addPost.setData("content", value)

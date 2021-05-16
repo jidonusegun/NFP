@@ -17,6 +17,7 @@ import { dataContext } from 'components/context/DataContext';
 import SpeedDialStateAdmin from 'components/SpeedDialStateAdmin/SpeedDialStateAdmin.js';
 // icon components
 import ViewListIcon from '@material-ui/icons/ViewList';
+import config from 'utils/config';
 
 const styles = {
   cardCategoryWhite: {

@@ -17,6 +17,7 @@ import CardBody from "components/Card/CardBody.js";
 import { makeStyles } from '@material-ui/core/styles';
 // import { dataContext } from "components/context/DataContext";
 import {getContent} from 'utils';
+import config from 'utils/config';
 
 const useStyles = makeStyles(styles);
 
@@ -25,7 +26,7 @@ export default function AggregatorsPaymentsList({ state, lga, userData }) {
     const [account, setAccount] = useState([])
     // const [ids, setIds] = useState()
     const token = localStorage.getItem("token")
-    const baseUrl = localStorage.getItem("baseUrl")
+    const baseUrl = config.API_URL
 
     // localStorage.setItem("aggregatorPaymentId", ids)
 

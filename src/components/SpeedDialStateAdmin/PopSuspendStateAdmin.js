@@ -6,6 +6,7 @@ import CustomInput from "components/CustomInput/CustomInput.js";
 import { dataContext } from 'components/context/DataContext';
 import { postContent } from "utils";
 import userForm from "../../hooks/useForm"; 
+import config from 'utils/config';
 // import AddNewPost from 'views/Blog/AddNewPost';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,7 +27,7 @@ export default function PopSuspend({details}) {
   const addCook = userForm(sendToServer);
   const classes = useStyles();
   const token = localStorage.getItem("token");
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
   const { handleClickOpenSuspend, handleCloseSuspend } = useContext(dataContext);
   
   async function sendToServer() {

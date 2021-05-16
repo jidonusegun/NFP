@@ -5,6 +5,7 @@ import DialogDelete from 'components/Dialog/DialogDelete.js';
 import { dataContext } from 'components/context/DataContext';
 import { deleteContent } from 'utils';
 import userForm from "hooks/useForm";
+import config from 'utils/config';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -25,7 +26,7 @@ export default function PopDelete({details}) {
   const classes = useStyles();
   const { handleClickOpenDelete, handleCloseDelete  } = useContext(dataContext);
   const token = localStorage.getItem("token")
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
 
 async function sendToServer() {
   // console.log(addCook.values);

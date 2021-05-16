@@ -23,6 +23,7 @@ import loogos from "assets/img/loogos.png";
 import userForm from "../../hooks/useForm";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
+import config from 'utils/config';
 
 const styles = {
   cardCategoryWhite: {
@@ -84,7 +85,7 @@ export default function EditSchool({title, subTitle, sendButton, details, conten
   const [stateID, setStateID] = useState()
   const [imageUpload, setImageUpload] = useState({ image: "" });
   const [errorMessage, setErrorMessage] = useState("")
-  const baseUrl = localStorage.getItem("baseUrl")
+  const baseUrl = config.API_URL
   // let errorMessage = "";
 
   const { handleClose } = useContext(dataContext)
