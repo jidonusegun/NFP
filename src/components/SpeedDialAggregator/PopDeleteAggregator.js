@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DialogDelete from 'components/Dialog/DialogDelete'; 
 import { dataContext } from 'components/context/DataContext';
-import { deleteContent } from 'utils'; 
+import { deleteContent, postContent } from 'utils'; 
 import userForm from "hooks/useForm";
 import config from 'utils/config';
 
@@ -33,7 +33,7 @@ async function sendToServer() {
   // console.log(addCook.formData());
   handleCloseDelete();
  
-const response = await deleteContent(`${baseUrl}/aggregator/${details._id}`, token);
+const response = await postContent(`${baseUrl}/aggregator/tempdelete/${details._id}`, token);
 // addCook.reset();
 console.log(response);
 //   const body = await result;

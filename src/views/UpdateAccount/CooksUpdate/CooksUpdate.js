@@ -97,13 +97,13 @@ export default function UpdateAdmin({details, content}) {
       addCook.setData('registeredBy', userId)
       delete addCook.values.filePicker;
       delete addCook.values.files;
-
-        const {data} = await patchContent(`${baseUrl}/cook/${details._id}`,
-        addCook.values, token);
+      const tempData = {'tempData': JSON.stringify(addCook.values)};
+        const {data} = await postContent(`${baseUrl}/cook/tempedit/${details._id}`,
+        tempData, token);
 
           if (imageUpload?.image) {
         const imageResult = await postImageContent(
-          `${baseUrl}/cook/upload-image/${data?._id}`,
+          `${baseUrl}/cook/upload-image/${details?._id}`,
           imageData,
           token
         );
@@ -389,6 +389,22 @@ return (
               />
             </GridItem>
           </GridContainer>
+          <GridContainer>
+                <GridItem xs={12} sm={12} md={6}>
+                  <CustomInput
+                    labelText="Number of pupils to feed"
+                    id="pupilFeed"
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                    inputProps={{
+                      type: "number",
+                      name: "pupilFeed",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                  />
+                </GridItem>
+              </GridContainer>
           <GridContainer>
             <GridItem xs={12} sm={12} md={12}>
               {/* <InputLabel style={{ color: "#AAAAAA" }}>Address</InputLabel> */}

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 // @material-ui/core components
@@ -20,9 +20,13 @@ import Search from "@material-ui/icons/Search";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 import { kCount } from "utils";
-import { getContent } from "utils";
-import config from 'utils/config';
+import { getContent, postContent } from "utils";
+import config from "utils/config";
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
+import Dialog from "components/useDialog";
+import useDialog from "components/useDialog/useHook";
+import Loading from "components/isLoading";
+import userForm from "hooks/useForm";
 
 const useStyles = makeStyles(styles);
 
@@ -33,13 +37,18 @@ export default function AdminNavbarLinks() {
   const [openProfile, setOpenProfile] = React.useState(null);
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
-  const baseUrl = config.API_URL
+  const baseUrl = config.API_URL;
+  const [isLoading, setIsLoading] = useState(false);
+  const { openDialog, closeDialog, isOpen } = useDialog();
+  const OldPassword = useDialog();
+  const [message, setMessage] = useState("");
+  const changeUser = userForm(sendToServer);
+  const oldAccount = userForm(sendOldToServer);
 
   useEffect(() => {
-    getContent(
-      `${baseUrl}/notification/${userId}/${50}`,
-      token
-    ).then((data) => setNotificationCount(data.data));
+    getContent(`${baseUrl}/notification/${userId}/${50}`, token).then((data) =>
+      setNotificationCount(data.data)
+    );
     // setNotificationCount(data.data.notificationCounts)
     // alert(userId)
   }, [token, userId]);
@@ -64,8 +73,126 @@ export default function AdminNavbarLinks() {
   const handleCloseProfile = () => {
     setOpenProfile(null);
   };
+
+  async function sendOldToServer() {
+    try {
+      setIsLoading(true);
+      oldAccount.setData("_id", userId);
+      const { data } = await postContent(
+        `${baseUrl}/admin/checkpassword`,
+        oldAccount.values,
+        token
+      );
+      setIsLoading(false);
+      OldPassword.closeDialog();
+      openDialog();
+    } catch ({ message }) {
+      alert(message);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function sendToServer() {
+    try {
+      if (changeUser.values.password === changeUser.values.newPassword) {
+        alert(changeUser.values.password)
+        changeUser.setData("_id", userId);
+        delete changeUser.values.newPassword;
+        const { data } = await postContent(
+          `${baseUrl}/admin/savepassword`,
+          changeUser.values,
+          token
+        );
+        alert("User password changed successfully");
+        closeDialog();
+      } else {
+        setMessage("Password did not match");
+      }
+
+      setIsLoading(false);
+    } catch ({ message }) {
+      alert(message);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  function logOut() {
+    window.localStorage.clear();
+    window.location.assign(`http://report.hgsfp.n-sip.gov.ng`)
+    handleCloseProfile()
+  }
+
   return (
     <div>
+      <Dialog
+        open={OldPassword.isOpen}
+        handleClose={OldPassword.closeDialog}
+        title="Old Password"
+        size="sm"
+        buttons={[
+          {
+            value: <>Submit {isLoading && <Loading />}</>,
+            onClick: () => sendOldToServer(),
+          },
+        ]}
+      >
+        <form>
+          <CustomInput
+            labelText="Enter Old Password"
+            id="password"
+            inputProps={{
+              type: "password",
+              name: "password",
+              onChange: (e) => oldAccount.getData(e),
+            }}
+            formControlProps={{
+              fullWidth: true,
+            }}
+          />
+        </form>
+      </Dialog>
+      <Dialog
+        open={isOpen}
+        handleClose={closeDialog}
+        title="New Password"
+        size="sm"
+        buttons={[
+          {
+            value: <>Change {isLoading && <Loading />}</>,
+            onClick: () => sendToServer(),
+          },
+        ]}
+      >
+        <div style={{color: 'red'}}>{message}</div>
+        <form>
+          <CustomInput
+            labelText="Enter New Password"
+            id="newPassword"
+            inputProps={{
+              type: "password",
+              name: "newPassword",
+              onChange: (e) => changeUser.getData(e),
+            }}
+            formControlProps={{
+              fullWidth: true,
+            }}
+          />
+          <CustomInput
+            labelText="Re-type New Password"
+            id="password"
+            inputProps={{
+              type: "password",
+              name: "password",
+              onChange: (e) => changeUser.getData(e),
+            }}
+            formControlProps={{
+              fullWidth: true,
+            }}
+          />
+        </form>
+      </Dialog>
       <div className={classes.searchWrapper}>
         <CustomInput
           formControlProps={{
@@ -148,7 +275,7 @@ export default function AdminNavbarLinks() {
                         >
                           {message}
                         </MenuItem>
-                      )
+                      );
                     })}
                   </MenuList>
                 </ClickAwayListener>
@@ -196,10 +323,16 @@ export default function AdminNavbarLinks() {
                 <ClickAwayListener onClickAway={handleCloseProfile}>
                   <MenuList role="menu">
                     <MenuItem
-                      onClick={handleCloseProfile}
+                      onClick={() => logOut()}
                       className={classes.dropdownItem}
                     >
                       Logout
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => OldPassword.openDialog()}
+                      className={classes.dropdownItem}
+                    >
+                      Change Password
                     </MenuItem>
                   </MenuList>
                 </ClickAwayListener>

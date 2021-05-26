@@ -51,7 +51,7 @@ import GeneralAdminProfile from 'views/ViewProfile/GeneralAdminProfile';
 const dashboardRoutes = [
   {
     path: "/home",
-    name: "Home Page",
+    name: "Dashboard",
     icon: Dashboard,
     component: GeneralAdminDashboard,
     layout: "/admin"
@@ -65,7 +65,7 @@ const dashboardRoutes = [
   },
   {
     path: "/report",
-    name: "Reports",
+    name: "Beneficiaries Reports",
     icon: AssessmentIcon,
     component: ReportContainer,
     layout: "/admin"

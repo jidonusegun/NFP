@@ -1,13 +1,13 @@
 /*eslint-disable*/
-import React, {useContext, useState, useEffect} from "react";
+import React, { useContext, useState, useEffect } from "react";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // @material-ui/icons
 import AddAlert from "@material-ui/icons/AddAlert";
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Button from "@material-ui/core/Button";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -16,13 +16,13 @@ import Snackbar from "components/Snackbar/Snackbar.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import EditPost from 'views/Blog/EditPost';
-import DialogContainer from 'components/Dialog/DialogContainer.js';
-import DialogNotification from 'components/Dialog/DialogNotification.js';
-import { dataContext } from 'components/context/DataContext';
+import EditPost from "views/Blog/EditPost";
+import DialogContainer from "components/Dialog/DialogContainer.js";
+import DialogNotification from "components/Dialog/DialogNotification.js";
+import { dataContext } from "components/context/DataContext";
 import userForm from "../../hooks/useForm";
-import config from 'utils/config';
-import {getContent, postContent, patchContent} from 'utils';
+import config from "utils/config";
+import { getContent, postContent, patchContent } from "utils";
 
 const styles = {
   cardCategoryWhite: {
@@ -31,11 +31,11 @@ const styles = {
       margin: "0",
       fontSize: "14px",
       marginTop: "0",
-      marginBottom: "0"
+      marginBottom: "0",
     },
     "& a,& a:hover,& a:focus": {
-      color: "#FFFFFF"
-    }
+      color: "#FFFFFF",
+    },
   },
   cardTitleWhite: {
     color: "#FFFFFF",
@@ -49,9 +49,9 @@ const styles = {
       color: "#777",
       fontSize: "65%",
       fontWeight: "400",
-      lineHeight: "1"
-    }
-  }
+      lineHeight: "1",
+    },
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -59,156 +59,217 @@ const useStyles = makeStyles(styles);
 export default function GeneralAdminNotifications() {
   // const deleteNotifyPost = userForm(sendDeleteNotifyPostToServer);
   // const publishNotifyPost = userForm(sendPublishNotifyPostToServer);
-  const suspendNotification = userForm(sendSuspendNotificationToServer);
+  const acceptNotification = userForm(sendAcceptToServer);
+  const rejectNotification = userForm(sendRejectToServer);
   // const DeleteNotification = userForm(sendDeleteNotificationToServer);
   // const EditNotification = userForm(sendEditNotificationToServer);
-  const [activeContent, setActiveContent] = useState({id: '', action: '', type: ''})
-  const [notification, setNotification] = useState()
-  const [editId, setEditId] = useState({id: ""})
-  const { handleClickOpen, handleClickOpenNotification, handleCloseNotification } = useContext(dataContext);
+  const [activeContent, setActiveContent] = useState({
+    id: "",
+    type: "",
+  });
+  const [notification, setNotification] = useState();
+  const [editId, setEditId] = useState({ id: "" });
+  const {
+    handleClickOpen,
+    handleClickOpenNotification,
+    handleCloseNotification,
+  } = useContext(dataContext);
   const userId = localStorage.getItem("id");
-  const token = localStorage.getItem("token")
-  const baseUrl = config.API_URL
-
+  const token = localStorage.getItem("token");
+  const [pageCount, setPageCount] = useState(1)
+  const baseUrl = config.API_URL;
+  const classes = useStyles();
 
   useEffect(() => {
-    getContent(`${baseUrl}/notification/${userId}/${50}`, token)
-    .then(data=>setNotification(data.data))
+    getContent(`${baseUrl}/notification/${userId}/${pageCount}/${50}`, token).then((data) =>
+      setNotification(data.data)
+    );
   }, [token]);
 
-  console.log(activeContent)
 
-  // async function sendDeleteNotifyPostToServer() {
-  //   handleCloseNotification()
-  //   console.log(sendDeleteNotifyPostToServer.values);
-  //   const response = await postContent("https://nsfp.herokuapp.com/v1/", token);
-  //   // addCook.reset();
-  //   console.log(response);
-  // }
-
-  // async function sendPublishNotifyPostToServer() {
-  //   console.log(sendPublishNotifyPostToServer.values);
-  //   const response = await postContent("https://nsfp.herokuapp.com/v1/", token);
-  //   // addCook.reset();
-  //   console.log(response);
-  // }
-
-  // async function sendDeleteNotificationToServer() {
-  //   console.log(sendSuspendNotificationToServer.values);
-  //   const response = await postContent("https://nsfp.herokuapp.com/v1/", token);
-  //   // addCook.reset();
-  //   console.log(response);
-  // }
-
-  // async function sendEditNotificationToServer() {
-  //   console.log(sendSuspendNotificationToServer.values);
-  //   const response = await postContent("https://nsfp.herokuapp.com/v1/", token);
-  //   // addCook.reset();
-  //   console.log(response);
-  // }
-
-  async function sendSuspendNotificationToServer(id, action, type) {
+  async function sendAcceptToServer() {
     try {
+      console.log(activeContent)
+      acceptNotification.setData("actionTaken", "ACCEPT");
+      acceptNotification.setData("type", activeContent.type);
 
-      suspendNotification.setData('actionTaken',activeContent.action)
-      suspendNotification.setData('type',activeContent.type)
-      if(activeContent?.id){
-        
-      }
-      alert(activeContent?.id)
-    // const response = await patchContent(`${baseUrl}/notification/${activeContent?.id}`, suspendNotification.values, token);
-    // addCook.reset();
-    // alert("Approved Successfully")
-    console.log(response);
-    } catch ({message}) {
-      alert(message)
+      const {data} = await patchContent(`${baseUrl}/notification/${activeContent.id}`,
+      acceptNotification.values, token);
+      alert("Record approved successfully")
+      console.log(data);
+    } catch ({ message }) {
+      alert(message);
     }
   }
 
-  const classes = useStyles();
-  
+
+  async function sendRejectToServer() {
+    try {
+      console.log(activeContent)
+      rejectNotification.setData("actionTaken", 'REJECT');
+      rejectNotification.setData("type", activeContent.type);
+
+      const {data} = await patchContent(`${baseUrl}/notification/${activeContent.id}`,
+      rejectNotification.values, token);
+      alert("Record rejected")
+      console.log(data);
+    } catch ({ message }) {
+      alert(message);
+    }
+  }
+
+  const scrollCheck = (e) => {
+    const bottom =
+      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom) console.log("Hello you are at the bottom");
+    setPageCount(pageCount + 1)
+  };
+
   return (
-    <Card>
-        <DialogContainer title="Edit Post" children= {<EditPost details={editId} />} />
-      <CardHeader color="primary">
-        <h4 className={classes.cardTitleWhite}>Notifications</h4>
-      </CardHeader>
-      <CardBody>
-        {notification?.notifications.map(({message, type, title, _id, stateAdmin, recipient, isSeen, user_id, actionTaken}) => {
-          
-          const renderContent = () => {
-            // if(title) {
-            //   return (
-            //     <div key={id}>
-            //       <DialogContainer title="Edit Post" children= {<EditPost id={id} />} />
-            //       <DialogNotification noButton="No" yesButton="Yes" id={id} title="Delete" children="Are you sure you want to Delete?" handleDelete={deleteNotifyPost.submit} />
-            //       <SnackbarContent
-            //         message={
-            //           <div>
-            //               <h3>{title}</h3>
-            //               <p>{message}</p>
-            //               <p style={{textAlign: "right", fontWeight: "bold",
-            //               margin: ".8rem .5rem 0",}}>From <span style={{fontWeight: "normal"}} >
-            //                   - {recipient}</span></p>
-                          
-            //               <ButtonGroup size="small" aria-label="small outlined button group">
-            //                   <Button onClick={publishNotifyPost.submit}>Publish</Button>
-            //                   {/* <Button>Unpublish</Button> */}
-            //                   <Button onClick={handleClickOpen}>Edit</Button>
-            //               </ButtonGroup>
-            //           </div>
-            //         }
-            //         close
-            //         handleClick={handleClickOpenNotification}
-            //         icon={AddAlert}
-            //       />
-            //     </div>
-            //   )
-            // }
-            if (type === "REGULAR") {
-              return <SnackbarContent
-                message={
-                  <div>
-                      <h3>{title}</h3>
-                      <p>{message}</p>
-                      <p style={{textAlign: "right", fontWeight: "bold",
-                          margin: ".8rem .5rem 0",}}>From <span style={{fontWeight: "normal"}} >
-                              - {recipient}</span></p>
-                      {/* <ButtonGroup size="small" aria-label="small outlined button group">
+    <div
+      style={{ height: "500px", overflowY: "scroll" }}
+      onScroll={(e) => scrollCheck(e)}
+    >
+      <Card>
+        <DialogContainer
+          title="Edit Post"
+          children={<EditPost details={editId} />}
+        />
+        <CardHeader color="primary">
+          <h4 className={classes.cardTitleWhite}>Notifications</h4>
+        </CardHeader>
+        <CardBody>
+          {notification?.notifications.map(
+            ({
+              message,
+              type,
+              title,
+              _id,
+              stateAdmin,
+              recipient,
+              isSeen,
+              user_id,
+              actionTaken,
+            }) => {
+              const renderContent = () => {
+                // if(title) {
+                //   return (
+                //     <div key={id}>
+                //       <DialogContainer title="Edit Post" children= {<EditPost id={id} />} />
+                //       <DialogNotification noButton="No" yesButton="Yes" id={id} title="Delete" children="Are you sure you want to Delete?" handleDelete={deleteNotifyPost.submit} />
+                //       <SnackbarContent
+                //         message={
+                //           <div>
+                //               <h3>{title}</h3>
+                //               <p>{message}</p>
+                //               <p style={{textAlign: "right", fontWeight: "bold",
+                //               margin: ".8rem .5rem 0",}}>From <span style={{fontWeight: "normal"}} >
+                //                   - {recipient}</span></p>
+
+                //               <ButtonGroup size="small" aria-label="small outlined button group">
+                //                   <Button onClick={publishNotifyPost.submit}>Publish</Button>
+                //                   {/* <Button>Unpublish</Button> */}
+                //                   <Button onClick={handleClickOpen}>Edit</Button>
+                //               </ButtonGroup>
+                //           </div>
+                //         }
+                //         close
+                //         handleClick={handleClickOpenNotification}
+                //         icon={AddAlert}
+                //       />
+                //     </div>
+                //   )
+                // }
+                if (type === "REGULAR") {
+                  return (
+                    <SnackbarContent
+                      message={
+                        <div>
+                          <h3>{title}</h3>
+                          <p>{message}</p>
+                          <p
+                            style={{
+                              textAlign: "right",
+                              fontWeight: "bold",
+                              margin: ".8rem .5rem 0",
+                            }}
+                          >
+                            From{" "}
+                            <span style={{ fontWeight: "normal" }}>
+                              - {recipient}
+                            </span>
+                          </p>
+                          {/* <ButtonGroup size="small" aria-label="small outlined button group">
                           <Button onClick={EditNotification.submit}>Approve</Button>
                           <Button onClick={EditNotification}>Reject</Button>
                       </ButtonGroup> */}
-                  </div>
+                        </div>
+                      }
+                      icon={AddAlert}
+                    />
+                  );
+                } else {
+                  return (
+                    <SnackbarContent
+                      message={
+                        <div>
+                          <h3>{title}</h3>
+                          <p>{message}</p>
+                          <p
+                            style={{
+                              textAlign: "right",
+                              fontWeight: "bold",
+                              margin: ".8rem .5rem 0",
+                            }}
+                          >
+                            From{" "}
+                            <span style={{ fontWeight: "normal" }}>
+                              - {recipient}
+                            </span>
+                          </p>
+                          <ButtonGroup
+                            size="small"
+                            aria-label="small outlined button group"
+                          >
+                            <Button
+                            onFocus={() => setActiveContent({
+                              id: _id,
+                              type: type,
+                            })}
+                              onClick={(e) => {
+                                acceptNotification.submit(e);
+                              }}
+                            >
+                              Approve
+                            </Button>
+                            <Button
+                              onFocus={() => setActiveContent({
+                                id: _id,
+                                type: type,
+                              })}
+                                onClick={(e) => {
+                                  rejectNotification.submit(e);
+                                }}
+                            >
+                              Reject
+                            </Button>
+                          </ButtonGroup>
+                        </div>
+                      }
+                      icon={AddAlert}
+                    />
+                  );
                 }
-                icon={AddAlert}
-              />
+              };
+              return notification?.notifications ? (
+                renderContent()
+              ) : (
+                <div>No Notification Yet</div>
+              );
             }
-             else {
-              return <SnackbarContent
-                message={
-                  <div>
-                      <h3>{title}</h3>
-                      <p>{message}</p>
-                      <p style={{textAlign: "right", fontWeight: "bold",
-                          margin: ".8rem .5rem 0",}}>From <span style={{fontWeight: "normal"}} >
-                              - {recipient}</span></p>
-                      <ButtonGroup size="small" aria-label="small outlined button group">
-                          <Button onClick={(e) => {suspendNotification.submit(e); setActiveContent({id: _id, action: actionTaken, type: type})}}>Approve</Button>
-                          <Button onClick={(e) => {suspendNotification.submit(e); setActiveContent({id: _id, action: actionTaken, type: type})}}>Reject</Button>
-                      </ButtonGroup>
-                  </div>
-                }
-                icon={AddAlert}
-              />
-            }
-
-          }
-          return notification?.notifications ?
-            renderContent()
-          : 
-          <div>No Notification Yet</div>
-        })}
-      </CardBody>
-    </Card>
+          )}
+        </CardBody>
+      </Card>
+    </div>
   );
 }

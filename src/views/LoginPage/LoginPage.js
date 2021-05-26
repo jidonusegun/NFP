@@ -10,7 +10,7 @@ import LockOpenIcon from "@material-ui/icons/LockOpen";
 // import { useFormik } from 'formik';
 // import * as Yup from 'yup';
 // core components
-import { postContent, postContentLogin } from "../../utils";
+import { postContent, postContentLogin, getContent } from "../../utils";
 import { dataContext } from "components/context/DataContext";
 import DialogSuspend from "components/Dialog/DialogSuspend.js";
 import Header from "components/Header/Header.js";
@@ -29,12 +29,14 @@ import image from "assets/img/bg7.jpg";
 import userForm from "../../hooks/useForm";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
-import config from 'utils/config';
+import Dialog from "components/useDialog";
+import useDialog from "components/useDialog/useHook";
+import config from "utils/config";
 
 const useStyles = makeStyles(styles);
 
 export default function LoginPage(props) {
-  const addCook = userForm(sendToServer);
+  const { openDialog, closeDialog, isOpen } = useDialog();
   const addLogin = userForm(sendLoginToServer);
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
   const [validate, setValidate] = useState(false);
@@ -42,29 +44,38 @@ export default function LoginPage(props) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const baseUrl = config.API_URL;
+  const [getEmail, setGetEmail] = useState()
+  var token = localStorage.getItem("token");
 
   const { handleClickOpenSuspend, handleCloseSuspend, setToken } = useContext(
     dataContext
   );
 
-  const baseUrl = config.API_URL
-  var token = localStorage.getItem("token");
+  const handleEmailChange = (e) => {
+    setGetEmail({[e.target.name]: e.target.value})
+  }
 
   async function sendToServer() {
-    console.log(addCook.values);
-    if (addCook.values !== "") {
-      setPasswordCheck(true);
+    try {
+      setMessage('')
+      if (getEmail.forgotPassword !== '') {
+        setIsLoading(true)
+        const {msg} = await getContent(
+          `${baseUrl}/admin/recoverpassword/${getEmail.forgotPassword}`,
+          token
+        );
+        setMessage(msg)
+        closeDialog();
+      } else {
+        setMessage("Please enter your email address");
+      }
+    } catch ({ message }) {
+      alert(message);
     }
-    handleCloseSuspend();
-    const response = await postContent(
-      `${baseUrl}`,
-      addCook.values,
-      token
-    );
-    // addCook.reset();
-    console.log(response);
-    //   const body = await result;
-    //   console.log(body);
+    finally {
+      setIsLoading(false)
+    }
   }
 
   async function sendLoginToServer() {
@@ -109,70 +120,44 @@ export default function LoginPage(props) {
   const classes = useStyles();
   const { ...rest } = props;
 
-  // const handleChange = (e) => {
-  //   setUser({...user, [e.target.name]: e.target.value})
-  // }
-
-  // const auth = async () => {
-  //   setLoading(true);
-  //         const formData = new FormData();
-  //         formData.append('email', user.username);
-  //         formData.append('password', user.password);
-
-  //     const result = await postContent(`/api/users/authenticate/user.php`,formData);
-
-  //   const body = await result
-  //   console.log(body);
-
-  //   setToken(body.jwt)
-
-  //   // if (body.length === 0) {
-  //   //   setIfResult(true)
-  //   // }
-
-  //   if (parseInt(body.status) === 3) {
-  //       setLoggedIn(true);
-  //   }
-  //   else {
-  //     setValidate(true)
-  //   }
-
-  //   setUser({
-  //     username: '',
-  //     password: ''
-  //   })
-  // }
 
   return (
     <>
-      <DialogSuspend
-        fullWidth
-        title="Retrieve your password"
-        children={
+      <Dialog
+        open={isOpen}
+        handleClose={closeDialog}
+        title="Retrieve your Account"
+        size="sm"
+        buttons={[
+          {
+            value: <>Send {isLoading && <Loading />}</>,
+            onClick: (e) => sendToServer(e),
+          },
+        ]}
+      >
+        <>
+          <div style={{ color: "red", textAlign: "center" }}>{message}</div>
           <CustomInput
             labelText="Enter your email"
-            id="forgot-password"
+            id="forgotPassword"
             inputProps={{
               type: "text",
               name: "forgotPassword",
-              onChange: (e) => addCook.getData(e),
+              onChange: (e) => handleEmailChange(e),
             }}
             formControlProps={{
               fullWidth: true,
             }}
           />
-        }
-        noButton="Cancel"
-        yesButton="Send"
-        handleSuspend={addCook.submit}
-      />
+        </>
+      </Dialog>
 
       {loggedIn ? <Redirect to="/state-admin/home" /> : null}
       <div>
         <Header
           absolute
           color="transparent"
-          brand="NSFRS"
+          brand="NHGSFRT"
           rightLinks={<HeaderLinks />}
           {...rest}
         />
@@ -270,7 +255,7 @@ export default function LoginPage(props) {
                     <div className={classes.forgotPasswordContainer}>
                       Forgotten Password?{" "}
                       <span
-                        onClick={handleClickOpenSuspend}
+                        onClick={() => openDialog()}
                         className={classes.forgotPassword}
                       >
                         Click here

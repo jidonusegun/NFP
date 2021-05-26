@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -14,6 +14,10 @@ import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
+import userForm from "../../hooks/useForm";
+import config from 'utils/config';
+import Loading from "components/isLoading";
+import { postContent } from "utils"; 
 import PublishIcon from '@material-ui/icons/Publish';
 // import SpeedDial from 'components/SpeedDial/SpeedDial.js';
 // icon components
@@ -59,6 +63,28 @@ const useStyles = makeStyles(styles);
 
 export default function SummaryReport({summaryTable}) {
   const classes = useStyles();
+  const sendReport = userForm(sendToServer);
+  const token = localStorage.getItem("token");
+  const [isLoading, setIsLoading] = useState(false)
+  const baseUrl = config.API_URL
+
+  const state = summaryTable.map(({state}) => {return state} )
+  const lga = summaryTable.map(({lga}) => { return lga} )
+  const month = summaryTable.map(({month}) => { return month} )
+
+  async function sendToServer() {
+    try {
+      setIsLoading(true)
+      const response = await postContent(`${baseUrl}/payment-report/sendtoadmin/${state[0]}/${lga[0]}/${month[0]}/SUMMARY`, token);
+      alert("Summary payments has been sent")
+      setIsLoading(false)
+    } catch ({message}) {
+      alert(message)
+    }
+    finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <div>
@@ -73,7 +99,8 @@ export default function SummaryReport({summaryTable}) {
                 </p>
               </div>
               <div>
-                  <PublishIcon fontSize="large" style={{marginRight: "30px", cursor: "pointer"}} />
+              <PublishIcon fontSize="large" style={{marginRight: "30px", cursor: "pointer"}} onClick={sendReport.submit} />
+                  {isLoading && <Loading/>}
               </div>
             </CardHeader>
             <CardBody>

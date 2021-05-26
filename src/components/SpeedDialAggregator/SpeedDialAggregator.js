@@ -34,7 +34,7 @@ export default function SpeedDials({deleteContent, details}) {
                   <PopViewAggregator details={details} />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary="View" onClick={handleClickOpenView} />
+              <ListItemText primary="View Aggregator" onClick={handleClickOpenView} />
             </ListItem>
             <ListItem button>
               <ListItemAvatar className={classes.avatarContainer}>
@@ -42,7 +42,7 @@ export default function SpeedDials({deleteContent, details}) {
                   <PopEditAggregator details={details} />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary="Edit" onClick={handleClickOpen} />
+              <ListItemText primary="Edit Aggregator" onClick={handleClickOpen} />
             </ListItem>
             {details?.status === "suspend" ? null :
             <ListItem button>
@@ -51,7 +51,7 @@ export default function SpeedDials({deleteContent, details}) {
                   <PopSuspendAggregator details={details} />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary="Suspend" onClick={handleClickOpenSuspend} />
+              <ListItemText primary="Suspend Aggregator" onClick={handleClickOpenSuspend} />
             </ListItem>
             }
             <ListItem button>
@@ -60,7 +60,7 @@ export default function SpeedDials({deleteContent, details}) {
                   <PopDeleteAggregator details={details} />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary="Delete" onClick={handleClickOpenDelete} />
+              <ListItemText primary="Delete Aggregator" onClick={handleClickOpenDelete} />
             </ListItem>
           </List>
         </div>

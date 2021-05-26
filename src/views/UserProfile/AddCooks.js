@@ -281,7 +281,7 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     }}
                   />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={3}>
+                <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Last Name"
                     id="lastName"
@@ -440,9 +440,6 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                           </option>
                         );
                       })}
-
-                      {/* <option value="lagos">Lagos</option>
-                    <option value="osun">Osun</option> */}
                     </Select>
                   </FormControl>
                 </GridItem>
@@ -483,6 +480,22 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     }}
                     formControlProps={{
                       fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+              </GridContainer>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={6}>
+                  <CustomInput
+                    labelText="Number of pupils to feed"
+                    id="pupilFeed"
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                    inputProps={{
+                      type: "number",
+                      name: "pupilFeed",
+                      onChange: (e) => addCook.getData(e),
                     }}
                   />
                 </GridItem>

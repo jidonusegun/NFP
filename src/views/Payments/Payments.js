@@ -37,12 +37,36 @@ export default function Payments() {
     const [stateValue, setStatevalue] = useState([])
     const [lgaValue, setLgavalue] = useState([])
     const [loading, setLoading] = useState(false)
+    const stateLogin = localStorage.getItem("state")
+    const lgaLogin = localStorage.getItem("lga")
     const [stateID, setStateID] = useState()
     const [categoryValue, setCategoryValue] = useState({value: "Select Category"})
     const token = localStorage.getItem("token")
     const [errorMessage, setErrorMessage] = useState([])
     const [paymentInput, setPaymentInput] = useState({pulpilFeed: "", Days: ""})
     const baseUrl = config.API_URL
+
+
+    useEffect(() => {
+        setLoading(true)
+        getContent(`${baseUrl}/payment-report?state=${stateLogin}&lga=${lgaLogin}&month=january`, token)
+        .then(data=>setCookPayment(data.data))
+
+        getContent(`${baseUrl}/payment-report?state=${stateLogin}&lga=${lgaLogin}&month=january`, token)
+        .then(data=>setAggregatorPayment(data.data))
+
+        getContent(`${baseUrl}/`, token)
+        .then(data=>setSummary(data.data))
+        setLoading(false)
+
+        getContent(`${baseUrl}/settings/states`, token)
+        .then(data=>setStatevalue(data.data))
+    
+        getContent(`${baseUrl}/settings/state/${stateID}/lgas`, token)
+        .then(data=>setLgavalue(data.data))
+
+      },[token, stateID])
+
 
     const handlePaymentChange = (e) => {
         setPaymentInput({[e.target.name]: e.target.value});
@@ -107,26 +131,6 @@ export default function Payments() {
     
         setStateID(option)
       }
-
-      useEffect(() => {
-        setLoading(true)
-        getContent(`${baseUrl}/payment-report?state=lagos&lga=badagry&month=january`, token)
-        .then(data=>setCookPayment(data.data))
-
-        getContent(`${baseUrl}/payment-report?state=lagos&lga=badagry&month=january`, token)
-        .then(data=>setAggregatorPayment(data.data))
-
-        getContent(`${baseUrl}/`, token)
-        .then(data=>setSummary(data.data))
-        setLoading(false)
-
-        getContent(`${baseUrl}/settings/states`, token)
-        .then(data=>setStatevalue(data.data))
-    
-        getContent(`${baseUrl}/settings/state/${stateID}/lgas`, token)
-        .then(data=>setLgavalue(data.data))
-
-      },[token, stateID])
 
 
     const handleClick = () => {
@@ -209,7 +213,7 @@ export default function Payments() {
 
                     <div className={cssActive.active && categoryValue.value === "COOK" ? classes.dBlock : classes.dNone} style={{marginTop: "4rem"}}>
                         {loading ? <div>Loading... Please wait</div> : <CooksPaymentsList state={addPayment.values.state} lga={addPayment.values.lga} userData={userData} handlePaymentChange={handlePaymentChange} />}
-                    </div>
+                    </div> 
                     
                     <div className={cssActive.active && categoryValue.value === "AGGREGATOR" ? classes.dBlock : classes.dNone} style={{marginTop: "4rem"}}>
                         {loading ? <div>Loading... Please wait</div> : <AggregatorsPaymentsList state={addPayment.values.state} lga={addPayment.values.lga} userData={userData} />}

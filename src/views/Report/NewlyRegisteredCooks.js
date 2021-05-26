@@ -37,28 +37,47 @@ const { handleClickPop, handleClosePop } = useContext(dataContext);
 const token = localStorage.getItem("token");
 const [savedId, setSavedId] = useState()
 const approveCook = userForm(sendToServer);
+const rejectCook = userForm(sendRejectToServer);
 const baseUrl = config.API_URL
 
 async function sendToServer() {
-  handleClosePop()
-  const response = await patchContent(`${baseUrl}/cook/${savedId}/approve`, token);
-  // addCook.reset();
-  console.log(response);
-  //   const body = await result;
-  //   console.log(body);
+  try {
+    const response = await patchContent(
+      `${baseUrl}/cook/${savedId}/approve`,
+      token
+    );
+    console.log(response);
+    handleClosePop();
+  } catch ({message}) {
+    alert(message)
   }
+}
+
+async function sendRejectToServer() {
+  try {
+    const response = await patchContent(
+      `${baseUrl}/cook/${savedId}/approve`,
+      token
+    );
+    console.log(response);
+    alert("Record ejected successfully");
+    handleClosePop();
+  } catch ({ message }) {
+    alert(message);
+  }
+}
 
   return (
     <div>
       <Popover>
-          <List>
-            <ListItem button>
-              <ListItemText primary="Approve" onClick={approveCook.submit} />
-            </ListItem>
-            <ListItem button>
-              <ListItemText primary="Reject" onClick={handleClosePop} />
-            </ListItem>
-          </List>
+        <List>
+          <ListItem button>
+            <ListItemText primary="Approve" onClick={() => approveCook.submit()} />
+          </ListItem>
+          <ListItem button>
+            <ListItemText primary="Reject" onClick={() => rejectCook.submit()} />
+          </ListItem>
+        </List>
       </Popover>
       <GridContainer>
       <GridItem xs={12} sm={12} md={12}>

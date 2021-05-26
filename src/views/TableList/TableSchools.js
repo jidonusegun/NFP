@@ -20,12 +20,15 @@ import DialogContainer from "components/Dialog/DialogContainer.js";
 import SchoolProfile from "views/UserProfile/SchoolProfile";
 import { dataContext } from "components/context/DataContext";
 import SpeedDialSchools from "components/SpeedDialSchools/SpeedDialSchools.js";
+import Download from 'assets/img/Abuja.jpg';
+import DownloadSchool from 'assets/img/SCHOOL.xlsx';
 // icon components
 import ViewListIcon from "@material-ui/icons/ViewList";
 import config from 'utils/config';
 import userForm from "../../hooks/useForm";
 import { postContent, getContent, postImageContent } from "utils";
-import SaveAltIcon from "@material-ui/icons/SaveAlt";
+import PublishIcon from '@material-ui/icons/Publish';
+import GetAppIcon from "@material-ui/icons/GetApp";
 import Dialog from "components/useDialog";
 import useDialog from "components/useDialog/useHook";
 import Loading from "components/isLoading";
@@ -87,7 +90,7 @@ export default function TableAggregator(props) {
       setLoading(true);
       const data = new FormData()
       data.append('files', imageUpload.image)
-    const result = await postImageContent(`${baseUrl}/aggregator/uploadcsv/${userId}`, data, token);
+    const result = await postImageContent(`${baseUrl}/school/uploadcsv/${userId}`, data, token);
     alert("School list has been sent for approval")
     closeDialog();
     }
@@ -123,7 +126,7 @@ export default function TableAggregator(props) {
             id="files"
             onChange={(e) => handleChange(e)}
             type="file"
-            placeholder="Upload Aggregators"
+            placeholder="Upload Schools"
             accept=".xlsx, .xls, .csv"
           />
         </form>
@@ -145,16 +148,48 @@ export default function TableAggregator(props) {
                         List of all Schools
                       </p>
                     </div>
-                    <div>
-                      <SaveAltIcon
+                    <div
+                    style={{
+                      marginRight: "30px",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        marginRight: '2rem'
+                      }}
+                    >
+                      <a
+                        href={DownloadSchool}
+                        target="_blank"
+                        style={{color: 'white'}}
+                        rel="noopener noreferrer"
+                        download
+                      >
+                        <GetAppIcon
+                          fontSize="large"
+                          style={{ cursor: "pointer" }}
+                        />
+                      </a>
+                      <p style={{ margin: "0px", padding: "0px" }}>
+                        Download Excel Template
+                      </p>
+                    </div>
+                    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                      <PublishIcon
                         onClick={() => openDialog()}
                         fontSize="large"
-                        style={{ marginRight: "30px", cursor: "pointer" }}
+                        style={{ cursor: "pointer" }}
                       />
                       <p style={{ margin: "0px", padding: "0px" }}>
                         Excel Upload
                       </p>
                     </div>
+                  </div>
                   </CardHeader>
                   <CardBody>
                   { account.length > 0 ?
@@ -305,7 +340,7 @@ export default function TableAggregator(props) {
             </div>
           )}
         </GridItem>
-        <AddButton handleClickOpen={handleClickOpen} />
+        <AddButton handleClickOpen={handleClickOpen} title="Add new entity" />
         <Toast message={message} />
       </GridContainer>
     </div>

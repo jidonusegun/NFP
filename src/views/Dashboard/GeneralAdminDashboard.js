@@ -69,6 +69,27 @@ export default function GeneralAdminDashboard() {
           </Card>
         </GridItem>
         <GridItem xs={12} sm={6} md={3}>
+        <Card>
+            <CardHeader color="warning" stats icon>
+              <CardIcon color="warning">
+                <PersonIcon />
+              </CardIcon>
+              <p className={classes.cardCategory}>Pupils</p>
+              <h3 className={classes.cardTitle}>
+                {kCount(user.length)}
+              </h3>
+            </CardHeader>
+            <CardFooter stats>
+              <div className={classes.stats}> 
+                  <ViewListIcon />
+                <Link to="/state-admin/pupils" >
+                  View All
+                </Link>
+              </div>
+            </CardFooter>
+          </Card>
+          </GridItem>
+        <GridItem xs={12} sm={6} md={3}>
           <Card>
             <CardHeader color="success" stats icon>
               <CardIcon color="success">
@@ -106,6 +127,8 @@ export default function GeneralAdminDashboard() {
             </CardFooter>
           </Card>
         </GridItem>
+        </GridContainer>
+      <GridContainer>
         <GridItem xs={12} sm={6} md={3}>
           <Card>
             <CardHeader color="info" stats icon>
@@ -125,8 +148,6 @@ export default function GeneralAdminDashboard() {
             </CardFooter>
           </Card>
         </GridItem>
-      </GridContainer>
-      <GridContainer>
         <GridItem xs={12} sm={6} md={3}>
           <Card>
             <CardHeader color="primary" stats icon>

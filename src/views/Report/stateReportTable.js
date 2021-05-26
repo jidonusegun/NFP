@@ -21,9 +21,11 @@ export default function TableList() {
   const [loading, setLoading] = useState(false) 
   const [aggregator, setAggregator] = useState([]) 
   const token = localStorage.getItem("token")
+  const stateLogin = localStorage.getItem("state")
+  const lgaLogin = localStorage.getItem("lga")
   const baseUrl = config.API_URL
 
-  useEffect(() => {
+  useEffect(() => { 
     setLoading(true);
     getContent(`${baseUrl}/cooks?state=lagos&lga=badagry&status=PENDING`, token)
     .then(data=>setCook(data.data))

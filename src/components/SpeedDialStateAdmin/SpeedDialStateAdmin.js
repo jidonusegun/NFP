@@ -34,7 +34,7 @@ export default function SpeedDials({deleteContent, details}) {
                   <PopViewStateAdmin details={details} />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary="View" onClick={handleClickOpenView} />
+              <ListItemText primary="View Admin" onClick={handleClickOpenView} />
             </ListItem>
             <ListItem button>
               <ListItemAvatar className={classes.avatarContainer}>
@@ -42,7 +42,7 @@ export default function SpeedDials({deleteContent, details}) {
                   <PopEditStateAdmin details={details} />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary="Edit" onClick={handleClickOpenEdit} />
+              <ListItemText primary="Edit Admin" onClick={handleClickOpenEdit} />
             </ListItem>
             {details?.status === "suspend" ? null :
             <ListItem button>
@@ -51,7 +51,7 @@ export default function SpeedDials({deleteContent, details}) {
                   <PopSuspendStateAdmin details={details} />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary="Suspend" onClick={handleClickOpenSuspend} />
+              <ListItemText primary="Suspend Admin" onClick={handleClickOpenSuspend} />
             </ListItem>
             }
             <ListItem button>
@@ -60,7 +60,7 @@ export default function SpeedDials({deleteContent, details}) {
                   <PopDeleteStateAdmin details={details} />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary="Delete" onClick={handleClickOpenDelete} />
+              <ListItemText primary="Delete Admin" onClick={handleClickOpenDelete} />
             </ListItem>
           </List>
         </div>

@@ -85,7 +85,7 @@ export default function AdminAccountView({details}) {
     async function sendToServer() {
         try {
             const imageUpload = await postContent(
-                `${baseUrl}/cook/${details._id}/reactivate`, token
+                `${baseUrl}/aggregator/${details._id}/reactivate`, token
               );
         } catch ({message}) {
             alert(message)
@@ -97,7 +97,7 @@ export default function AdminAccountView({details}) {
             <Dialog
                 open={isOpen}
                 handleClose={closeDialog}
-                title="Active User"
+                title="Active Aggregator"
                 size="sm"
                 buttons={[
                     {
@@ -189,6 +189,10 @@ export default function AdminAccountView({details}) {
                 <div className={classes.bioData}>
                     <div className={classes.leftContainer + " " + classes.margin}>School Name: </div>
                     <div className={classes.leftContainer + " " + classes.margin}>{result.schoolName}</div>
+                </div>
+                <div className={classes.bioData}>
+                    <div className={classes.leftContainer + " " + classes.margin}>No. of Pupils Feed: </div>
+                    <div className={classes.leftContainer + " " + classes.margin}>{result.pupilsFeed}</div>
                 </div>
                 <div className={classes.bioData}>
                     <div className={classes.leftContainer + " " + classes.margin}>Phone Number: </div>

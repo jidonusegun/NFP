@@ -59,40 +59,16 @@ export default function Notifications() {
   const userId = localStorage.getItem("id");
   const [state, setState] = useState({message: 'not at bottom'})
   const prevScrollY = useRef(0);
+  const [pageCount, setPageCount] = useState(1)
   const baseUrl = config.API_URL
 
   const [goingUp, setGoingUp] = useState(false);
 
   useEffect(() => {
     getContent(
-      `${baseUrl}/notification/${userId}/${50}`,
+      `${baseUrl}/notification/${userId}/${pageCount}/${50}`,
       token
     ).then((data) => setNotification(data.data.notifications));
-
-    // const handleScroll = () => {
-    //   console.log("")
-    //   const currentScrollY = window.scrollY;
-    //   if (prevScrollY.current < currentScrollY && goingUp) {
-    //     setGoingUp(false);
-        
-    //   }
-    //   if (prevScrollY.current > currentScrollY && !goingUp) {
-    //     setGoingUp(true);
-    //   }
-
-    //   if(currentScrollY >= 6400){
-    //     console.log("call api");
-
-      
-    //   }
-    //   prevScrollY.current = currentScrollY;
-    //   console.log(goingUp, currentScrollY);
-    // };
-    
-    // window.addEventListener("scroll", handleScroll(), { passive: true });
-
-    // return () => window.removeEventListener("scroll", handleScroll());
-
   }, [token, userId]);
 
 
@@ -115,68 +91,17 @@ export default function Notifications() {
 
     window.addEventListener("scroll", handleScroll(), { passive: true });
 
-    // return () => window.removeEventListener("scroll", handleScroll());
-
   },[goingUp])
 
 
-
-    
-  //   // const handleScroll = () => {
-  //   //   const currentScrollY = window.scrollY;
-  //   //   if (prevScrollY.current < currentScrollY && goingUp) {
-  //   //     setGoingUp(false);
-  //   //     console.log("Now at the bottom")
-  //   //   }
-  //   //   if (prevScrollY.current > currentScrollY && !goingUp) {
-  //   //     setGoingUp(true);
-  //   //     console.log("Now at the top")
-  //   //   }
-  //   //   // console.log(`scroll, ${window.ScrollY}`)
-  //   //   prevScrollY.current = currentScrollY;
-  //   //   console.log(goingUp, currentScrollY);
-  //   // };
-
-  //   // window.addEventListener("scroll", handleScroll, { passive: true });
-
-  //   // return () => window.removeEventListener("scroll", handleScroll);
-  // }, [goingUp]);
-//   console.log(notification)
-//   // document.body.scrollHeight.scrollTo()
-//   // window.scrollTop() >= document.height() - window.height() - 10
-
-
-const scrollCheck = (event) => {
-  const target = event.target
-  if(target.scrollHeight - target.scrollTop === target.clientHeight){
-    alert("You are at the bottom")
-  }
+const scrollCheck = (e) => {
+  const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+  if(bottom) console.log("Hello you are at the bottom")
+  setPageCount(pageCount + 1)
 }
 
-// function handleScroll() {
-//   const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
-//   const body = document.body;
-//   const html = document.documentElement;
-//   const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight,  html.scrollHeight, html.offsetHeight);
-//   const windowBottom = windowHeight + window.pageYOffset;
-  
-//   if (windowBottom >= docHeight) {
-//     setState({
-//       message:'bottom reached'
-//     });console.log(docHeight, windowBottom)
-//   } else {
-//     setState({
-//       message:'not at bottom'
-//     });
-//   }
-// }
-
-// window.addEventListener("scroll", handleScroll());
-
-// document.documentElement.getBoundingClientRect.bo
-
   return (
-    <div style={{height: '500px', overflowY: 'scroll'}} onScroll={() => scrollCheck()} >
+    <div style={{height: '500px', overflowY: 'scroll'}} onScroll={(e) => scrollCheck(e)} >
     <Card  >
       <CardHeader color="primary">
         <h4 className={classes.cardTitleWhite}>Notifications</h4>

@@ -21,12 +21,15 @@ import DialogContainer from 'components/Dialog/DialogContainer.js';
 import AddCooks from 'views/UserProfile/AddCooks';
 import { dataContext } from 'components/context/DataContext';
 import SpeedDialCook from 'components/SpeedDialCooks/SpeedDialCook.js';
+import Download from 'assets/img/Abuja.jpg';
+import DownloadCook from 'assets/img/COOKS.xlsx';
 // icon components
 import ViewListIcon from '@material-ui/icons/ViewList';
 import userForm from "../../hooks/useForm"; 
 import config from 'utils/config';
 import {postContent, getContent, postImageContent} from 'utils';
-import SaveAltIcon from "@material-ui/icons/SaveAlt";
+import PublishIcon from '@material-ui/icons/Publish';
+import GetAppIcon from "@material-ui/icons/GetApp";
 import Dialog from 'components/useDialog';
 import useDialog from 'components/useDialog/useHook';
 import Loading from "components/isLoading";
@@ -86,7 +89,7 @@ export default function TableList(props) {
       setLoading(true);
       const data = new FormData()
       data.append('files', imageUpload.image)
-    const result = await postImageContent(`${baseUrl}/aggregator/uploadcsv/${userId}`, data, token);
+    const result = await postImageContent(`${baseUrl}/cook/uploadcsv/${userId}`, data, token);
     alert("Cook list has been sent for approval")
     closeDialog();
     }
@@ -102,7 +105,7 @@ export default function TableList(props) {
 
   return (
     <div>
-      <DialogContainer children= {<AddCooks content={account} />} />
+      <DialogContainer children= {<AddCooks content={account} />} /> 
       <Dialog
                 open={isOpen}
                 handleClose={closeDialog}
@@ -121,7 +124,7 @@ export default function TableList(props) {
                         onChange={(e) => handleChange(e)}
                         type="file"
                         name="files"
-                        placeholder="Upload Aggregators"
+                        placeholder="Upload Cooks"
                         accept=".xlsx, .xls, .csv"
                     />
                 </form>
@@ -139,14 +142,48 @@ export default function TableList(props) {
                     List of all Cooks
                   </p>
                 </div>
-                <div>
-                      <SaveAltIcon
-                      onClick={() => openDialog()}
-                        fontSize="large"
-                        style={{ marginRight: "30px", cursor: "pointer" }}
-                      />
-                      <p style={{margin: "0px", padding: "0px"}}>Excel Upload</p>
+                <div
+                    style={{
+                      marginRight: "30px",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        marginRight: '2rem'
+                      }}
+                    >
+                      <a
+                        href={DownloadCook}
+                        target="_blank"
+                        style={{color: 'white'}}
+                        rel="noopener noreferrer"
+                        download
+                      >
+                        <GetAppIcon
+                          fontSize="large"
+                          style={{ cursor: "pointer" }}
+                        />
+                      </a>
+                      <p style={{ margin: "0px", padding: "0px" }}>
+                        Download Excel Template
+                      </p>
                     </div>
+                    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                      <PublishIcon
+                        onClick={() => openDialog()}
+                        fontSize="large"
+                        style={{ cursor: "pointer" }}
+                      />
+                      <p style={{ margin: "0px", padding: "0px" }}>
+                        Excel Upload
+                      </p>
+                    </div>
+                  </div>
               </CardHeader>
               <CardBody> 
               { account.length > 0 ?
@@ -168,10 +205,11 @@ export default function TableList(props) {
                           <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>ADDRESS</TableCell>
                           <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>LGA</TableCell>
                           <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>SCHOOL NAME</TableCell>
+                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>NO. OF PUPILS FEED</TableCell>
                       </TableRow>
                     </TableHead>
                   <TableBody>
-                    {account.map(({_id, gender, firstName, lastName, birthday, accountNumber, bankName, bvn, phoneNumber, email, date_created_acc, state, address, lga, schoolName, image, status}) => {
+                    {account.map(({_id, gender, firstName, lastName, birthday, accountNumber, bankName, bvn, phoneNumber, email, date_created_acc, state, address, lga, schoolName, image, status, pupilsFeed}) => {
                       
                       return (
                         <>
@@ -190,6 +228,7 @@ export default function TableList(props) {
                             <TableCell className={classes.tableCell}>{address}</TableCell>
                             <TableCell className={classes.tableCell}>{lga}</TableCell>
                             <TableCell className={classes.tableCell}>{schoolName}</TableCell>
+                            <TableCell className={classes.tableCell}>{pupilsFeed}</TableCell>
                           </TableRow>
                         </>
                       )
@@ -207,7 +246,7 @@ export default function TableList(props) {
             
     </GridContainer>
     <Toast message={message} />
-        <AddButton handleClickOpen={handleClickOpen} />
+        <AddButton handleClickOpen={handleClickOpen} title="Add new entity" />
     </div>
   );
 }

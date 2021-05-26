@@ -40,7 +40,7 @@ export default function SpeedDials({ deleteContent, details }) {
               <PopViewCook details={details} />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="View" onClick={handleClickOpenView} />
+          <ListItemText primary="View Cook" onClick={handleClickOpenView} />
         </ListItem>
         <ListItem button>
           <ListItemAvatar className={classes.avatarContainer}>
@@ -48,7 +48,7 @@ export default function SpeedDials({ deleteContent, details }) {
               <PopEditCook details={details} />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Edit" onClick={handleClickOpen} />
+          <ListItemText primary="Edit Cook" onClick={handleClickOpen} />
         </ListItem>
         {details?.status === "suspend" ? null : (
           <ListItem button>
@@ -57,7 +57,7 @@ export default function SpeedDials({ deleteContent, details }) {
                 <PopSuspendCook details={details} />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Suspend" onClick={handleClickOpenSuspend} />
+            <ListItemText primary="Suspend Cook" onClick={handleClickOpenSuspend} />
           </ListItem>
         )}
         <ListItem button>
@@ -66,7 +66,7 @@ export default function SpeedDials({ deleteContent, details }) {
               <PopDeleteCook details={details} />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Delete" onClick={handleClickOpenDelete} />
+          <ListItemText primary="Delete Cook" onClick={handleClickOpenDelete} />
         </ListItem>
       </List>
     </div>

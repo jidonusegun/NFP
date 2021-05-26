@@ -337,6 +337,20 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                     }}
                   />
                 </GridItem>
+                <GridItem xs={12} sm={12} md={6}>
+                  <CustomInput
+                    labelText="Number of pupils to feed"
+                    id="pupilFeed"
+                    inputProps={{
+                      type: "number",
+                      name: "pupilFeed",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
                 {/* <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Mobile Number"

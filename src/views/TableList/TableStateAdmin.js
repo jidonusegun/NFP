@@ -96,7 +96,7 @@ export default function TableStateAdmin() {
             
     </GridContainer>
 
-        <AddButton handleClickOpen={handleClickOpen} />
+        <AddButton handleClickOpen={handleClickOpen} title="Add new entity" />
     </div>
   );
 }

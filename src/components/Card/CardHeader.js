@@ -28,7 +28,7 @@ export default function CardHeader(props) {
       {children}
     </div>
   );
-}
+} 
 
 CardHeader.propTypes = {
   className: PropTypes.string,

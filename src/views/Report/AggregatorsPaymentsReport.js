@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -62,21 +62,27 @@ const useStyles = makeStyles(styles);
 export default function NewlyRegisteredAggregators({aggregatorPaymentDetails}) {
   const sendReport = userForm(sendToServer);
   const classes = useStyles();
+  const [isLoading, setIsLoading] = useState(false)
   // const [status, setStatus] = useState({active: "", category: ""})
   var token = localStorage.getItem("token");
   const baseUrl = config.API_URL
 
-  async function sendToServer() {
-    console.log(sendReport.values);
-    // console.log(sendReport.formData());
-    const response = await postContent(`${baseUrl}/`,
-      sendReport.values, token);
-    // sendReport.reset();
+  const state = aggregatorPaymentDetails.map(({state}) => {return state} )
+  const lga = aggregatorPaymentDetails.map(({lga}) => { return lga} )
+  const month = aggregatorPaymentDetails.map(({month}) => { return month} )
 
-    alert("Your report has been sent")
-  console.log(response);
-  //   const body = await result;
-  //   console.log(body);
+  async function sendToServer() {
+    try {
+      setIsLoading(true)
+      const response = await postContent(`${baseUrl}/payment-report/sendtoadmin/${state[0]}/${lga[0]}/${month[0]}/AGGREGATOR`, token);
+      alert("Payments report has been sent")
+      setIsLoading(false)
+    } catch ({message}) {
+      alert(message)
+    }
+    finally {
+      setIsLoading(false)
+    }
   }
 
   return (

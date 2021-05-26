@@ -98,7 +98,7 @@ export default function AdminAccountView({details}) {
             <Dialog
                 open={isOpen}
                 handleClose={closeDialog}
-                title="Active User"
+                title="Active Cook"
                 size="sm"
                 buttons={[
                     {
@@ -190,6 +190,10 @@ export default function AdminAccountView({details}) {
                 <div className={classes.bioData}>
                     <div className={classes.leftContainer + " " + classes.margin}>School Name: </div>
                     <div className={classes.leftContainer + " " + classes.margin}>{result.schoolName}</div>
+                </div>
+                <div className={classes.bioData}>
+                    <div className={classes.leftContainer + " " + classes.margin}>No. of Pupils Feed Name: </div>
+                    <div className={classes.leftContainer + " " + classes.margin}>{result.pupilsFeed}</div>
                 </div>
                 <div className={classes.bioData}>
                     <div className={classes.leftContainer + " " + classes.margin}>Phone Number: </div>

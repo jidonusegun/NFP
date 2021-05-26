@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -18,6 +18,7 @@ import PublishIcon from '@material-ui/icons/Publish';
 import { postContent } from "utils"; 
 import userForm from "../../hooks/useForm";
 import config from 'utils/config';
+import Loading from "components/isLoading";
 // import { dataContext } from "components/context/DataContext";
 // import SpeedDial from 'components/SpeedDial/SpeedDial.js';
 // icon components
@@ -27,24 +28,27 @@ const useStyles = makeStyles(styles);
 export default function NewlyRegisteredCooks({cookPaymentDetails}) {
   const sendReport = userForm(sendToServer);
   const classes = useStyles();
-  // const [status, setStatus] = useState({})
+  const [isLoading, setIsLoading] = useState(false)
   const token = localStorage.getItem("token")
   const baseUrl = config.API_URL
 
+  const state = cookPaymentDetails.map(({state}) => {return state} )
+  const lga = cookPaymentDetails.map(({lga}) => { return lga} )
+  const month = cookPaymentDetails.map(({month}) => { return month} )
+
   async function sendToServer() {
-    console.log(sendReport.values);
-    // console.log(sendReport.formData());
-    const response = await postContent(`${baseUrl}/`,
-      sendReport.values, token);
-    // sendReport.reset();
-
-    alert("Your report has been sent")
-  console.log(response);
-  //   const body = await result;
-  //   console.log(body);
+    try {
+      setIsLoading(true)
+      const response = await postContent(`${baseUrl}/payment-report/sendtoadmin/${state[0]}/${lga[0]}/${month[0]}/COOK`, token);
+      alert("Payments report has been sent")
+      setIsLoading(false)
+    } catch ({message}) {
+      alert(message)
+    }
+    finally {
+      setIsLoading(false)
+    }
   }
-
-  // console.log(status)
 
   return (
     <div>
@@ -60,6 +64,7 @@ export default function NewlyRegisteredCooks({cookPaymentDetails}) {
               </div>
               <div>
                   <PublishIcon fontSize="large" style={{marginRight: "30px", cursor: "pointer"}} onClick={sendReport.submit} />
+                  {isLoading && <Loading/>}
               </div>
             </CardHeader>
             <CardBody>

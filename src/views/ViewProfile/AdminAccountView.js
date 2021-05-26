@@ -85,7 +85,7 @@ export default function AdminAccountView({details}) {
     async function sendToServer() {
         try {
             const imageUpload = await postContent(
-                `/cook/${details._id}/reactivate`, token
+                `/admin/${details._id}/reactivate`, token
               );
         } catch ({message}) {
             alert(message)

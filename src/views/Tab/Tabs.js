@@ -9,9 +9,10 @@ import RestaurantIcon from '@material-ui/icons/Restaurant';
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import CustomTabs from "components/CustomTabs/CustomTabs.js";
-import TableSchools from 'views/TableList/TableSchools';
-import TableCook from 'views/TableList/TableCook';
-import TableAggregator from 'views/TableList/TableAggregator';
+import TableSchools from 'views/TableList/SuperTableSchool';
+import TableCook from 'views/TableList/SuperTableCook';
+import TablePupil from 'views/TableList/SuperTablePupils';
+import TableAggregator from 'views/TableList/SuperTableAggregator';
 import StateAdmin from 'views/StateView/StateView'
 import styles from "assets/jss/material-kit-react/views/componentsSections/tabsStyle.js";
 
@@ -39,6 +40,13 @@ export default function Tabs() {
                     )
                   },
                   {
+                    tabName: "Pupils",
+                    tabIcon: RestaurantIcon,
+                    tabContent: (
+                      <TablePupil />
+                    )
+                  },
+                  {
                     tabName: "Schools",
                     tabIcon: SchoolIcon,
                     tabContent: (
@@ -58,7 +66,7 @@ export default function Tabs() {
                     tabContent: (
                       <TableAggregator />
                     )
-                  }
+                  },
                 ]}
               />
             </GridItem>

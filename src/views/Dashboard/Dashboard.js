@@ -19,6 +19,7 @@ import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
+import PersonIcon from '@material-ui/icons/Person';
 import CardFooter from "components/Card/CardFooter.js";
 // import { dataContext } from 'components/context/DataContext';
 import {getContent, kCount} from 'utils';
@@ -57,6 +58,27 @@ export default function Dashboard() {
   return (
     <div>
       <GridContainer>
+        <GridItem xs={12} sm={6} md={3}>
+        <Card>
+            <CardHeader color="warning" stats icon>
+              <CardIcon color="warning">
+                <PersonIcon />
+              </CardIcon>
+              <p className={classes.cardCategory}>Pupils</p>
+              <h3 className={classes.cardTitle}>
+                {kCount(school.length)}
+              </h3>
+            </CardHeader>
+            <CardFooter stats>
+              <div className={classes.stats}> 
+                  <ViewListIcon />
+                <Link to="/state-admin/pupils" >
+                  View All
+                </Link>
+              </div>
+            </CardFooter>
+          </Card>
+        </GridItem>
         <GridItem xs={12} sm={6} md={3}>
           <Card>
             <CardHeader color="warning" stats icon>
@@ -116,6 +138,8 @@ export default function Dashboard() {
             </CardFooter>
           </Card>
         </GridItem>
+      </GridContainer>
+      <GridContainer>
         <GridItem xs={12} sm={6} md={3}>
           <Card>
             <CardHeader color="info" stats icon>

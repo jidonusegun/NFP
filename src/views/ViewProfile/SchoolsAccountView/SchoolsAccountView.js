@@ -85,7 +85,7 @@ export default function AdminAccountView({details}) {
     async function sendToServer() {
         try {
             const imageUpload = await postContent(
-                `${baseUrl}/cook/${details._id}/reactivate`, token
+                `${baseUrl}/school/${details._id}/reactivate`, token
               );
         } catch ({message}) {
             alert(message)
@@ -97,7 +97,7 @@ export default function AdminAccountView({details}) {
             <Dialog
                 open={isOpen}
                 handleClose={closeDialog}
-                title="Active User"
+                title="Active School"
                 size="sm"
                 buttons={[
                     {

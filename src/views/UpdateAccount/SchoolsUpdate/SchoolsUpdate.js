@@ -95,13 +95,13 @@ export default function UpdateAdmin({details, content}) {
       addCook.setData('registeredBy', userId)
       delete addCook.values.filePicker;
       delete addCook.values.files;
-
-        const {data} = await patchContent(`${baseUrl}/school/${details._id}`,
-        addCook.values, token);
+      const tempData = {'tempData': JSON.stringify(addCook.values)};
+        const {data} = await postContent(`${baseUrl}/school/tempedit/${details._id}`,
+        tempData, token);
 
           if (imageUpload?.image) {
         const imageResult = await postImageContent(
-          `${baseUrl}/cook/upload-image/${data?._id}`,
+          `${baseUrl}/cook/upload-image/${details?._id}`,
           imageData,
           token
         );

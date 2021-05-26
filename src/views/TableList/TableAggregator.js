@@ -20,14 +20,16 @@ import DialogContainer from "components/Dialog/DialogContainer.js";
 import AddAggregators from "views/UserProfile/AddAggregators";
 import { dataContext } from "components/context/DataContext";
 import SpeedDialAggregator from "components/SpeedDialAggregator/SpeedDialAggregator.js";
+import Download from 'assets/img/Abuja.jpg';
 // icon components
 import ViewListIcon from "@material-ui/icons/ViewList";
-import userForm from "../../hooks/useForm"; 
-import config from 'utils/config';
-import {postContent, getContent, postImageContent} from 'utils';
-import SaveAltIcon from "@material-ui/icons/SaveAlt";
-import Dialog from 'components/useDialog';
-import useDialog from 'components/useDialog/useHook';
+import userForm from "../../hooks/useForm";
+import config from "utils/config";
+import { postContent, getContent, postImageContent } from "utils";
+import PublishIcon from '@material-ui/icons/Publish';
+import GetAppIcon from "@material-ui/icons/GetApp";
+import Dialog from "components/useDialog";
+import useDialog from "components/useDialog/useHook";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
 
@@ -40,18 +42,18 @@ export default function TableAggregator() {
   const { handleClickPop, handleClickOpen } = useContext(dataContext);
   const [aggregatorDetails, setAggregatorDetails] = useState();
   const [loading, setLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const [account, setAccount] = useState([]);
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState("");
   const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("id")
+  const userId = localStorage.getItem("id");
   const stateLogin = localStorage.getItem("state");
   const lgaLogin = localStorage.getItem("lga");
-  const [imageUpload, setImageUpload] = useState({image: ''})
-  const baseUrl = config.API_URL
+  const [imageUpload, setImageUpload] = useState({ image: "" });
+  const baseUrl = config.API_URL;
 
   useEffect(() => {
-    setIsLoading(true); 
+    setIsLoading(true);
     getContent(
       `${baseUrl}/aggregators?state=${stateLogin}&lga=${lgaLogin}`,
       token
@@ -77,22 +79,24 @@ export default function TableAggregator() {
   // }
 
   const handleChange = (e) => {
-    setImageUpload({image: e.target.files[0]})
-  }
+    setImageUpload({ image: e.target.files[0] });
+  };
 
   async function submitUpload() {
     try {
       setLoading(true);
-      const data = new FormData()
-      data.append('files', imageUpload.image)
-    const result = await postImageContent(`${baseUrl}/aggregator/uploadcsv/${userId}`, data, token);
-    alert("Aggregator list has been sent for approval")
-    closeDialog();
-    }
-    catch ({message}) {
-      setMessage(message)
-    }
-    finally {
+      const data = new FormData();
+      data.append("files", imageUpload.image);
+      const result = await postImageContent(
+        `${baseUrl}/aggregator/uploadcsv/${userId}`,
+        data,
+        token
+      );
+      alert("Aggregator list has been sent for approval");
+      closeDialog();
+    } catch ({ message }) {
+      setMessage(message);
+    } finally {
       setLoading(false);
     }
   }
@@ -102,54 +106,88 @@ export default function TableAggregator() {
       <DialogContainer children={<AddAggregators content={account} />} />
       <Popover children={<SpeedDialAggregator details={aggregatorDetails} />} />
       <Dialog
-                open={isOpen}
-                handleClose={closeDialog}
-                title="Upload Aggregator's List in Excel"
-                size="sm"
-                buttons={[
-                    {
-                        value: <>Upload {loading && <Loading />}</>,
-                        onClick: () => submitUpload(),
-                    },
-                ]}
-            >
-                <form>
-                    <input
-                        id="files"
-                        onChange={(e) => handleChange(e)}
-                        type="file"
-                        placeholder="Upload Aggregators"
-                        accept=".xlsx, .xls, .csv"
-                    />
-                </form>
-            </Dialog>
+        open={isOpen}
+        handleClose={closeDialog}
+        title="Upload Aggregator's List in Excel"
+        size="sm"
+        buttons={[
+          {
+            value: <>Upload {loading && <Loading />}</>,
+            onClick: () => submitUpload(),
+          },
+        ]}
+      >
+        <form>
+          <input
+            id="files"
+            onChange={(e) => handleChange(e)}
+            type="file"
+            placeholder="Upload Aggregators"
+            accept=".xlsx, .xls, .csv"
+          />
+        </form>
+      </Dialog>
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           {isLoading ? (
             <Loading />
           ) : (
             <div>
-                <Card> 
-                  <CardHeader color="primary" className={classes.cardHeader}>
-                    <div>
-                      <h4 className={classes.cardTitleWhite}>
-                        Aggregators Details
-                      </h4>
-                      <p className={classes.cardCategoryWhite}>
-                        List of all Aggregators
+              <Card>
+                <CardHeader color="primary" className={classes.cardHeader}>
+                  <div>
+                    <h4 className={classes.cardTitleWhite}>
+                      Aggregators Details
+                    </h4>
+                    <p className={classes.cardCategoryWhite}>
+                      List of all Aggregators
+                    </p>
+                  </div>
+                  {/* <div
+                    style={{
+                      marginRight: "30px",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        marginRight: '2rem'
+                      }}
+                    >
+                      <a
+                        href={Download}
+                        target="_blank"
+                        style={{color: 'white'}}
+                        rel="noopener noreferrer"
+                        download
+                      >
+                        <GetAppIcon
+                          fontSize="large"
+                          style={{ cursor: "pointer" }}
+                        />
+                      </a>
+                      <p style={{ margin: "0px", padding: "0px" }}>
+                        Download Excel Template
                       </p>
                     </div>
-                    <div>
-                      <SaveAltIcon
-                      onClick={() => openDialog()}
+                    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                      <PublishIcon
+                        onClick={() => openDialog()}
                         fontSize="large"
-                        style={{ marginRight: "30px", cursor: "pointer" }}
+                        style={{ cursor: "pointer" }}
                       />
-                      <p style={{margin: "0px", padding: "0px"}}>Excel Upload</p>
+                      <p style={{ margin: "0px", padding: "0px" }}>
+                        Excel Upload
+                      </p>
                     </div>
-                  </CardHeader>
-                  <CardBody>
-                  { account.length > 0 ?
+                  </div> */}
+                </CardHeader>
+                <CardBody>
+                  {account.length > 0 ? (
                     <Table className={classes.table}>
                       <TableHead style={{ color: "#9c27b0" }}>
                         <TableRow className={classes.tableHeadRow}>
@@ -258,6 +296,13 @@ export default function TableAggregator() {
                           >
                             SCHOOL NAME
                           </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            NO. OF PUPILS FEED
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -281,6 +326,7 @@ export default function TableAggregator() {
                             schoolName,
                             image,
                             status,
+                            pupilsFeed
                           }) => {
                             return (
                               <TableRow
@@ -355,20 +401,24 @@ export default function TableAggregator() {
                                 <TableCell className={classes.tableCell}>
                                   {schoolName}
                                 </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {pupilsFeed}
+                                </TableCell>
                               </TableRow>
                             );
                           }
                         )}
                       </TableBody>
                     </Table>
-                  :
-                  <div>No Data yet</div> }
-                  </CardBody>
-                </Card>
+                  ) : (
+                    <div>No Data yet</div>
+                  )}
+                </CardBody>
+              </Card>
             </div>
           )}
         </GridItem>
-        <AddButton handleClickOpen={handleClickOpen} />
+        <AddButton handleClickOpen={handleClickOpen} title="Add new entity" />
         <Toast message={message} />
       </GridContainer>
     </div>

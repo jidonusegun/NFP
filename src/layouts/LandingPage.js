@@ -26,7 +26,7 @@ export default function LandingPage() {
   return (
     <div>
       <Header
-        brand="NSFRS"
+        brand="NHGSFRT"
         rightLinks={<HeaderLinks />}
         fixed
         color="transparent"
@@ -51,7 +51,7 @@ export default function LandingPage() {
           </div>
         </Parallax>
           <div className={classes.brand}>
-            <h1 className={classes.title}>NSFRS</h1>
+            <h1 className={classes.title}>NHGSFRT</h1>
             <h3 className={classes.subtitle}>
               A program by the federal government to feed school pupils a meal per day
             </h3>

@@ -32,7 +32,11 @@ import DashboardPage from "views/Dashboard/Dashboard.js";
 import TableCook from "views/TableList/TableCook.js";
 import TableAggregator from "views/TableList/TableAggregator.js";
 import TableSchools from "views/TableList/TableSchools.js";
+import TablePupils from "views/TableList/TablePupils";
+import EditIcon from '@material-ui/icons/Edit';
+import StateAdminProfile from 'views/ViewProfile/stateAdminProfile';
 import ReportTable from "views/Report/stateReportTable.js";
+import PersonIcon from '@material-ui/icons/Person';
 
 import BlogPosts from 'views/Blog/BlogPosts';
 // import Icons from "views/Icons/Icons.js";
@@ -46,11 +50,19 @@ import NotificationsPage from "views/Notifications/Notifications.js";
 const dashboardRoutes = [
   {
     path: "/home",
-    name: "Home Page",
+    name: "Dashboard",
     rtlName: "لوحة القيادة",
     icon: Dashboard,
     component: DashboardPage,
     layout: "/state-admin" 
+  },
+  {
+    path: "/pupils",
+    name: "Pupils",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: PersonIcon,
+    component: TablePupils,
+    layout: "/state-admin"
   },
   {
     path: "/schools",
@@ -76,14 +88,14 @@ const dashboardRoutes = [
     component: TableCook,
     layout: "/state-admin"
   },
-  {
-    path: "/reports",
-    name: "Reports",
-    rtlName: "الرموز",
-    icon: AssessmentIcon,
-    component: ReportTable,
-    layout: "/state-admin"
-  },
+  // {
+  //   path: "/reports",
+  //   name: "Beneficiaries Reports",
+  //   rtlName: "الرموز",
+  //   icon: AssessmentIcon,
+  //   component: ReportTable,
+  //   layout: "/state-admin"
+  // },
   {
     path: "/payments",
     name: "Payment",
@@ -108,14 +120,13 @@ const dashboardRoutes = [
     component: BlogPosts,
     layout: "/state-admin"
   },
-  // {
-  //   path: "/upgrade-to-pro",
-  //   name: "Upgrade To PRO",
-  //   rtlName: "التطور للاحترافية",
-  //   icon: Unarchive,
-  //   component: UpgradeToPro,
-  //   layout: "/admin"
-  // }
+  {
+    path: "/edit-profile",
+    name: "Profile",
+    icon: EditIcon,
+    component: StateAdminProfile,
+    layout: "/state-admin"
+  },
 ];
 
 export default dashboardRoutes;

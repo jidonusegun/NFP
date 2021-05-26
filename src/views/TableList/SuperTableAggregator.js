@@ -20,12 +20,14 @@ import DialogContainer from 'components/Dialog/DialogContainer.js';
 import AddAggregators from 'views/UserProfile/AddAggregators';
 import { dataContext } from 'components/context/DataContext';
 import SpeedDialAggregator from 'components/SpeedDialAggregator/SpeedDialAggregator.js';
+import Download from 'assets/img/Abuja.jpg';
 // icon components
 import ViewListIcon from '@material-ui/icons/ViewList';
 import userForm from "../../hooks/useForm"; 
 import config from 'utils/config';
 import {postContent, getContent, postImageContent} from 'utils';
-import SaveAltIcon from "@material-ui/icons/SaveAlt";
+import PublishIcon from '@material-ui/icons/Publish';
+import GetAppIcon from "@material-ui/icons/GetApp";
 import Dialog from 'components/useDialog';
 import useDialog from 'components/useDialog/useHook';
 import Loading from "components/isLoading";
@@ -134,14 +136,48 @@ export default function TableAggregator() {
                         List of all Aggregators
                       </p>
                     </div>
-                    <div>
-                      <SaveAltIcon
-                      onClick={() => openDialog()}
-                        fontSize="large"
-                        style={{ marginRight: "30px", cursor: "pointer" }}
-                      />
-                      <p style={{margin: "0px", padding: "0px"}}>Excel Upload</p>
+                    {/* <div
+                    style={{
+                      marginRight: "30px",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        marginRight: '2rem'
+                      }}
+                    >
+                      <a
+                        href={Download}
+                        target="_blank"
+                        style={{color: 'white'}}
+                        rel="noopener noreferrer"
+                        download
+                      >
+                        <GetAppIcon
+                          fontSize="large"
+                          style={{ cursor: "pointer" }}
+                        />
+                      </a>
+                      <p style={{ margin: "0px", padding: "0px" }}>
+                        Download Excel Template
+                      </p>
                     </div>
+                    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                      <PublishIcon
+                        onClick={() => openDialog()}
+                        fontSize="large"
+                        style={{ cursor: "pointer" }}
+                      />
+                      <p style={{ margin: "0px", padding: "0px" }}>
+                        Excel Upload
+                      </p>
+                    </div>
+                  </div> */}
                   </CardHeader>
                   <CardBody>
                   { account.length > 0 ?
@@ -164,10 +200,11 @@ export default function TableAggregator() {
                             <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>LGA</TableCell>
                             <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>ADDRESS</TableCell>
                             <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>SCHOOL NAME</TableCell>
+                            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>NO. OF PUPILS FEED</TableCell>
                         </TableRow>
                       </TableHead>
                     <TableBody>
-                      {account.map(({_id, gender, items, firstName, lastName, birthday, accountNumber, bankName, bvn, phoneNumber, date_created_acc, email, state, address, lga, schoolName, image, status}) => {
+                      {account.map(({_id, gender, items, firstName, lastName, birthday, accountNumber, bankName, bvn, phoneNumber, date_created_acc, email, state, address, lga, schoolName, image, status, pupilsFeed}) => {
                         return (
                           <TableRow key={_id} className={classes.tableBodyRow}>
                                 <TableCell className={classes.tableCell}><ViewListIcon style={{cursor: "pointer"}} onMouseUp={function(event){ setAggregatorDetails({_id, gender, firstName, lastName, accountNumber, bankName, bvn, phoneNumber, email, state, date_created_acc, birthday, address, lga, schoolName, image});}}  onClick={handleClickPop} /></TableCell>
@@ -185,6 +222,7 @@ export default function TableAggregator() {
                                 <TableCell className={classes.tableCell}>{lga}</TableCell>
                                 <TableCell className={classes.tableCell}>{address}</TableCell>
                                 <TableCell className={classes.tableCell}>{schoolName}</TableCell>
+                                <TableCell className={classes.tableCell}>{pupilsFeed}</TableCell>
                           </TableRow>
                         )
                     })}
@@ -197,7 +235,7 @@ export default function TableAggregator() {
             </div>
           }
         </GridItem>
-              <AddButton handleClickOpen={handleClickOpen} />
+              <AddButton handleClickOpen={handleClickOpen} title="Add new entity" />
               <Toast message={message} />
       </GridContainer>
     </div>

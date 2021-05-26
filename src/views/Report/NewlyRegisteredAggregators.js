@@ -34,29 +34,48 @@ const { handleClickPop, handleClosePop, } = useContext(dataContext);
 // const [sendData, setSendData] = useState();
 const token = localStorage.getItem("token");
 const approveAggregator = userForm(sendToServer);
+const rejectAggregator= userForm(sendRejectToServer);
 const [savedId, setSavedId] = useState()
 const baseUrl = config.API_URL
 
 async function sendToServer() {
-  handleClosePop()
-  const response = await patchContent(`${baseUrl}/aggregator/${savedId}/approve`, token);
-  // addCook.reset();
-  console.log(response);
-  //   const body = await result;
-  //   console.log(body);
+  try {
+    const response = await patchContent(
+      `${baseUrl}/aggregator/${savedId}/approve`,
+      token
+    );
+    console.log(response);
+    handleClosePop();
+  } catch ({message}) {
+    alert(message)
   }
+}
+
+async function sendRejectToServer() {
+  try {
+    const response = await patchContent(
+      `${baseUrl}/aggregator/${savedId}/approve`,
+      token
+    );
+    console.log(response);
+    alert("Record ejected successfully");
+    handleClosePop();
+  } catch ({ message }) {
+    alert(message);
+  }
+}
 
   return (
     <div>
       <Popover>
-          <List>
-            <ListItem button>
-              <ListItemText primary="Approve" onClick={approveAggregator.submit} />
-            </ListItem>
-            <ListItem button>
-              <ListItemText primary="Reject" onClick={handleClosePop} />
-            </ListItem>
-          </List>
+        <List>
+          <ListItem button>
+            <ListItemText primary="Approve" onClick={() => approveAggregator.submit()} />
+          </ListItem>
+          <ListItem button>
+            <ListItemText primary="Reject" onClick={() => rejectAggregator.submit()} />
+          </ListItem>
+        </List>
       </Popover>
       <GridContainer>
       <GridItem xs={12} sm={12} md={12}>

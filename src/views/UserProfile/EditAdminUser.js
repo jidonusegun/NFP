@@ -111,12 +111,14 @@ const [stateValue, setStatevalue] = useState([])
       delete addCook.values.filePicker;
       delete addCook.values.files;
 
-      const {data} = await patchContent(`${baseUrl}/admin/${details._id}`,
-        addCook.values, token);
+      const tempData = {'tempData': JSON.stringify(addCook.values)};
+
+      const {data} = await postContent(`${baseUrl}/admin/tempedit/${details._id}`,
+      tempData, token);
 
       if (imageUpload?.image) {
         const imageResult = await postImageContent(
-          `${baseUrl}/admin/upload-image/${data?._id}`,
+          `${baseUrl}/admin/upload-image/${details?._id}`,
           imageData,
           token
         );
