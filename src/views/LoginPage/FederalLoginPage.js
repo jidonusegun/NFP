@@ -168,7 +168,7 @@ export default function LoginPage(props) {
               <GridItem xs={12} sm={12} md={4}>
                 <Card className={classes[cardAnimaton]}>
                   <form className={classes.form}>
-                    <CardHeader color="rose" className={classes.cardHeader}>
+                    <CardHeader color="success" className={classes.cardHeader}>
                       <h4>Federal Admin Login</h4>
                     </CardHeader>
                     <div className={classes.federalLogin}>
