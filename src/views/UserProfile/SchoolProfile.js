@@ -113,8 +113,8 @@ export default function SchoolProfile({
         "state",
         "totalPulpil",
         "email",
-        "phoneNumber",
-        "contactPerson",
+        "contactPersonPhoneNumber",
+        "contactPersonName",
         "name",
       ];
       exclude.forEach((key) => {
@@ -272,10 +272,10 @@ export default function SchoolProfile({
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Contact Person"
-                    id="contactPerson"
+                    id="contactPersonName"
                     inputProps={{
                       type: "text",
-                      name: "contactPerson",
+                      name: "contactPersonName",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
@@ -286,10 +286,10 @@ export default function SchoolProfile({
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Contact Phone No"
-                    id="phoneNumber"
+                    id="contactPersonPhoneNumber"
                     inputProps={{
                       type: "number",
-                      name: "contactPhoneNumber",
+                      name: "contactPersonPhoneNumber",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{

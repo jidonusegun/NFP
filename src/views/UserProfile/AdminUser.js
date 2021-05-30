@@ -115,13 +115,13 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
       const imageData = new FormData();
       imageData.append("files", imageUpload?.image);
 
-      const exclude = ['address','schoolName','lga','state','role','password','username','email','phoneNumber','birthday','gender','lastName','firstName',];
+      const exclude = ['address','lga','state','role','password','username','email','phoneNumber','birthday','gender','lastName','firstName',];
       exclude.forEach((key) => {
         if (!addUser.values[key]) {
           setErrorMessage(`${key} is required`);
         }
       });
-      addUser.setData('registeredBy', userId)
+      // addUser.setData('registeredBy', userId)
       delete addUser.values.filePicker;
       delete addUser.values.files;
 
@@ -139,7 +139,7 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
         );
       }
 // content.unshift(data)
-setMessage('Record sent for approval')
+      setMessage('Record sent for approval')
       setIsLoading(false);
       handleClose();
     } catch ({ message }) {

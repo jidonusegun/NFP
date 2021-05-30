@@ -119,7 +119,7 @@ export default function StateView(props) {
   return (  
     <div>
       <DialogContainer children= {<AdminUser title="Add Data" sendButton="Submit" />} />
-      <Popover children={<SpeedDial details={userDetails} />} />
+      <Popover children={<SpeedDial details={userDetails} />} /> 
 
       <div style={{display: "flex", justifyContent: "flex-end", padding: "0 2rem 2rem 2rem"}}>
         <FormControl className={classes.formControl} style={{width: "200px"}}>
@@ -218,7 +218,7 @@ export default function StateView(props) {
         </GridItem>      
       </GridContainer>
 
-        <AddButton handleClickOpen={handleClickOpen} />
+        <AddButton handleClickOpen={handleClickOpen} title="Add new entity" />
     </div>
   );
 }

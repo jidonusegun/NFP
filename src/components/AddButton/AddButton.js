@@ -25,6 +25,7 @@ export default function AddButton({ handleClickOpen, title }) {
         color="secondary"
         aria-label="add"
         className={classes.fab}
+        onClick={handleClickOpen}
       >
         <AddIcon onClick={handleClickOpen} />
         {title}

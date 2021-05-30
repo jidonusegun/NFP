@@ -103,7 +103,7 @@ const handleImageUpload = (e) => {
       const imageData = new FormData();
       imageData.append("files", imageUpload?.image);
 
-      const exclude = ['address','lga','state','totalPulpil','email','phoneNumber','contactPerson','name'];
+      const exclude = ['address','lga','state','totalPulpil','email','phoneNumber','contactPersonName','name'];
       exclude.forEach((key) => {
         if (!addCook.values[key]) {
           setErrorMessage(`${key} is required`);
@@ -236,10 +236,10 @@ setMessage('Record sent for approval')
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Contact Person"
-                    id="contactPerson"
+                    id="contactPersonName"
                     inputProps={{
                       type: "text",
-                      name: "contactPerson",
+                      name: "contactPersonName",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{

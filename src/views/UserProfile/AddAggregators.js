@@ -105,20 +105,45 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
     ).then((data) => setLgavalue(data.data));
   }, [token, stateID]);
 
+  const handleChange = (e) => {
+
+    var index = e.target.selectedIndex;
+    var optionElement = e.target.childNodes[index]
+    var option =  optionElement.getAttribute('id');
+
+    setStateID(option)
+  }
+
   async function sendToServer() {
 
     try {
       setIsLoading(true);
 
-      const exclude = ['address','schoolName','lga','state','email','items','phoneNumber','bvn','bankName','accountNumber','birthday','gender','lastName','firstName',];
+      const exclude = ['companyName',
+        'itemsToSupply',
+        'unitPrice',
+        'phoneNumber',
+        'frequencyOfSupply',
+        'dayForConsumption',
+        'numberOfPulpils',
+        'bankName',
+        'acctNumber',
+        'tin',
+        'state',
+        'registeredBy'];
       exclude.forEach((key) => {
         if (!addCook.values[key]) {
           setErrorMessage(`${key} is required`);
         }
       });
 
-      const value = addCook.values.items.split(",");
-      addCook.values.items = value;
+      const items = addCook.values.items;
+      if (items && typeof items === 'string'){
+        addCook.setData('items', items.split(','))
+      };
+
+      // const value = addCook.values.items.split(",");
+      // addCook.values.items = value;
 
       addCook.setData('registeredBy', userId)
 
@@ -266,10 +291,10 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                 <GridItem xs={12} sm={12} md={4}>
                 <CustomInput
                     labelText="Unit Price"
-                    id="unitPost"
+                    id="unitPrice"
                     inputProps={{
                       type: "number",
-                      name: "unitPost",
+                      name: "unitPrice",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
@@ -284,7 +309,7 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                     labelText="Day of Consumption"
                     id="dayForConsumption"
                     inputProps={{
-                      type: "date",
+                      type: "number",
                       name: "dayForConsumption",
                       onChange: (e) => addCook.getData(e),
                     }}
@@ -308,7 +333,7 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                   />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
+                  {/* <CustomInput
                     labelText="Bank Name"
                     id="bankName"
                     inputProps={{
@@ -319,7 +344,69 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                     formControlProps={{
                       fullWidth: true,
                     }}
-                  />
+                  /> */}
+
+                  <FormControl className={classes.formControl}>
+                    <InputLabel
+                      htmlFor="bankName"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      Bank Name
+                    </InputLabel>
+                    <Select
+                      native
+                      value={addCook.values.bankName}
+                      onChange={addCook.getData}
+                      className={classes.underline}
+                      style={{ width: "100%" }}
+                      inputProps={{
+                        name: "bankName",
+                        id: "bankName",
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      <option value="Access Bank Plc">Access Bank Plc</option>
+                      <option value="Fidelity Bank Plc">Fidelity Bank Plc</option>
+                      <option value="First City Monument Bank Limited">First City Monument Bank Limited</option>
+                      <option value="First Bank of Nigeria Limited">First Bank of Nigeria Limited</option>
+                      <option value="Guaranty Trust Bank Plc">Guaranty Trust Bank Plc</option>
+                      <option value="Union Bank of Nigeria Plc">Union Bank of Nigeria Plc</option>
+                      <option value="United Bank for Africa Plc">United Bank for Africa Plc</option>
+                      <option value="Zenith Bank Plc">Zenith Bank Plc</option>
+                      <option value="Citibank Nigeria Limited">Citibank Nigeria Limited</option>
+                      <option value="Ecobank Nigeria">Ecobank Nigeria</option>
+                      <option value="Heritage Bank Plc">Heritage Bank Plc</option>
+                      <option value="Keystone Bank Limited">Keystone Bank Limited</option>
+                      <option value="Polaris Bank Limited">Polaris Bank Limited.</option>
+                      <option value="Stanbic IBTC Bank Plc">Stanbic IBTC Bank Plc</option>
+                      <option value="Standard Chartered">Standard Chartered</option>
+                      <option value="Sterling Bank Plc">Sterling Bank Plc</option>
+                      <option value="Titan Trust Bank Limited">Titan Trust Bank Limited</option>
+                      <option value="Unity Bank Plc">Unity Bank Plc</option>
+                      <option value="Wema Bank Plc">Wema Bank Plc</option>
+                      <option value="Globus Bank Limited[3]">Globus Bank Limited[3]</option>
+                      <option value="SunTrust Bank Nigeria Limited">SunTrust Bank Nigeria Limited</option>
+                      <option value="Providus Bank Limited">Providus Bank Limited</option>
+                      <option value="Jaiz Bank Plc">Jaiz Bank Plc</option>
+                      <option value="TAJBank Limited">TAJBank Limited</option>
+                      <option value="Mutual Trust Microfinance Bank">Mutual Trust Microfinance Bank</option>
+                      <option value="Finca Microfinance Bank Limited">Finca Microfinance Bank Limited</option>
+                      <option value="Fina Trust Microfinance Bank">Fina Trust Microfinance Bank</option>
+                      <option value="Accion Microfinance Bank">Accion Microfinance Bank</option>
+                      <option value="Peace Microfinance Bank">Peace Microfinance Bank</option>
+                      <option value="Infinity Microfinance Bank">Infinity Microfinance Bank</option>
+                      <option value="Kuda Bank">Kuda Bank</option>
+                      <option value="Rubies Bank">Rubies Bank</option>
+                      <option value="VFD MFB">VFD MFB</option>
+                      <option value="Mint Finex MFB">Mint Finex MFB</option>
+                      <option value="Mkobo MFB">Mkobo MFB</option>
+                      <option value="Coronation Merchant Bank[6]">Coronation Merchant Bank[6]</option>
+                      <option value="FBNQuest Merchant Bank[7]">FBNQuest Merchant Bank[7]</option>
+                      <option value="FSDH Merchant Bank[8]">FSDH Merchant Bank[8]</option>
+                      <option value="Rand Merchant Bank">Rand Merchant Bank</option>
+                      <option value="Nova Merchant Bank">Nova Merchant Bank</option>
+                    </Select>
+                  </FormControl>
                 </GridItem>
               </GridContainer>
               <GridContainer>
@@ -337,13 +424,13 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                     }}
                   />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={6}>
+                <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
-                    labelText="Number of pupils to feed"
-                    id="pupilFeed"
+                    labelText="No. of pupils to feed"
+                    id="numberOfPulpils"
                     inputProps={{
                       type: "number",
-                      name: "pupilFeed",
+                      name: "numberOfPulpils",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
@@ -351,7 +438,7 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                     }}
                   />
                 </GridItem>
-                {/* <GridItem xs={12} sm={12} md={4}>
+                <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Mobile Number"
                     id="phoneNumber"
@@ -364,22 +451,45 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                       fullWidth: true,
                     }}
                   />
-                </GridItem> */}
-                
-                {/* <GridItem xs={12} sm={12} md={4}>
+                </GridItem>
+                </GridContainer>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Frequently of Supply"
-                    id="frequentlyOfSupply"
+                    id="frequencyOfSupply"
                     inputProps={{
                       type: "number",
-                      name: "frequentlyOfSupply",
+                      name: "frequencyOfSupply",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
-                </GridItem> */}
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                <FormControl className={classes.formControl}>
+                    <InputLabel htmlFor="state" style={{color: "#D2D2D2", fontWeight: "normal"}}>State</InputLabel>
+                    <Select
+                      native
+                      value={addCook.values.state}
+                      onChange={(e) =>{handleChange(e)
+                        addCook.getData(e)}}
+                      className={classes.underline}
+                      style={{width: "100%"}}
+                      inputProps={{
+                        name: 'state',
+                        id: 'state',
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      {stateValue.map(({name, _id}) => {
+                        return <option value={name} id={_id}>{name}</option>
+                      })}
+                    </Select>
+                  </FormControl>
+                  </GridItem>
               </GridContainer>
             </CardBody>
             <CardFooter>

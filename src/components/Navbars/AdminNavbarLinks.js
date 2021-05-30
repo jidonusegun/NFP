@@ -120,7 +120,7 @@ export default function AdminNavbarLinks() {
 
   function logOut() {
     window.localStorage.clear();
-    window.location.assign(`http://report.hgsfp.n-sip.gov.ng`)
+    window.location.assign(`${baseUrl}`)
     handleCloseProfile()
   }
 
