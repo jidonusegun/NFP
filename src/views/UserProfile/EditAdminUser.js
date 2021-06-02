@@ -86,6 +86,7 @@ const [stateValue, setStatevalue] = useState([])
   const [stateID, setStateID] = useState()
   const [errorMessage, setErrorMessage] = useState("")
   const userId = localStorage.getItem("id");
+  const userRole = localStorage.getItem("role");
   const baseUrl = config.API_URL
   // let errorMessage = "";
 
@@ -100,21 +101,21 @@ const [stateValue, setStatevalue] = useState([])
       const imageData = new FormData();
       imageData.append("files", imageUpload?.image);
 
-      const exclude = ['address','schoolName','lga','state','role','password','username','email','phoneNumber','birthday','gender','lastName','firstName',];
+      const exclude = ['address','lga','state','username','email','phoneNumber','birthday','gender','lastName','firstName',];
       exclude.forEach((key) => {
         if (!addCook.values[key]) {
           setErrorMessage(`${key} is required`);
         }
       });
 
-      addCook.setData('registeredBy', userId)
+      // addCook.setData('registeredBy', userId)
       delete addCook.values.filePicker;
       delete addCook.values.files;
 
       const tempData = {'tempData': JSON.stringify(addCook.values)};
 
-      const {data} = await postContent(`${baseUrl}/admin/tempedit/${details._id}`,
-      tempData, token);
+      const {data} = await patchContent(`${baseUrl}/admin/${details._id}`,
+      addCook.values, token);
 
       if (imageUpload?.image) {
         const imageResult = await postImageContent(
@@ -124,7 +125,12 @@ const [stateValue, setStatevalue] = useState([])
         );
       }
 // content.unshift(data)
-setMessage('Record sent for approval')
+if(userRole === "SUPER_ADMIN") {
+  alert('Record Added')
+}
+{
+  alert('Record sent for approval')
+}
       setIsLoading(false);
       handleClose();
     } catch ({ message }) {
@@ -176,10 +182,10 @@ setMessage('Record sent for approval')
       }
 
       useEffect(() => {
-        getContent("https://nsfp.herokuapp.com/v1/settings/states", token)
+        getContent(`${baseUrl}/settings/states`, token)
         .then(data=>setStatevalue(data.data))
 
-        getContent(`https://nsfp.herokuapp.com/v1/settings/state/${stateID}/lgas`, token)
+        getContent(`${baseUrl}/settings/state/${stateID}/lgas`, token)
         .then(data=>setLgavalue(data.data))
 
       },[token, stateID])
@@ -221,7 +227,7 @@ setMessage('Record sent for approval')
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="First Name"
-                    id="first-name"
+                    id="firstName"
                     inputProps={{
                       type: "text",
                       name: "firstName",
@@ -235,7 +241,7 @@ setMessage('Record sent for approval')
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Last Name"
-                    id="last-name"
+                    id="lastName"
                     inputProps={{
                       type: "text",
                       name: "lastName",
@@ -271,7 +277,7 @@ setMessage('Record sent for approval')
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Phone Number"
-                    id="phone-no"
+                    id="phoneNumber"
                     inputProps={{
                       type: "number",
                       name: "phoneNumber",
@@ -296,8 +302,6 @@ setMessage('Record sent for approval')
                     }}
                   />
                 </GridItem>
-                </GridContainer>
-                <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Date of Birth"
@@ -312,6 +316,8 @@ setMessage('Record sent for approval')
                     }}
                   />
                 </GridItem>
+                </GridContainer>
+                <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className={classes.formControl}>
                     <InputLabel htmlFor="state" style={{color: "#D2D2D2", fontWeight: "normal"}}>State</InputLabel>
@@ -355,8 +361,22 @@ setMessage('Record sent for approval')
                     </Select>
                   </FormControl>
                 </GridItem>
-              </GridContainer>
-              <GridContainer>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="Username"
+                    id="username"
+                    inputProps={{
+                      type: "text",
+                      name: "usernames",
+                      onChange: (e) => addCook.getData(e),
+                  }}
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                  />
+                  </GridItem>
+                </GridContainer>
+                <GridContainer>
                 <GridItem xs={12} sm={12} md={12}>
                   {/* <InputLabel style={{ color: "#AAAAAA" }}>Address</InputLabel> */}
                   <CustomInput
@@ -375,7 +395,7 @@ setMessage('Record sent for approval')
                   />
                 </GridItem>
               </GridContainer>
-              <GridContainer>
+              {/* <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Username"
@@ -404,7 +424,7 @@ setMessage('Record sent for approval')
                     }}
                   />
                 </GridItem>
-              </GridContainer>
+              </GridContainer> */}
             </CardBody>
             <CardFooter>
               <Button onClick={addCook.submit} color="primary">

@@ -16,7 +16,8 @@ export default function AddNewPost() {
   const baseUrl = config.API_URL
   
   async function sendToServer() {
-    addPost.setData("content", value)
+    try {
+      addPost.setData("content", value)
     addPost.setData("adminId", stateId)
     if(!addPost.values.title) {
       setErrorMessage("Title is required")
@@ -26,7 +27,11 @@ export default function AddNewPost() {
     }
     else {
       postContent(`${baseUrl}/blog`, addPost.values, token);
-      handleClose()
+      
+    }
+    handleClose()
+    } catch ({message}) {
+      console.log(message)
     }
   }
 

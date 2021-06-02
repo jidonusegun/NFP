@@ -86,7 +86,7 @@ export default function Sidebar(props) {
   var brand = (
     <div className={classes.logo}>
       <Link
-        to="/state-admin/home"
+        to="/admin/home"
         className={classNames(classes.logoLink, {
           [classes.logoLinkRTL]: props.rtlActive,
         })}
@@ -103,7 +103,7 @@ export default function Sidebar(props) {
   var brandSmall = (
     <div className={classes.logo}>
       <Link
-        to="/state-admin/home"
+        to="/admin/home"
         className={classNames(classes.logoLink, {
           [classes.logoLinkRTL]: props.rtlActive,
         })}

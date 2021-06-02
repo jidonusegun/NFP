@@ -119,7 +119,7 @@ export default function BlogPosts() {
   const [totalCount, setTotalCount] = useState()
   const [pageId, setPageId] = useState({value: 1})
   const [pageCount, setPageCount] = useState()
-  const [limit, setLimit] = useState(3)
+  const [limit, setLimit] = useState(10)
 
   useEffect(() => {
     getContent(`${baseUrl}/blogs?limit=${limit}&pageId=${pageId.value}`, token)
@@ -207,7 +207,7 @@ const indexOfFirstPost = indexOfLastPost - limit + 1
         </div>
        : <div className={classes.cardContainer}>No Blog News yet</div> } 
             
-       <AddButton handleClickOpen={handleClickOpen} />
+       <AddButton handleClickOpen={handleClickOpen} title="New Blog" />
   </div>
   )
 }

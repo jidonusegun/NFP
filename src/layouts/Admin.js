@@ -20,12 +20,17 @@ import logos from "assets/img/logos.png";
 
 let ps;
 
+const tokenLocal  = localStorage.getItem('token')
+const user = localStorage.getItem('username')
+console.log(user)
 const token = props => {
   return props
 }
 
 const switchRoutes = (
   <Switch>
+    {/* {tokenLocal ? 
+    <> */}
     {routes.map((prop, key) => {
       if (prop.layout === "/state-admin") {
         return (
@@ -40,10 +45,13 @@ const switchRoutes = (
       return null;
     })}
     <Redirect from="/state-admin" to="/state-admin/home" />
+    {/* </>
+    :
+    <Redirect from="/state-admin" to="login-page" />} */}
   </Switch>
 );
 // const {state} = props
-console.log(token)
+console.log({tokenLocal})
 const useStyles = makeStyles(styles);
 
 export default function Admin({ ...rest }) {
@@ -89,7 +97,7 @@ export default function Admin({ ...rest }) {
     <div className={classes.wrapper}>
       <Sidebar
         routes={routes}
-        logoText={"State Admin"}
+        logoText={user}
         logo={logos}
         image={image}
         handleDrawerToggle={handleDrawerToggle}

@@ -54,14 +54,14 @@ export default function SpeedDials({deleteContent, details}) {
               <ListItemText primary="Suspend Admin" onClick={handleClickOpenSuspend} />
             </ListItem>
             }
-            <ListItem button>
+            {/* <ListItem button>
               <ListItemAvatar className={classes.avatarContainer}>
                 <Avatar className={classes.avatar}>
                   <PopDeleteStateAdmin details={details} />
                 </Avatar>
               </ListItemAvatar>
               <ListItemText primary="Delete Admin" onClick={handleClickOpenDelete} />
-            </ListItem>
+            </ListItem> */}
           </List>
         </div>
   );

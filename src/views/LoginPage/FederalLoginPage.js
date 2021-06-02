@@ -92,6 +92,8 @@ export default function LoginPage(props) {
 
       localStorage.setItem("token", body.data.token);
       localStorage.setItem("state", body.data.state);
+      localStorage.setItem("username", body.data.username);
+      localStorage.setItem("role", body.data.role);
       localStorage.setItem("lga", body.data.lga);
       localStorage.setItem("id", body.data._id);
 

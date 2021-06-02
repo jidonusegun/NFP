@@ -46,7 +46,7 @@ const FormStyles = {
 const useStyles = makeStyles(styles);
 const useFormStyles = makeStyles(FormStyles);
 
-export default function TableAggregator(props) {
+export default function TableAggregator({state}) {
   const classes = useStyles();
   const Formclass = useFormStyles();
   const { openDialog, closeDialog, isOpen } = useDialog();
@@ -69,16 +69,16 @@ export default function TableAggregator(props) {
   useEffect(() => {
     setIsLoading(true);
     getContent(
-      `${baseUrl}/pupils?state=${stateLogin}&lga=${lgaLogin}`,
+      `${baseUrl}/pupils?state=${state}&lga=${lgaLogin}`,
       token
     ).then((data) => setAccount(data.data));
 
     getContent(
-      `${baseUrl}/schools?state=${stateLogin}&lga=${lgaLogin}`,
+      `${baseUrl}/schools?state=${state}&lga=${lgaLogin}`,
       token
     ).then((data) => setSchools(data.data));
     setIsLoading(false);
-  }, [token, stateLogin, lgaLogin]);
+  }, [token, state, lgaLogin]);
 
 
 

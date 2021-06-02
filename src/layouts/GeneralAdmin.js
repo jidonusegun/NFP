@@ -19,9 +19,13 @@ import bgImage from "assets/img/sidebar-2.jpg";
 import logos from "assets/img/logos.png";
 
 let ps;
-
+const tokenLocal  = localStorage.getItem('token')
+const user = localStorage.getItem('username')
+// console.log(user)
 const switchRoutes = (
   <Switch>
+    {/* {tokenLocal ? 
+    <> */}
     {generalRoutes.map((prop, key) => {
       if (prop.layout === "/admin") {
         return (
@@ -35,6 +39,9 @@ const switchRoutes = (
       return null;
     })}
     <Redirect from="/admin" to="/admin/home" />
+    {/* </>
+    :
+    <Redirect from="/state-admin" to="federal-login-page" />} */}
   </Switch>
 );
 
@@ -83,7 +90,7 @@ export default function Admin({ ...rest }) {
     <div className={classes.wrapper}>
       <Sidebar
         routes={generalRoutes}
-        logoText={"General Admin"}
+        logoText={user}
         logo={logos}
         image={image}
         handleDrawerToggle={handleDrawerToggle}

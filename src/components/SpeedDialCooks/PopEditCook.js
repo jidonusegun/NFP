@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     padding: ".5rem .9",
     color: "white",     
     backgroundColor: "#1976d2",
-    borderRadius: "50%",
+    borderRadius: "50%", 
     fontSize: "2rem",
     border: "none",
     cursor: "pointer",
@@ -24,7 +24,7 @@ export default function PopEdit({details}) {
   const {handleClickOpen } = useContext(dataContext);
   return (
         <div>
-            <DialogContainer children={<EditCooks details={details} />} />
+            <DialogContainer children={<EditCooks details={details} title="Edit Cook" />} />
             <button onClick={handleClickOpen} className={classes.button} title="Edit"><EditIcon /></button>
         </div>
     );

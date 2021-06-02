@@ -91,6 +91,7 @@ export default function EditSchool({title, subTitle, sendButton, details, conten
   const { handleClose } = useContext(dataContext)
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
+  const userRole = localStorage.getItem("role");
 // const { PatchSchool } = useContext(dataContext)
 
 const handleImageUpload = (e) => {
@@ -124,7 +125,12 @@ const handleImageUpload = (e) => {
         );
       }
 // content.unshift(data)
-setMessage('Record sent for approval')
+if(userRole === "SUPER_ADMIN") {
+  alert('Record Added')
+}
+{
+  alert('Record sent for approval')
+}
       setIsLoading(false);
       handleClose();
     } catch ({ message }) {

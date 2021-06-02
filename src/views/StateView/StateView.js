@@ -9,6 +9,7 @@ import CardHeader from "components/Card/CardHeader.js";
 // import CardBody from "components/Card/CardBody.js";
 import AddButton from 'components/AddButton/AddButton';
 import Popover from 'components/Popover/Popover.js';
+import PopoverSuper from 'components/Popover/SuperPopOver';
 import DialogContainer from 'components/Dialog/DialogContainer.js';
 import AdminUser from 'views/UserProfile/AdminUser';
 import { dataContext } from 'components/context/DataContext';
@@ -25,8 +26,9 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import userForm from "../../hooks/useForm";
+import Loading from "components/isLoading";
 import {getContent} from 'utils';
-import config from 'utils/config';
+import config from 'utils/config'; 
 // icon components
 
 const useStyles = makeStyles((theme) => ({
@@ -90,15 +92,17 @@ const useStyles = makeStyles((theme) => ({
 export default function StateView(props) {
   const classes = useStyles();
   const addLga = userForm(sendToServer);
-  const { handleClickPop, handleClickOpen } = useContext(dataContext);
+  const { handleClickPop, handleClickPopSuper, handleClickOpen } = useContext(dataContext);
   const stateName = props.location.state.state;
   const [loading, setLoading] = useState(false)
-  const [account, setAccount] = useState([])
+  const [account, setAccount] = useState([]) 
   // const [lgaValue, setLgavalue] = useState([])
   // const [, setStatevalue] = useState([])
   // const [status, setStatus] = useState()
   var token = localStorage.getItem("token");
   const baseUrl = config.API_URL
+
+  const newState = stateName.toLowerCase()
 
   async function sendToServer() {
   // const response = await postContent("${baseUrl}/cook", addLga.values, token);
@@ -106,20 +110,21 @@ export default function StateView(props) {
 
   useEffect(() => {
     setLoading(true);
-      getContent(`${baseUrl}/admins?state=${stateName}`, token)
+      getContent(`${baseUrl}/admins?state=${newState}`, token)
       .then(data=>setAccount(data.data))
-
+      // console.log(account)
+      // console.log(newState)
       // getContent("${baseUrl}/settings/states", token)
       // .then(data=>setStatevalue(data.data))
     setLoading(false);
-  }, [token, stateName]);
+  }, [token, newState]);
 
   const [userDetails, setUserDetails] = useState();
 
   return (  
     <div>
       <DialogContainer children= {<AdminUser title="Add Data" sendButton="Submit" />} />
-      <Popover children={<SpeedDial details={userDetails} />} /> 
+      <PopoverSuper children={<SpeedDial details={userDetails} />} /> 
 
       <div style={{display: "flex", justifyContent: "flex-end", padding: "0 2rem 2rem 2rem"}}>
         <FormControl className={classes.formControl} style={{width: "200px"}}>
@@ -168,13 +173,13 @@ export default function StateView(props) {
                               <div>
                                 {account.length > 0 ? 
                                   <div className={classes.cardContainer}>
-                                    {account.map(({_id, username, gender, birthday, role, firstName, lastName, phoneNumber, email, state, lga, address, logo, status }) => {
+                                    {account.map(({_id, username, gender, birthday, role, firstName, lastName, phoneNumber, email, state, lga, address, image, status }) => {
                                     // const username = {firstName, lastName}
                                     // setStatus(success)
                                       return (
                                           <div className={classes.cardContent} key={_id}>
-                                            <div   onClick={handleClickPop} onMouseUp={function(event){ setUserDetails({_id, username, gender, birthday, role, firstName, lastName, phoneNumber, email, state, lga, address, logo, status});}}>
-                                              <ImageCard cardTitle={firstName} cardImage={firstName} /> 
+                                            <div   onClick={handleClickPopSuper} onMouseUp={function(event){ setUserDetails({_id, username, gender, birthday, role, firstName, lastName, phoneNumber, email, state, lga, address, image, status});}}>
+                                              <ImageCard cardTitle={firstName} cardImage={image} /> 
                                             </div>
                                           </div> 
                                         )
@@ -182,7 +187,7 @@ export default function StateView(props) {
                                   </div>
                                   : 
                                   <div>No Data yet</div>}
-                                
+                                <AddButton handleClickOpen={handleClickOpen} title="Add new entity" />
                               </div>
                             )
                           },
@@ -190,21 +195,21 @@ export default function StateView(props) {
                             tabName: "Schools",
                             tabIcon: SchoolIcon,
                             tabContent: (
-                              <TableSchools />
+                              <TableSchools state={newState} />
                             )
                           },
                           {
                             tabName: "Cooks",
                             tabIcon: RestaurantIcon,
                             tabContent: (
-                              <TableCook />
+                              <TableCook state={newState} />
                             )
                           },
                           {
                             tabName: "Aggregators",
                             tabIcon: RestaurantIcon,
                             tabContent: (
-                              <TableAggregator />
+                              <TableAggregator state={newState} />
                             )
                           }
                         ]}
@@ -217,8 +222,6 @@ export default function StateView(props) {
                 }
         </GridItem>      
       </GridContainer>
-
-        <AddButton handleClickOpen={handleClickOpen} title="Add new entity" />
     </div>
   );
 }

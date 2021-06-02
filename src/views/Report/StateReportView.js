@@ -88,23 +88,25 @@ export default function StateReportView(props) {
   const token = localStorage.getItem("token")
   const baseUrl = config.API_URL
 
+  const name = props.location.state.state;
+  const stateName = name.toLowerCase()
+
   useEffect(() => {
     setLoading(true);
-    getContent(`${baseUrl}/cooks?state=lagos&lga=badagry&status=PENDING`, token)
+    getContent(`${baseUrl}/cooks?state=${stateName}&status=PENDING`, token)
     .then(data=>setCook(data.data))
 
-    getContent(`${baseUrl}/aggregators?state=lagos&lga=badagry&status=PENDING`, token)
+    getContent(`${baseUrl}/aggregators?state=${stateName}&status=PENDING`, token)
     .then(data=>setAggregator(data.data))
 
-    getContent(`${baseUrl}/schools?state=lagos&lga=badagry&status=PENDING`, token)
+    getContent(`${baseUrl}/schools?state=${stateName}&status=PENDING`, token)
     .then(data=>setSchool(data.data))
     setLoading(false);
-  }, [token]);
+  }, [token, stateName]);
 
-  const name = props.location.state.state;
   return (
     <div>
-      <Popover children={<SpeedDial />} />
+      {/* <Popover children={<SpeedDial />} /> */} 
       <DialogContainer children= {<AdminUser title="Add Data" sendButton="Submit" />} />
       <GridContainer>
       <GridItem xs={12} sm={12} md={12}>

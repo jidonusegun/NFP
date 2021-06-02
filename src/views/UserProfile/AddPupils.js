@@ -92,6 +92,7 @@ export default function SchoolProfile({
   const [imageUpload, setImageUpload] = useState({ image: "" });
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
+  const userRole = localStorage.getItem("role");
   const [errorMessage, setErrorMessage] = useState("");
   const baseUrl = config.API_URL
   // let errorMessage = "";
@@ -142,7 +143,12 @@ export default function SchoolProfile({
         );
       }
       // content.unshift(data);
-      setMessage("Record sent for approval");
+      if(userRole === "SUPER_ADMIN") {
+        alert('Record Added')
+      }
+      {
+        alert('Record sent for approval')
+      }
       setIsLoading(false);
       handleClose();
       window.location.reload();

@@ -24,7 +24,7 @@ export default function PopEdit({details}) {
   const {handleClickOpen } = useContext(dataContext);
   return (
         <div>
-            <DialogContainer children={<EditAggregators details={details} />} />
+            <DialogContainer children={<EditAggregators details={details} title="Edit Aggregator" />} />
             <button onClick={handleClickOpen} className={classes.button} title="Edit"><EditIcon /></button>
         </div>
     );

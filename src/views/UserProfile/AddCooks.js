@@ -86,9 +86,13 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
   const [isLoading, setIsLoading] = useState(false);
   // let errorMessage = "";
   const [imageUpload, setImageUpload] = useState({ image: "" });
+  const [schools, setSchools] = useState([]);
   const { handleClose } = useContext(dataContext);
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
+  const stateLogin = localStorage.getItem("state");
+  const lgaLogin = localStorage.getItem("lga");
+  const userRole = localStorage.getItem("role");
   const baseUrl = config.API_URL
 
   useEffect(() => {
@@ -101,11 +105,17 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
       `${baseUrl}/settings/state/${stateID}/lgas`,
       token
     ).then((data) => setLgavalue(data.data));
-  }, [token, stateID]);
+
+    getContent(
+      `${baseUrl}/schools?state=${stateLogin}&lga=${lgaLogin}`,
+      token
+    ).then((data) => setSchools(data.data));
+  }, [token, stateID, stateLogin, lgaLogin]);
 
   const handleImageUpload = (e) => {
     setImageUpload({ image: e.target.files[0] });
   };
+
 
   async function sendToServer() {
     try {
@@ -151,7 +161,12 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
       }
       // console.log(imageUpload);
       // content.unshift(data);
-      alert("Record sent for approval");
+      if(userRole === "SUPER_ADMIN") {
+        alert('Record Added')
+      }
+      {
+        alert('Record sent for approval')
+      }
       setIsLoading(false);
       handleClose();
     } catch ({ message }) {
@@ -215,8 +230,6 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
   // const handleChange = (e) => {
   //   console.log(addCook.values.state)
   // }
-  // console.log(addCook.values.state)
-  // console.log(lgaValue)
   return (
     <div>
       <GridContainer>
@@ -236,7 +249,7 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                 <GridItem xs={12} sm={12} md={4}>
                   <CardAvatar profile style={{ marginTop: "2rem" }}>
                     <form>
-                      <label htmlFor="filePicker">
+                      <label htmlFor="filePickerCook">
                         <IconButton
                           color="primary"
                           style={{ margin: "0", padding: "0" }}
@@ -250,7 +263,7 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                         </IconButton>
                       </label>
                       <input
-                        id="filePicker"
+                        id="filePickerCook"
                         style={{ visibility: "hidden" }}
                         type="file"
                         name="files"
@@ -283,6 +296,20 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
+                    labelText="Middle Name"
+                    id="middleName"
+                    inputProps={{
+                      type: "text",
+                      name: "middleName",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
                     labelText="Last Name"
                     id="lastName"
                     inputProps={{
@@ -295,6 +322,8 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     }}
                   />
                 </GridItem>
+                </GridContainer>
+              <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className={classes.formControl}>
                     <InputLabel
@@ -320,8 +349,6 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     </Select>
                   </FormControl>
                 </GridItem>
-              </GridContainer>
-              <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Date of Birth"
@@ -350,6 +377,8 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     }}
                   />
                 </GridItem>
+                </GridContainer>
+              <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                 <FormControl className={classes.formControl}>
                     <InputLabel
@@ -413,8 +442,6 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     </Select>
                   </FormControl>
                 </GridItem>
-              </GridContainer>
-              <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="BVN"
@@ -443,6 +470,8 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     }}
                   />
                 </GridItem>
+                </GridContainer>
+              <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Email"
@@ -457,8 +486,50 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     }}
                   />
                 </GridItem>
-              </GridContainer>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="No. of Pulpil(s) to Feed"
+                    id="numberOfPulpilFed"
+                    inputProps={{
+                      type: "number",
+                      name: "numberOfPulpilFed",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="No. of Days Per Cycle"
+                    id="numberOfDaysPerCycle"
+                    inputProps={{
+                      type: "number",
+                      name: "numberOfDaysPerCycle",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                </GridContainer>
               <GridContainer>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="Amount Per Meal"
+                    id="amountPerMeal"
+                    inputProps={{
+                      type: "email",
+                      name: "amountPerMeal",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className={classes.formControl}>
                     <InputLabel
@@ -518,19 +589,33 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     </Select>
                   </FormControl>
                 </GridItem>
+                </GridContainer>
+              <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="School Name"
-                    id="schoolName"
-                    inputProps={{
-                      type: "text",
-                      name: "schoolName",
-                      onChange: (e) => addCook.getData(e),
-                    }}
-                    formControlProps={{
-                      fullWidth: true,
-                    }}
-                  />
+                  <FormControl className={classes.formControl}>
+                    <InputLabel
+                      htmlFor="schoolName"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      School Name
+                    </InputLabel>
+                    <Select
+                      native
+                      value={addCook.values.schoolName}
+                      onChange={addCook.getData}
+                      className={classes.underline}
+                      style={{ width: "100%" }}
+                      inputProps={{
+                        name: "schoolName",
+                        id: "schoolName",
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      {schools.map((schoolName) => {
+                        return <option value={schoolName.name}>{schoolName.name}</option>;
+                      })}
+                    </Select>
+                  </FormControl>
                 </GridItem>
               </GridContainer>
               {/* <GridContainer>

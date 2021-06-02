@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useContext} from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -10,13 +10,19 @@ import TableCell from "@material-ui/core/TableCell";
 import styles from "assets/jss/material-dashboard-react/components/tableStyle.js";
 // core components
 import GridItem from "components/Grid/GridItem.js";
+import ViewListIcon from '@material-ui/icons/ViewList';
 import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import PublishIcon from '@material-ui/icons/Publish';
 import { patchContent } from "utils"; 
+import Popover from 'components/Popover/Popover.js';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import userForm from "../../hooks/useForm";
+import { dataContext } from "components/context/DataContext";
 import config from 'utils/config';
 // import { dataContext } from "components/context/DataContext";
 
@@ -29,25 +35,33 @@ export default function NewlyRegisteredCooks({schoolsList}) {
   const classes = useStyles();
   const baseUrl = config.API_URL
   const token = localStorage.getItem("token")
-
+  const [savedId, setSavedId] = useState()
+  const approveCook = userForm(sendToServer);
+  const { handleClickPop, handleClosePop } = useContext(dataContext);
   const stateLogin = localStorage.getItem("stateAdminState")
     const lgaLogin = localStorage.getItem("stateAdminLga")
 
-  async function sendToServer() {
-    console.log(sendReport.values);
-    // console.log(sendReport.formData());
-    const response = await patchContent(`${baseUrl}/school/${stateLogin}/${lgaLogin}/send-for-approval`, sendReport.value, token);
-    // sendReport.reset();
-
-    alert("Your report has been sent")
-
-  console.log(response);
-  //   const body = await result;
-  //   console.log(body);
-  }
+    async function sendToServer() {
+      handleClosePop()
+      const response = await patchContent(`${baseUrl}/school/${savedId}/approve`, token);
+      // addCook.reset();
+      console.log(response);
+      //   const body = await result;
+      //   console.log(body);
+      }
 
   return (
     <div>
+      <Popover>
+          <List>
+            <ListItem button>
+              <ListItemText primary="Approve" onClick={approveCook.submit} />
+            </ListItem>
+            <ListItem button>
+              <ListItemText primary="Reject" onClick={handleClosePop} />
+            </ListItem>
+          </List>
+      </Popover>
       <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
         { schoolsList.length > 0 ?
@@ -68,6 +82,7 @@ export default function NewlyRegisteredCooks({schoolsList}) {
                   <TableHead style={{color: "#9c27b0"}}>
                     <TableRow className={classes.tableHeadRow}>
                       {/* <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>S/N</TableCell> */}
+                      <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>Action</TableCell>
                       <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>School Name</TableCell>
                       <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>Contact Person</TableCell>
                       <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>Contact Phone No.</TableCell>
@@ -83,6 +98,8 @@ export default function NewlyRegisteredCooks({schoolsList}) {
                   return  status === "PENDING" ?
                     <TableRow key={_id} className={classes.tableBodyRow}>
                       {/* <TableCell className={classes.tableCell} style={{display: "none"}}><input type="number" id="id" value={_id} onChange={sendReport.getData()} />{_id}</TableCell> */}
+                      <TableCell className={classes.tableCell}>
+                      <ViewListIcon style={{cursor: "pointer"}} onMouseUp={function(event){setSavedId(_id)}} onClick={handleClickPop} /></TableCell>
                       <TableCell className={classes.tableCell}>{name}</TableCell>
                       <TableCell className={classes.tableCell}>{contactPerson}</TableCell>
                       <TableCell className={classes.tableCell}>{phoneNumber}</TableCell>

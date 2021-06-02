@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import DialogView from 'components/Dialog/DialogView.js';
 import ViewProfile from 'views/ViewProfile/ViewProfile';
+import AdminAccountView from 'views/ViewProfile/AdminAccountView';
 import { dataContext } from 'components/context/DataContext';
 
 const useStyles = makeStyles((theme) => ({
@@ -24,8 +25,8 @@ export default function PopView({details}) {
   const { handleClickOpenView } = useContext(dataContext);
   return (
         <div>
-            <DialogView children={<ViewProfile details={details} />} title="Profile" />
-            <button onClick={handleClickOpenView} className={classes.button} title="View"><ViewListIcon /></button>
+            <DialogView children={<AdminAccountView details={details} />} title="Profile" />
+            <button onClick={handleClickOpenView} className={classes.button} title="View"><ViewListIcon /></button> 
         </div>
     );
 }

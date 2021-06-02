@@ -124,7 +124,7 @@ const handleImageUpload = (e) => {
         );
       }
 // content.unshift(data)
-setMessage('Record sent for approval')
+setMessage('Edit Record sent for approval')
       setIsLoading(false);
       handleClose();
     } catch ({ message }) {

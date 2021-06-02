@@ -41,7 +41,7 @@ ReactDOM.render(
   <DataContext>
     <Router history={hist}>
       <Switch>
-        <Route path="/state-admin" component={Admin} />
+        <Route path="/state-admin" component={Admin} /> 
         <Route path="/admin" component={GeneralAdmin} />
         <Route path="/login-page" component={LoginPage} />
         <Route path="/federal-login-page" component={FederalLoginPage} />

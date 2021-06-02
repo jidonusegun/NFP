@@ -91,7 +91,7 @@ export default function GeneralAdminNotifications() {
     try {
       console.log(activeContent)
       acceptNotification.setData("actionTaken", "ACCEPT");
-      acceptNotification.setData("type", activeContent.type);
+      // acceptNotification.setData("type", activeContent.type);
 
       const {data} = await patchContent(`${baseUrl}/notification/${activeContent.id}`,
       acceptNotification.values, token);
@@ -107,7 +107,7 @@ export default function GeneralAdminNotifications() {
     try {
       console.log(activeContent)
       rejectNotification.setData("actionTaken", 'REJECT');
-      rejectNotification.setData("type", activeContent.type);
+      // rejectNotification.setData("type", activeContent.type);
 
       const {data} = await patchContent(`${baseUrl}/notification/${activeContent.id}`,
       rejectNotification.values, token);
@@ -130,6 +130,7 @@ export default function GeneralAdminNotifications() {
       style={{ height: "500px", overflowY: "scroll" }}
       onScroll={(e) => scrollCheck(e)}
     >
+      <DialogContainer title="Edit Post" children= {<EditPost id={activeContent.id} />} />
       <Card>
         <DialogContainer
           title="Edit Post"
@@ -152,35 +153,58 @@ export default function GeneralAdminNotifications() {
               actionTaken,
             }) => {
               const renderContent = () => {
-                // if(title) {
-                //   return (
-                //     <div key={id}>
-                //       <DialogContainer title="Edit Post" children= {<EditPost id={id} />} />
-                //       <DialogNotification noButton="No" yesButton="Yes" id={id} title="Delete" children="Are you sure you want to Delete?" handleDelete={deleteNotifyPost.submit} />
-                //       <SnackbarContent
-                //         message={
-                //           <div>
-                //               <h3>{title}</h3>
-                //               <p>{message}</p>
-                //               <p style={{textAlign: "right", fontWeight: "bold",
-                //               margin: ".8rem .5rem 0",}}>From <span style={{fontWeight: "normal"}} >
-                //                   - {recipient}</span></p>
+                if(type === 'NEW_BLOG') {
+                  return (
+                    <div key={_id}>
+                      
+                      {/* <DialogNotification noButton="No" yesButton="Yes" id={_id} title="Delete" children="Are you sure you want to Delete?" handleDelete={deleteNotifyPost.submit} /> */}
+                      <SnackbarContent
+                        message={
+                          <div style={{width: '100%'}}>
+                              <h3>{title}</h3>
+                              <p>{message}</p>
+                              <p style={{textAlign: "right", fontWeight: "bold",
+                              margin: ".8rem .5rem", width: '100%'}}>From <span style={{fontWeight: "normal"}} >
+                                  - {recipient}</span></p>
 
-                //               <ButtonGroup size="small" aria-label="small outlined button group">
-                //                   <Button onClick={publishNotifyPost.submit}>Publish</Button>
-                //                   {/* <Button>Unpublish</Button> */}
-                //                   <Button onClick={handleClickOpen}>Edit</Button>
-                //               </ButtonGroup>
-                //           </div>
-                //         }
-                //         close
-                //         handleClick={handleClickOpenNotification}
-                //         icon={AddAlert}
-                //       />
-                //     </div>
-                //   )
-                // }
-                if (type === "REGULAR") {
+                              <ButtonGroup size="small" aria-label="small outlined button group">
+                                  <Button
+                                    onFocus={() => setActiveContent({
+                                      id: _id,
+                                      type: type,
+                                    })}
+                                      onClick={(e) => {
+                                        acceptNotification.submit(e);
+                                      }}
+                                  >
+                                    Publish
+                                  </Button>
+                                  <Button onFocus={() => setActiveContent({
+                                      id: _id,
+                                      type: type,
+                                    })} onClick={handleClickOpen}>Edit</Button>
+                                  <Button
+                                    onFocus={() => setActiveContent({
+                                      id: _id,
+                                      type: type,
+                                    })}
+                                      onClick={(e) => {
+                                        rejectNotification.submit(e);
+                                      }}
+                                  >
+                                    Unpublish
+                                  </Button>
+                              </ButtonGroup>
+                          </div>
+                        }
+                        // close
+                        // handleClick={handleClickOpenNotification}
+                        // icon={AddAlert}
+                      />
+                    </div>
+                  )
+                }
+                else if (type === "REGULAR") {
                   return (
                     <SnackbarContent
                       message={
@@ -201,14 +225,67 @@ export default function GeneralAdminNotifications() {
                           </p>
                           {/* <ButtonGroup size="small" aria-label="small outlined button group">
                           <Button onClick={EditNotification.submit}>Approve</Button>
-                          <Button onClick={EditNotification}>Reject</Button>
-                      </ButtonGroup> */}
+                          <Button onClick={EditNotification}>Reject</Button> */}
+                      {/* </ButtonGroup> */}
                         </div>
                       }
                       icon={AddAlert}
                     />
                   );
-                } else {
+                }
+                else if (type === "NEW_COOK") {
+                  return (
+                    <SnackbarContent
+                      message={
+                        <div>
+                          <h3>{title}</h3>
+                          <p>{message}</p>
+                          <p
+                            style={{
+                              textAlign: "right",
+                              fontWeight: "bold",
+                              margin: ".8rem .5rem 0",
+                            }}
+                          >
+                            From{" "}
+                            <span style={{ fontWeight: "normal" }}>
+                              - {recipient}
+                            </span>
+                          </p>
+                          <ButtonGroup
+                            size="small"
+                            aria-label="small outlined button group"
+                          >
+                            <Button
+                            onFocus={() => setActiveContent({
+                              id: _id,
+                              type: type,
+                            })}
+                              onClick={(e) => {
+                                acceptNotification.submit(e);
+                              }}
+                            >
+                              Approve
+                            </Button>
+                            <Button
+                              onFocus={() => setActiveContent({
+                                id: _id,
+                                type: type,
+                              })}
+                                onClick={(e) => {
+                                  rejectNotification.submit(e);
+                                }}
+                            >
+                              Reject
+                            </Button>
+                          </ButtonGroup>
+                        </div>
+                      }
+                      icon={AddAlert}
+                    />
+                  );
+                } 
+                else {
                   return (
                     <SnackbarContent
                       message={

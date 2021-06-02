@@ -55,7 +55,7 @@ export default function TableAggregator() {
   useEffect(() => {
     setIsLoading(true);
     getContent(
-      `${baseUrl}/aggregators?state=${stateLogin}&lga=${lgaLogin}`,
+      `${baseUrl}/aggregators?state=${stateLogin}&status=APPROVED`,
       token
     ).then((data) => setAccount(data.data));
     setIsLoading(false);
@@ -101,6 +101,14 @@ export default function TableAggregator() {
     }
   }
 
+  if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+    alert('Got here using the browser "Back" or "Forward" button.');
+}
+
+// console.log(account)
+
+  const status = account.map(({status}) => status)
+console.log(status)
   return (
     <div>
       <DialogContainer children={<AddAggregators content={account} />} />
@@ -203,35 +211,28 @@ export default function TableAggregator() {
                               classes.tableCell + " " + classes.tableHeadCell
                             }
                           >
-                            FIRST NAME
+                            COMPANY NAME
+                          </TableCell>
+                            <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            STATE
                           </TableCell>
                           <TableCell
                             className={
                               classes.tableCell + " " + classes.tableHeadCell
                             }
                           >
-                            LAST NAME
-                          </TableCell>
+                            UNIT PRICE
+                          </TableCell> 
                           <TableCell
                             className={
                               classes.tableCell + " " + classes.tableHeadCell
                             }
                           >
-                            GENDER
-                          </TableCell>
-                          <TableCell
-                            className={
-                              classes.tableCell + " " + classes.tableHeadCell
-                            }
-                          >
-                            DATE OF BIRTH
-                          </TableCell>
-                          <TableCell
-                            className={
-                              classes.tableCell + " " + classes.tableHeadCell
-                            }
-                          >
-                            ACCOUNT NO.
+                            PHONE NUMBER
                           </TableCell>
                           <TableCell
                             className={
@@ -245,88 +246,50 @@ export default function TableAggregator() {
                               classes.tableCell + " " + classes.tableHeadCell
                             }
                           >
-                            BVN
+                            ACCOUNT NUMBER
                           </TableCell>
                           <TableCell
                             className={
                               classes.tableCell + " " + classes.tableHeadCell
                             }
                           >
-                            MOBILE NUMBER
+                            TIN
                           </TableCell>
                           <TableCell
                             className={
                               classes.tableCell + " " + classes.tableHeadCell
                             }
                           >
-                            EMAIL
+                            DAY FOR CONSUMPTION
                           </TableCell>
                           <TableCell
                             className={
                               classes.tableCell + " " + classes.tableHeadCell
                             }
                           >
-                            ITEMS
+                            FREQUENCY OF SUPPLY
                           </TableCell>
                           <TableCell
                             className={
                               classes.tableCell + " " + classes.tableHeadCell
                             }
                           >
-                            STATE
+                            NO. OF DAYS PER CYCLE
                           </TableCell>
                           <TableCell
                             className={
                               classes.tableCell + " " + classes.tableHeadCell
                             }
                           >
-                            LGA
+                            NO. OF PUPILS TO FEED
                           </TableCell>
-                          <TableCell
-                            className={
-                              classes.tableCell + " " + classes.tableHeadCell
-                            }
-                          >
-                            ADDRESS
-                          </TableCell>
-                          <TableCell
-                            className={
-                              classes.tableCell + " " + classes.tableHeadCell
-                            }
-                          >
-                            SCHOOL NAME
-                          </TableCell>
-                          <TableCell
-                            className={
-                              classes.tableCell + " " + classes.tableHeadCell
-                            }
-                          >
-                            NO. OF PUPILS FEED
-                          </TableCell>
+                          
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {account.map(
                           ({
-                            _id,
-                            gender,
-                            items,
-                            firstName,
-                            lastName,
-                            birthday,
-                            accountNumber,
-                            bankName,
-                            bvn,
-                            phoneNumber,
-                            date_created_acc,
-                            email,
-                            state,
-                            address,
-                            lga,
-                            schoolName,
-                            image,
-                            status,
-                            pupilsFeed
+                            acctNumber, bankName, companyName, dayForConsumption, frequencyOfSupply, numberOfDaysPerCycle, numberOfPulpilFed, phoneNumber, registeredBy, state, status, tin, unitPrice, _id,
                           }) => {
                             return (
                               <TableRow
@@ -338,71 +301,44 @@ export default function TableAggregator() {
                                     style={{ cursor: "pointer" }}
                                     onMouseUp={function (event) {
                                       setAggregatorDetails({
-                                        _id,
-                                        gender,
-                                        firstName,
-                                        lastName,
-                                        accountNumber,
-                                        bankName,
-                                        bvn,
-                                        phoneNumber,
-                                        email,
-                                        state,
-                                        date_created_acc,
-                                        birthday,
-                                        address,
-                                        lga,
-                                        schoolName,
-                                        image,
+                                        acctNumber, bankName, companyName, dayForConsumption, frequencyOfSupply, numberOfDaysPerCycle, numberOfPulpilFed, phoneNumber, registeredBy, state, status, tin, unitPrice, _id,
                                       });
                                     }}
                                     onClick={handleClickPop}
                                   />
                                 </TableCell>
                                 <TableCell className={classes.tableCell}>
-                                  {firstName}
-                                </TableCell>
-                                <TableCell className={classes.tableCell}>
-                                  {lastName}
-                                </TableCell>
-                                <TableCell className={classes.tableCell}>
-                                  {gender}
-                                </TableCell>
-                                <TableCell className={classes.tableCell}>
-                                  {birthday}
-                                </TableCell>
-                                <TableCell className={classes.tableCell}>
-                                  {accountNumber}
-                                </TableCell>
-                                <TableCell className={classes.tableCell}>
-                                  {bankName}
-                                </TableCell>
-                                <TableCell className={classes.tableCell}>
-                                  {bvn}
-                                </TableCell>
-                                <TableCell className={classes.tableCell}>
-                                  {phoneNumber}
-                                </TableCell>
-                                <TableCell className={classes.tableCell}>
-                                  {email}
-                                </TableCell>
-                                <TableCell className={classes.tableCell}>
-                                  {items}
+                                  {companyName}
                                 </TableCell>
                                 <TableCell className={classes.tableCell}>
                                   {state}
                                 </TableCell>
                                 <TableCell className={classes.tableCell}>
-                                  {lga}
+                                  {unitPrice}
                                 </TableCell>
                                 <TableCell className={classes.tableCell}>
-                                  {address}
+                                  {phoneNumber}
                                 </TableCell>
                                 <TableCell className={classes.tableCell}>
-                                  {schoolName}
+                                  {bankName}
                                 </TableCell>
                                 <TableCell className={classes.tableCell}>
-                                  {pupilsFeed}
+                                  {acctNumber}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {tin}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {dayForConsumption}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {frequencyOfSupply}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {numberOfDaysPerCycle}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {numberOfPulpilFed}
                                 </TableCell>
                               </TableRow>
                             );

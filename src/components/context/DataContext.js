@@ -108,6 +108,16 @@ export default function DataContext(props) {
         setAnchorEl(null);
       };
 
+      const [anchorElSuper, setAnchorElSuper] = React.useState(null);
+
+      const handleClickPopSuper = (event) => {
+        setAnchorElSuper(event.currentTarget);
+      };
+    
+      const handleClosePopSuper = () => {
+        setAnchorElSuper(null);
+      };
+
       
 
       
@@ -156,7 +166,7 @@ export default function DataContext(props) {
     return (
         <dataContext.Provider value={{open, handleClickOpen, handleClose, 
           openDelete, handleClickOpenDelete, handleCloseDelete, openSuspend, handleClickOpenSuspend, handleCloseSuspend, openView, handleClickOpenView, handleCloseView,
-          anchorEl, handleClickPop, handleClosePop, userProfile, state, notification,handleCloseNotification, handleClickOpenNotification, openNotification, token, setToken}}>
+          anchorEl, handleClickPop, handleClosePop, userProfile, state, notification,handleCloseNotification, handleClickOpenNotification, openNotification, token, setToken, anchorElSuper, handleClickPopSuper, handleClosePopSuper}}>
             {props.children}
         </dataContext.Provider>
     )

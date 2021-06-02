@@ -66,16 +66,12 @@ export default function Notifications() {
 
   useEffect(() => {
     getContent(
-      `${baseUrl}/notification/${userId}/${pageCount}/${50}`,
+      `${baseUrl}/notification/${userId}/${pageCount}/50`,
       token
-    ).then((data) => setNotification(data.data.notifications));
+    ).then((data) => console.log(data.data));
   }, [token, userId]);
 
-
-
   useEffect(() => {
-
-
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       if (prevScrollY.current < currentScrollY && goingUp) {

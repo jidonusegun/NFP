@@ -89,6 +89,7 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
   const [imageUpload, setImageUpload] = useState({ image: "" });
   const [errorMessage, setErrorMessage] = useState("");
   const userId = localStorage.getItem("id");
+  const userRole = localStorage.getItem("role");
   const baseUrl = config.API_URL
 
   // let errorMessage = "";
@@ -139,7 +140,12 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
         );
       }
 // content.unshift(data)
-      setMessage('Record sent for approval')
+if(userRole === "SUPER_ADMIN") {
+  alert('Record Added')
+}
+{
+  alert('Record sent for approval')
+}
       setIsLoading(false);
       handleClose();
     } catch ({ message }) {

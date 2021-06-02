@@ -42,7 +42,7 @@ export default function PopDelete({details}) {
 
   return (
         <div>
-            <DialogDelete title="Delete" children={`Are you sure you want to delete ? ${details.firstName} ${details.lastName}`} noButton="No" yesButton="Yes" handleDelete={deletePost.submit} />
+            <DialogDelete title="Delete" children={`Are you sure you want to delete ? ${details?.firstName} ${details?.lastName}`} noButton="No" yesButton="Yes" handleDelete={deletePost.submit} />
             <button onClick={handleClickOpenDelete} className={classes.button} title="Delete"><DeleteIcon /></button>
         </div>
     );

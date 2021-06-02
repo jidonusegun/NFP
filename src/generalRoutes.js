@@ -41,7 +41,7 @@ import BlogPosts from 'views/Blog/GeneralAdminPost';
 // import Icons from "views/Icons/Icons.js";
 // import Maps from "views/Maps/Maps.js";
 // import ViewProfile from 'views/ViewProfile/ViewProfile';
-import GeneralAdminPayments from "views/Payments/GeneralAdminPayments.js";
+import GeneralAdminPayments from "views/Report/PaymentReport";
 import GeneralAdminNotification from "views/Notifications/GeneralAdminNotification.js";
 import GeneralAdminProfile from 'views/ViewProfile/GeneralAdminProfile';
 // import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";

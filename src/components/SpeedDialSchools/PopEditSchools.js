@@ -21,11 +21,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PopEdit({details}) {
   const classes = useStyles();
-  const {handleClickOpen } = useContext(dataContext);
+  const {handleClickOpen } = useContext(dataContext); 
   return (
         <div>
-        {/* <DialogContainer children={<EditCooks details={details} />} /> */}
-            <DialogContainer children={<EditSchool details={details} />} />
+            <DialogContainer children={<EditSchool details={details} title="Edit School" />} />
             <button onClick={handleClickOpen} className={classes.button} title="Edit"><EditIcon /></button>
         </div>
     );

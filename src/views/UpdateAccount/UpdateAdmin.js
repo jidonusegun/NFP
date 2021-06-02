@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import Button from "components/CustomButtons/Button.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import IconButton from "@material-ui/core/IconButton";
 // import { dataContext } from 'components/context/DataContext';
-import { patchContent, postContent, postImageContent } from "utils";
+import { patchContent, postContent, getContent, postImageContent } from "utils";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import { makeStyles } from "@material-ui/core/styles";
 import userForm from "../../hooks/useForm";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
 import config from 'utils/config';
@@ -53,8 +56,28 @@ export default function UpdateAdmin({ details }) {
   const [errorMessage, setErrorMessage] = useState("");
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
+  const [stateValue, setStatevalue] = useState([]);
+  const [lgaValue, setLgavalue] = useState([]);
+  const [successMessage, setSuccessMessage] = useState('')
+  const stateLogin = localStorage.getItem("state");
+  const lgaLogin = localStorage.getItem("lga");
+  const [stateID, setStateID] = useState();
+  // const [imageUpload, setImageUpload] = useState({ image: "" });
   const baseUrl = config.API_URL
   // let errorMessage = "";
+
+  useEffect(() => {
+    getContent(
+      `${baseUrl}/settings/states`,
+      token
+    ).then((data) => setStatevalue(data.data));
+
+    getContent(
+      `${baseUrl}/settings/state/${stateID}/lgas`,
+      token
+    ).then((data) => setLgavalue(data.data));
+
+  }, [token, stateID, stateLogin, lgaLogin]);
 
   const handleImageUpload = (e) => {
     setImageUpload({ image: e.target.files[0] });
@@ -68,11 +91,8 @@ export default function UpdateAdmin({ details }) {
 
       const exclude = [
         "address",
-        "schoolName",
         "lga",
         "state",
-        "role",
-        "password",
         "username",
         "email",
         "phoneNumber",
@@ -89,9 +109,9 @@ export default function UpdateAdmin({ details }) {
       delete addCook.values.filePicker;
       delete addCook.values.files;
       const tempData = {'tempData': JSON.stringify(addCook.values)};
-      const { data } = await postContent(
-        `${baseUrl}/admin/tempedit/${details._id}`,
-        tempData,
+      const { data } = await patchContent(
+        `${baseUrl}/admin/${userId}`,
+        addCook.values,
         token
       );
       if (imageUpload?.image) {
@@ -101,7 +121,7 @@ export default function UpdateAdmin({ details }) {
           token
         );
       }
-      setMessage("Record sent for approval");
+      setSuccessMessage("Profile Edited Successfully");
       setIsLoading(false);
     } catch ({ message }) {
       alert(message);
@@ -143,15 +163,26 @@ export default function UpdateAdmin({ details }) {
     $imagePreview = <div className="previewText"></div>;
   }
 
+  const handleChange = (e) => {
+    var index = e.target.selectedIndex;
+    var optionElement = e.target.childNodes[index];
+    var option = optionElement.getAttribute("id");
+
+    setStateID(option);
+  };
+
   return (
     <div>
       <div
         style={{ color: "red", textAlign: "center", width: "100%" }}
       >{`${errorMessage}`}</div>
+      <div style={{color: 'green', textAlign: 'center', padding: '1.5rem'}}>{successMessage}</div>
       <GridContainer>
+            
         <GridItem xs={12} sm={12} md={12}>
           <GridContainer>
             <GridItem xs={12} sm={12} md={4}>
+              
               <div className={classes.imgPreview}>{$imagePreview}</div>
               <form onSubmit={handleSubmit}>
                 <label htmlFor="filePicker">
@@ -171,7 +202,7 @@ export default function UpdateAdmin({ details }) {
                   name="uploadPicture"
                   className={classes.input}
                   onChange={(e) => {
-                    addCook.getFile(e);
+                    handleImageUpload(e);
                     handleImageChange(e);
                   }}
                   accept="image/*"
@@ -182,11 +213,11 @@ export default function UpdateAdmin({ details }) {
           <GridContainer>
             <GridItem xs={12} sm={12} md={4}>
               <CustomInput
-                labelText="Username"
-                id="username"
+                labelText="First Name"
+                id="firstName"
                 inputProps={{
                   type: "text",
-                  name: "usernames",
+                  name: "firstName",
                   onChange: (e) => addCook.getData(e),
                 }}
                 formControlProps={{
@@ -196,11 +227,25 @@ export default function UpdateAdmin({ details }) {
             </GridItem>
             <GridItem xs={12} sm={12} md={4}>
               <CustomInput
-                labelText="Password"
-                id="password"
+                labelText="Last Name"
+                id="lastName"
                 inputProps={{
-                  type: "password",
-                  name: "passwords",
+                  type: "text",
+                  name: "lastName",
+                  onChange: (e) => addCook.getData(e),
+                }}
+                formControlProps={{
+                  fullWidth: true,
+                }}
+              />
+            </GridItem>
+            <GridItem xs={12} sm={12} md={4}>
+              <CustomInput
+                labelText="Phone Number"
+                id="phoneNumber"
+                inputProps={{
+                  type: "number",
+                  name: "phoneNumber",
                   onChange: (e) => addCook.getData(e),
                 }}
                 formControlProps={{
@@ -209,6 +254,154 @@ export default function UpdateAdmin({ details }) {
               />
             </GridItem>
           </GridContainer>
+          <GridContainer>
+          <GridItem xs={12} sm={12} md={4}>
+              <CustomInput
+                labelText="Username"
+                id="username"
+                inputProps={{
+                  type: "username",
+                  name: "username",
+                  onChange: (e) => addCook.getData(e),
+                }}
+                formControlProps={{
+                  fullWidth: true,
+                }}
+              />
+            </GridItem>
+            <GridItem xs={12} sm={12} md={4}>
+            <FormControl className={classes.formControl}>
+                    <InputLabel
+                      htmlFor="gender"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      Gender
+                    </InputLabel>
+                    <Select
+                      native
+                      value={addCook.values.gender}
+                      onChange={addCook.getData}
+                      className={classes.underline}
+                      style={{ width: "100%" }}
+                      inputProps={{
+                        name: "gender",
+                        id: "gender",
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                    </Select>
+                  </FormControl>
+            </GridItem>
+            <GridItem xs={12} sm={12} md={4}>
+              <CustomInput
+                labelText="Date of Birth"
+                id="birthday"
+                inputProps={{
+                  type: "date",
+                  name: "birthday",
+                  onChange: (e) => addCook.getData(e),
+                }}
+                formControlProps={{
+                  fullWidth: true,
+                }}
+              />
+            </GridItem>
+          </GridContainer>
+          <GridContainer>
+          <GridItem xs={12} sm={12} md={4}>
+              <CustomInput
+                labelText="Email"
+                id="email"
+                inputProps={{
+                  type: "email",
+                  name: "email",
+                  onChange: (e) => addCook.getData(e),
+                }}
+                formControlProps={{
+                  fullWidth: true,
+                }}
+              />
+            </GridItem>
+            <GridItem xs={12} sm={12} md={4}>
+            <FormControl className={classes.formControl}>
+                    <InputLabel
+                      htmlFor="state"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      State
+                    </InputLabel>
+                    <Select
+                      native
+                      value={addCook.values.state}
+                      onChange={(e) => {
+                        handleChange(e);
+                        addCook.getData(e);
+                      }}
+                      className={classes.underline}
+                      style={{ width: "100%" }}
+                      inputProps={{
+                        name: "state",
+                        id: "state",
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      {stateValue.map(({ _id, name }) => {
+                        return (
+                          <option value={name} id={_id}>
+                            {name}
+                          </option>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
+            </GridItem>
+            <GridItem xs={12} sm={12} md={4}>
+            <FormControl className={classes.formControl}>
+                    <InputLabel
+                      htmlFor="lga"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      LGA
+                    </InputLabel>
+                    <Select
+                      native
+                      value={addCook.values.lga}
+                      onChange={addCook.getData}
+                      className={classes.underline}
+                      style={{ width: "100%" }}
+                      inputProps={{
+                        name: "lga",
+                        id: "lga",
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      {lgaValue.map((lga) => {
+                        return <option value={lga}>{lga}</option>;
+                      })}
+                    </Select>
+                  </FormControl>
+            </GridItem>
+            </GridContainer>
+            <GridContainer>
+                <GridItem xs={12} sm={12} md={12}>
+                <CustomInput
+                    labelText="Address"
+                    id="address"
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                    inputProps={{
+                      multiline: true,
+                      rows: 3,
+                      type: "text",
+                      name: "address",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                  />
+                </GridItem>
+            </GridContainer>
           <Button onClick={addCook.submit} type="submit" color="primary">
             Edit Profile
             {isLoading && <Loading />}
@@ -219,3 +412,4 @@ export default function UpdateAdmin({ details }) {
     </div>
   );
 }
+

@@ -6,7 +6,7 @@ import ReportTables from "views/Report/ReportTables.js";
 import config from 'utils/config';
 
 export default function ReportContainer() {
-    return (
+    return ( 
         <div>
             <Switch>
                 <Route path="/admin/report/stateReport" component={StateReportView} />

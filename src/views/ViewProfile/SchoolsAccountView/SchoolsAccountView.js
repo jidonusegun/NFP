@@ -20,15 +20,15 @@ const useStyles = makeStyles((theme) => ({
         flexWrap: "wrap",
     },
     imageContainer: {
-        width: "300px",
-        height: "300px",
+        width: "170px",
+        height: "170px",
         [theme.breakpoints.down('sm')]: {
             width: "200px",
         }
     },
     img: {
-        width: "200px",
-        height: "200px",
+        width: "150px",
+        height: "150px",
     },
     widthp: {
         width: "200px",
@@ -78,14 +78,14 @@ export default function AdminAccountView({details}) {
     const newImage = details?.image?.split('/').pop()
 
     useEffect(() => {
-        getContent(`${baseUrl}/school/${details._id}`, token)
+        getContent(`${baseUrl}/school/${details?._id}`, token)
         .then(data => setResult(data.data))
-    },[token, details._id])
+    },[token, details?._id])
 
     async function sendToServer() {
         try {
             const imageUpload = await postContent(
-                `${baseUrl}/school/${details._id}/reactivate`, token
+                `${baseUrl}/school/${details?._id}/reactivate`, token
               );
         } catch ({message}) {
             alert(message)
@@ -113,10 +113,10 @@ export default function AdminAccountView({details}) {
                     <img src={result?.image ? newImage: Logo} alt={result.name} className={classes.img} />
                 </div>
                 <div className={classes.profileContent}>
-                    <div className={classes.widthp}>
+                    {/* <div className={classes.widthp}>
                         <p className={classes.margin0}>Registered: </p>
                         <div className={classes.widthp}><span className={classes.span}>{result.status}</span></div>
-                    </div>
+                    </div> */}
                     <div className={classes.widthp}>
                         <p className={classes.margin0}>Role: </p>
                         <div className={classes.widthp}><span className={classes.span}>School</span></div>
@@ -128,7 +128,7 @@ export default function AdminAccountView({details}) {
                                 <span className={classes.span}>
                                     <ThemeProvider theme={theme}>
                                         <Button variant="contained" size="small" color="secondary">
-                                            Suspended 
+                                            {result.status}
                                         </Button>
                                     </ThemeProvider>
                                 </span>
@@ -147,7 +147,7 @@ export default function AdminAccountView({details}) {
                                 <span className={classes.span}>
                                     <ThemeProvider theme={theme}>
                                         <Button variant="outlined" size="small" color="primary">
-                                            Active
+                                            {result.status}
                                         </Button>
                                     </ThemeProvider>
                                 </span>

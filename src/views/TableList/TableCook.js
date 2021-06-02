@@ -58,7 +58,7 @@ export default function TableList(props) {
 
   useEffect(() => {
     setIsLoading(true);
-      getContent(`${baseUrl}/cooks?state=${stateLogin}&lga=${lgaLogin}`, token)
+      getContent(`${baseUrl}/cooks?state=${stateLogin}&status=APPROVED`, token)
       .then(data=>setAccount(data.data))
     setIsLoading(false);
   }, [token, stateLogin, lgaLogin]);
@@ -101,8 +101,10 @@ export default function TableList(props) {
     }
   }
 
-  // console.log(account)
-
+  if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+    alert('Got here using the browser "Back" or "Forward" button.');
+}
+console.log(account)
   return (
     <div>
       <DialogContainer children= {<AddCooks content={account} />} /> 
@@ -202,19 +204,21 @@ export default function TableList(props) {
                           <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>MOBILE NUMBER</TableCell>
                           <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>EMAIL</TableCell>
                           <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>STATE</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>ADDRESS</TableCell>
                           <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>LGA</TableCell>
+                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>ADDRESS</TableCell>
                           <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>SCHOOL NAME</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>NO. OF PUPILS FEED</TableCell>
+                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>NO. OF PUPILS TO FEED</TableCell>
+                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>AMOUNT PER MEAL</TableCell>
+                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>NO. OF DAYS PER CYCLE</TableCell>
                       </TableRow>
                     </TableHead>
                   <TableBody>
-                    {account.map(({_id, gender, firstName, lastName, birthday, accountNumber, bankName, bvn, phoneNumber, email, date_created_acc, state, address, lga, schoolName, image, status, pupilsFeed}) => {
+                    {account.map(({_id, gender, firstName, lastName, birthday, accountNumber, bankName, bvn, phoneNumber, email, date_created_acc, state, address, lga, schoolName, image, status, pupilsFeed, numberOfPulpilFed, numberOfDaysPerCycle, amountPerMeal}) => {
                       
                       return (
                         <>
                           <TableRow key={_id} className={classes.tableBodyRow}>
-                            <TableCell className={classes.tableCell}><ViewListIcon style={{cursor: "pointer"}} onMouseUp={function(event){ setCookDetails({_id, gender, firstName, lastName, accountNumber, bankName, bvn, phoneNumber, email, state, date_created_acc, address, birthday, lga, schoolName, image});}}  onClick={handleClickPop}/></TableCell>
+                            <TableCell className={classes.tableCell}><ViewListIcon style={{cursor: "pointer"}} onMouseUp={function(event){ setCookDetails({_id, gender, firstName, lastName, accountNumber, bankName, bvn, phoneNumber, email, state, date_created_acc, address, birthday, lga, schoolName, image, numberOfPulpilFed, numberOfDaysPerCycle, amountPerMeal});}}  onClick={handleClickPop}/></TableCell>
                             <TableCell className={classes.tableCell}>{firstName}</TableCell>
                             <TableCell className={classes.tableCell}>{lastName}</TableCell>
                             <TableCell className={classes.tableCell}>{gender}</TableCell>
@@ -225,10 +229,12 @@ export default function TableList(props) {
                             <TableCell className={classes.tableCell}>{phoneNumber}</TableCell>
                             <TableCell className={classes.tableCell}>{email}</TableCell>
                             <TableCell className={classes.tableCell}>{state}</TableCell>
-                            <TableCell className={classes.tableCell}>{address}</TableCell>
                             <TableCell className={classes.tableCell}>{lga}</TableCell>
+                            <TableCell className={classes.tableCell}>{address}</TableCell>
                             <TableCell className={classes.tableCell}>{schoolName}</TableCell>
-                            <TableCell className={classes.tableCell}>{pupilsFeed}</TableCell>
+                            <TableCell className={classes.tableCell}>{numberOfPulpilFed}</TableCell>
+                            <TableCell className={classes.tableCell}>{amountPerMeal}</TableCell>
+                            <TableCell className={classes.tableCell}>{numberOfDaysPerCycle}</TableCell>
                           </TableRow>
                         </>
                       )

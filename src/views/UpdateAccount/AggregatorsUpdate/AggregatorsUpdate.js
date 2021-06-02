@@ -70,6 +70,7 @@ export default function UpdateAdmin({details, content}) {
     // let errorMessage = "";
 
     useEffect(() => {
+      
       getContent(`${baseUrl}/settings/states`, token)
       .then(data=>setStatevalue(data.data))
   
@@ -90,12 +91,11 @@ export default function UpdateAdmin({details, content}) {
         'phoneNumber',
         'frequencyOfSupply',
         'dayForConsumption',
-        'numberOfPulpils',
+        'numberOfPulpilFed',
         'bankName',
         'acctNumber',
         'tin',
-        'state',
-        'registeredBy'];
+        'state'];
       exclude.forEach((key) => {
         if (!addCook.values[key]) {
           setErrorMessage(`${key} is required`);
@@ -109,7 +109,7 @@ export default function UpdateAdmin({details, content}) {
       addCook.setData('registeredBy', userId)
       const tempData = {'tempData': JSON.stringify(addCook.values)};
       const {data} = await postContent(`${baseUrl}/aggregator/tempedit/${details._id}`, tempData, token);
-      setMessage('Record edited successfully')
+      alert('Edit Record edited successfully')
       content.unshift(data)
       setIsLoading(false)
       }
@@ -168,7 +168,7 @@ export default function UpdateAdmin({details, content}) {
   // TIN
 
 return (
-<div>
+  <div>
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
@@ -182,39 +182,7 @@ return (
               <div
                 style={{ color: "red", textAlign: "center", width: "100%" }}
               >{`${errorMessage}`}</div>
-              {/* <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CardAvatar profile style={{ marginTop: "2rem" }}>
-                    <form>
-                      <label htmlFor="filePicker">
-                        <IconButton
-                          color="primary"
-                          style={{ margin: "0", padding: "0" }}
-                          aria-label="upload picture"
-                          component="span"
-                        >
-                          <div style={{ borderRadius: "50%", margin: "0" }}>
-                            {$imagePreview}
-                          </div>
-                          <PhotoCamera className={classes.upload} />
-                        </IconButton>
-                      </label>
-                      <input
-                        id="filePicker"
-                        style={{ visibility: "hidden" }}
-                        type="file"
-                        name="uploadPicture"
-                        className={classes.input}
-                        onChange={(e) => {
-                          addCook.getFile(e);
-                          handleImageChange(e);
-                        }}
-                        accept="image/*"
-                      />
-                    </form>
-                  </CardAvatar>
-                </GridItem>
-              </GridContainer> */}
+              
               <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -370,10 +338,10 @@ return (
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="No. of pupils to feed"
-                    id="numberOfPulpils"
+                    id="numberOfPulpilFed"
                     inputProps={{
                       type: "number",
-                      name: "numberOfPulpils",
+                      name: "numberOfPulpilFed",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
@@ -404,6 +372,20 @@ return (
                     inputProps={{
                       type: "number",
                       name: "frequencyOfSupply",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="No. of Days Per Cycle"
+                    id="numberOfDaysPerCycle"
+                    inputProps={{
+                      type: "number",
+                      name: "numberOfDaysPerCycle",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{

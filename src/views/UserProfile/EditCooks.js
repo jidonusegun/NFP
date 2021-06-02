@@ -85,10 +85,15 @@ export default function EditCooks({title, subTitle, sendButton, details, content
   const [stateID, setStateID] = useState()
   const [imageUpload, setImageUpload] = useState({ image: "" });
   const [errorMessage, setErrorMessage] = useState("")
+  const [schools, setSchools] = useState([]);
   // let errorMessage = "";
   const { handleClose } = useContext(dataContext)
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
+  const stateLogin = localStorage.getItem("state");
+  const lgaLogin = localStorage.getItem("lga");
+  const userRole = localStorage.getItem("role");
+  const [result, setResult] = useState(details)
   const baseUrl = config.API_URL
 // const { PatchCook } = useContext(dataContext)
 
@@ -123,7 +128,12 @@ const handleImageUpload = (e) => {
         );
       }
 // content.unshift(data)
-setMessage('Record sent for approval')
+if(userRole === "SUPER_ADMIN") {
+  alert('Record Added')
+}
+{
+  alert('Record sent for approval')
+}
       setIsLoading(false);
       handleClose();
     } catch ({ message }) {
@@ -147,7 +157,6 @@ setMessage('Record sent for approval')
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('handle uploading-', imageFile.file);
       }
 
       const handleImageChange = (e) => {
@@ -166,7 +175,7 @@ setMessage('Record sent for approval')
         reader.readAsDataURL(file)
       }
 
-      let {imagePreviewUrl} = imageFile
+      let {imagePreviewUrl} = imageFile 
       let $imagePreview = null;
       if (imagePreviewUrl) {
         $imagePreview = (<img src={imagePreviewUrl} alt="upload" className={classes.img} />);
@@ -175,13 +184,19 @@ setMessage('Record sent for approval')
       }
 
       useEffect(() => {
-        getContent("https://nsfp.herokuapp.com/v1/settings/states", token)
+        addCook.setDefault(details)
+        getContent(`${baseUrl}/settings/states`, token)
         .then(data=>setStatevalue(data.data))
 
-        getContent(`https://nsfp.herokuapp.com/v1/settings/state/${stateID}/lgas`, token)
+        getContent(`${baseUrl}/settings/state/${stateID}/lgas`, token)
         .then(data=>setLgavalue(data.data))
 
-      },[token, stateID])
+        getContent(
+          `${baseUrl}/schools?state=${stateLogin}&lga=${lgaLogin}`,
+          token
+        ).then((data) => setSchools(data.data));
+
+      },[token, stateID, stateLogin, lgaLogin, details])
   
   return (
     <div>
@@ -189,31 +204,47 @@ setMessage('Record sent for approval')
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>{title ? title : "Edit Cook's Data"}</h4>
+              <h4 className={classes.cardTitleWhite}>
+                {title ? title : "Add Cook's Data"}
+              </h4>
               <p className={classes.cardCategoryWhite}>{subTitle}</p>
             </CardHeader>
             <CardBody>
-            <div style={{color: "red", textAlign: "center", width: "100%"}}>{`${errorMessage}`}</div>
-            <GridContainer>
+              <div
+                style={{ color: "red", textAlign: "center", width: "100%" }}
+              >{`${errorMessage}`}</div>
+              <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
-                <CardAvatar profile style={{marginTop: "2rem"}}>
-                  <form onSubmit={handleSubmit}>
-                    <label htmlFor="filePicker">
-                      <IconButton color="primary"  style={{margin: "0", padding: "0"}} aria-label="upload picture" component="span">
-                        <div style={{borderRadius: "50%", margin: "0"}}>
-                          {$imagePreview}
-                        </div>
-                      <PhotoCamera className={classes.upload} />
-                      </IconButton>
-                    </label>
-                    <input id="filePicker" style={{visibility:"hidden"}} 
-                      type="file" name="uploadPicture"  className={classes.input}
-                      onChange={(e)=>{
-                        addCook.getFile(e)
-                        handleImageChange(e)
-                      }} accept="image/*" />
-                  </form>
-                </CardAvatar>
+                  <CardAvatar profile style={{ marginTop: "2rem" }}>
+                    <form>
+                      <label htmlFor="filePickerEditCook">
+                        <IconButton
+                          color="primary"
+                          style={{ margin: "0", padding: "0" }}
+                          aria-label="upload picture"
+                          component="span"
+                        >
+                          <div style={{ borderRadius: "50%", margin: "0" }}>
+                            {$imagePreview}
+                          </div>
+                          <PhotoCamera className={classes.upload} />
+                        </IconButton>
+                      </label>
+                      <input
+                        id="filePickerEditCook"
+                        style={{ visibility: "hidden" }}
+                        type="file"
+                        name="files"
+                        className={classes.input}
+                        // function(event){ addCook.getFile(); handleImageChange;}
+                        onChange={(e) => {
+                          handleImageUpload(e);
+                          handleImageChange(e);
+                        }}
+                        accept="image/*"
+                      />
+                    </form>
+                  </CardAvatar>
                 </GridItem>
               </GridContainer>
               <GridContainer>
@@ -224,10 +255,25 @@ setMessage('Record sent for approval')
                     inputProps={{
                       type: "text",
                       name: "firstName",
+                      defaultValue: addCook.values.firstName,
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="Middle Name"
+                    id="middleName"
+                    inputProps={{
+                      type: "text",
+                      name: "middleName",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
                     }}
                   />
                 </GridItem>
@@ -241,22 +287,29 @@ setMessage('Record sent for approval')
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                   />
                 </GridItem>
+                </GridContainer>
+              <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="gender" style={{color: "#D2D2D2", fontWeight: "normal"}}>Gender</InputLabel>
+                    <InputLabel
+                      htmlFor="gender"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      Gender
+                    </InputLabel>
                     <Select
                       native
                       value={addCook.values.gender}
                       onChange={addCook.getData}
                       className={classes.underline}
-                      style={{width: "100%"}}
+                      style={{ width: "100%" }}
                       inputProps={{
-                        name: 'gender',
-                        id: 'gender',
+                        name: "gender",
+                        id: "gender",
                       }}
                     >
                       <option aria-label="None" value="" />
@@ -265,8 +318,6 @@ setMessage('Record sent for approval')
                     </Select>
                   </FormControl>
                 </GridItem>
-              </GridContainer>
-              <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Date of Birth"
@@ -291,10 +342,12 @@ setMessage('Record sent for approval')
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                   />
                 </GridItem>
+                </GridContainer>
+              <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                 <FormControl className={classes.formControl}>
                     <InputLabel
@@ -358,19 +411,17 @@ setMessage('Record sent for approval')
                     </Select>
                   </FormControl>
                 </GridItem>
-                </GridContainer>
-                <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="BVN"
                     id="bvn"
                     inputProps={{
                       type: "number",
-                      name: "bvn",
+                      name: "bvns",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                   />
                 </GridItem>
@@ -384,82 +435,156 @@ setMessage('Record sent for approval')
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                   />
                 </GridItem>
+                </GridContainer>
+              <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Email"
                     id="email"
                     inputProps={{
                       type: "email",
-                      name: "email",
+                      name: "emails",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="No. of Pulpil(s) to Feed"
+                    id="numberOfPulpilFed"
+                    inputProps={{
+                      type: "number",
+                      name: "numberOfPulpilFed",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="No. of Days Per Cycle"
+                    id="numberOfDaysPerCycle"
+                    inputProps={{
+                      type: "number",
+                      name: "numberOfDaysPerCycle",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
                     }}
                   />
                 </GridItem>
                 </GridContainer>
-                <GridContainer>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="Amount Per Meal"
+                    id="amountPerMeal"
+                    inputProps={{
+                      type: "email",
+                      name: "amountPerMeal",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="state" style={{color: "#D2D2D2", fontWeight: "normal"}}>State</InputLabel>
+                    <InputLabel
+                      htmlFor="state"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      State
+                    </InputLabel>
                     <Select
                       native
                       value={addCook.values.state}
-                      onChange={(e) =>{handleChange(e)
-                        addCook.getData(e)}}
+                      onChange={(e) => {
+                        handleChange(e);
+                        addCook.getData(e);
+                      }}
                       className={classes.underline}
-                      style={{width: "100%"}}
+                      style={{ width: "100%" }}
                       inputProps={{
-                        name: 'state',
-                        id: 'state',
+                        name: "state",
+                        id: "state",
                       }}
                     >
                       <option aria-label="None" value="" />
-                      {stateValue.map(({name, _id}) => {
-                        return <option value={name} id={_id}>{name}</option>
+                      {stateValue.map(({ _id, name }) => {
+                        return (
+                          <option value={name} id={_id}>
+                            {name}
+                          </option>
+                        );
                       })}
                     </Select>
                   </FormControl>
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="lga" style={{color: "#D2D2D2", fontWeight: "normal"}}>LGA</InputLabel>
+                    <InputLabel
+                      htmlFor="lga"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      LGA
+                    </InputLabel>
                     <Select
                       native
                       value={addCook.values.lga}
                       onChange={addCook.getData}
                       className={classes.underline}
-                      style={{width: "100%"}}
+                      style={{ width: "100%" }}
                       inputProps={{
-                        name: 'lga',
-                        id: 'lga',
+                        name: "lga",
+                        id: "lga",
                       }}
                     >
                       <option aria-label="None" value="" />
-                      {lgaValue.map(lga => {
-                        return <option value={lga}>{lga}</option>
+                      {lgaValue.map((lga) => {
+                        return <option value={lga}>{lga}</option>;
                       })}
                     </Select>
                   </FormControl>
                 </GridItem>
+                </GridContainer>
+              <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="School Name"
-                    id="schoolName"
-                    inputProps={{
-                      type: "text",
-                      name: "schoolName",
-                      onChange: (e) => addCook.getData(e),
-                    }}
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
+                  <FormControl className={classes.formControl}>
+                    <InputLabel
+                      htmlFor="schoolName"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      School Name
+                    </InputLabel>
+                    <Select
+                      native
+                      value={addCook.values.schoolName}
+                      onChange={addCook.getData}
+                      className={classes.underline}
+                      style={{ width: "100%" }}
+                      inputProps={{
+                        name: "schoolName",
+                        id: "schoolName",
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      {schools.map((schoolName) => {
+                        return <option value={schoolName.name}>{schoolName.name}</option>;
+                      })}
+                    </Select>
+                  </FormControl>
                 </GridItem>
               </GridContainer>
               {/* <GridContainer>
@@ -485,7 +610,7 @@ setMessage('Record sent for approval')
                     labelText="Address"
                     id="address"
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                     inputProps={{
                       multiline: true,
@@ -497,13 +622,13 @@ setMessage('Record sent for approval')
                   />
                 </GridItem>
               </GridContainer>
-              </CardBody>
+            </CardBody>
             <CardFooter>
               <Button onClick={addCook.submit} color="primary">
-                {sendButton ? sendButton : "Edit Profile"}
+                {sendButton ? sendButton : "Submit"}
                 {isLoading && <Loading />}
-                </Button>
-                <Toast message={message} />
+              </Button>
+              <Toast message={message} />
             </CardFooter>
           </Card>
         </GridItem>

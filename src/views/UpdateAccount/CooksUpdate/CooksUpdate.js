@@ -61,22 +61,33 @@ export default function UpdateAdmin({details, content}) {
     const [stateValue, setStatevalue] = useState([])
   const [lgaValue, setLgavalue] = useState([])
   const [imageUpload, setImageUpload] = useState({ image: "" });
+  const [schools, setSchools] = useState([]);
   const [stateID, setStateID] = useState()
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("id");
+    const stateLogin = localStorage.getItem("state");
+  const lgaLogin = localStorage.getItem("lga");
     const [errorMessage, setErrorMessage] = useState("")
     const baseUrl = config.API_URL
     // let errorMessage = "";
 
     useEffect(() => {
+
+      // addCook.setDefault(details)
+
       getContent(`${baseUrl}/settings/states`, token)
       .then(data=>setStatevalue(data.data))
   
   
       getContent(`${baseUrl}/settings/state/${stateID}/lgas`, token)
       .then(data=>setLgavalue(data.data))
+
+      getContent(
+        `${baseUrl}/schools?state=${stateLogin}&lga=${lgaLogin}`,
+        token
+      ).then((data) => setSchools(data.data));
   
-    },[token, stateID])
+    },[token, stateID, stateLogin, lgaLogin])
     
     const handleImageUpload = (e) => {
       setImageUpload({ image: e.target.files[0] });
@@ -109,8 +120,7 @@ export default function UpdateAdmin({details, content}) {
         );
       }
     // content.unshift(data)
-    setMessage('Record sent for approval')
-      console.log(result);
+    alert('Edit Record sent for approval')
     } catch ({ message }) {
       alert(message);
     }
@@ -132,7 +142,6 @@ export default function UpdateAdmin({details, content}) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('handle uploading-', imageFile.file);
       }
 
       const handleImageChange = (e) => {
@@ -160,119 +169,156 @@ export default function UpdateAdmin({details, content}) {
       }   
 
 return (
-<div>
-  <GridContainer>
-    <GridItem xs={12} sm={12} md={12}>
-      <Card>
-        <CardHeader color="primary">
-          <h4 className={classes.cardTitleWhite}>{title ? title : "Edit Cook's Data"}</h4>
-          <p className={classes.cardCategoryWhite}>{subTitle}</p>
-        </CardHeader>
-        <CardBody>
-        <div style={{color: "red", textAlign: "center", width: "100%"}}>{`${errorMessage}`}</div>
-        <GridContainer>
-            <GridItem xs={12} sm={12} md={4}>
-            <CardAvatar profile style={{marginTop: "2rem"}}>
-              <form onSubmit={handleSubmit}>
-                <label htmlFor="filePicker">
-                  <IconButton color="primary"  style={{margin: "0", padding: "0"}} aria-label="upload picture" component="span">
-                    <div style={{borderRadius: "50%", margin: "0"}}>
-                      {$imagePreview}
-                    </div>
-                  <PhotoCamera className={classes.upload} />
-                  </IconButton>
-                </label>
-                <input id="filePicker" style={{visibility:"hidden"}} 
-                  type="file" name="uploadPicture"  className={classes.input}
-                  onChange={(e)=>{
-                    addCook.getFile(e)
-                    handleImageChange(e)
-                  }} accept="image/*" />
-              </form>
-            </CardAvatar>
-            </GridItem>
-          </GridContainer>
-          <GridContainer>
-            <GridItem xs={12} sm={12} md={4}>
-              <CustomInput
-                labelText="First Name"
-                id="firstName"
-                inputProps={{
-                  type: "text",
-                  name: "firstName",
-                  onChange: (e) => addCook.getData(e),
-                }}
-                formControlProps={{
-                  fullWidth: true
-                }}
-              />
-            </GridItem>
-            <GridItem xs={12} sm={12} md={4}>
-              <CustomInput
-                labelText="Last Name"
-                id="lastName"
-                inputProps={{
-                  type: "text",
-                  name: "lastName",
-                  onChange: (e) => addCook.getData(e),
-                }}
-                formControlProps={{
-                  fullWidth: true
-                }}
-              />
-            </GridItem>
-            <GridItem xs={12} sm={12} md={4}>
-              <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="gender" style={{color: "#D2D2D2", fontWeight: "normal"}}>Gender</InputLabel>
-                <Select
-                  native
-                  value={addCook.values.gender}
-                  onChange={addCook.getData}
-                  className={classes.underline}
-                  style={{width: "100%"}}
-                  inputProps={{
-                    name: 'gender',
-                    id: 'gender',
-                  }}
-                >
-                  <option aria-label="None" value="" />
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </Select>
-              </FormControl>
-            </GridItem>
-          </GridContainer>
-          <GridContainer>
-            <GridItem xs={12} sm={12} md={4}>
-              <CustomInput
-                labelText="Date of Birth"
-                id="birthday"
-                inputProps={{
-                  type: "date",
-                  name: "dateOfBirth",
-                  onChange: (e) => addCook.getData(e),
-                }}
-                formControlProps={{
-                  fullWidth: true,
-                }}
-              />
-            </GridItem>
-            <GridItem xs={12} sm={12} md={4}>
-              <CustomInput
-                labelText="Account No"
-                id="accountNumber"
-                inputProps={{
-                  type: "number",
-                  name: "accountNo",
-                  onChange: (e) => addCook.getData(e),
-                }}
-                formControlProps={{
-                  fullWidth: true
-                }}
-              />
-            </GridItem>
-            <GridItem xs={12} sm={12} md={4}>
-            <FormControl className={classes.formControl}>
+  <div>
+      <GridContainer>
+        <GridItem xs={12} sm={12} md={12}>
+          <Card>
+            <CardHeader color="primary">
+              <h4 className={classes.cardTitleWhite}>
+                {title ? title : "Add Cook's Data"}
+              </h4>
+              <p className={classes.cardCategoryWhite}>{subTitle}</p>
+            </CardHeader>
+            <CardBody>
+              <div
+                style={{ color: "red", textAlign: "center", width: "100%" }}
+              >{`${errorMessage}`}</div>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CardAvatar profile style={{ marginTop: "2rem" }}>
+                    <form>
+                      <label htmlFor="filePickerEditCook1">
+                        <IconButton
+                          color="primary"
+                          style={{ margin: "0", padding: "0" }}
+                          aria-label="upload picture"
+                          component="span"
+                        >
+                          <div style={{ borderRadius: "50%", margin: "0" }}>
+                            {$imagePreview}
+                          </div>
+                          <PhotoCamera className={classes.upload} />
+                        </IconButton>
+                      </label>
+                      <input
+                        id="filePickerEditCook1"
+                        style={{ visibility: "hidden" }}
+                        type="file"
+                        name="files"
+                        className={classes.input}
+                        // function(event){ addCook.getFile(); handleImageChange;}
+                        onChange={(e) => {
+                          handleImageUpload(e);
+                          handleImageChange(e);
+                        }}
+                        accept="image/*"
+                      />
+                    </form>
+                  </CardAvatar>
+                </GridItem>
+              </GridContainer>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="First Name"
+                    id="firstName"
+                    inputProps={{
+                      type: "text",
+                      name: "firstName",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="Middle Name"
+                    id="middleName"
+                    inputProps={{
+                      type: "text",
+                      name: "middleName",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="Last Name"
+                    id="lastName"
+                    inputProps={{
+                      type: "text",
+                      name: "lastName",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                </GridContainer>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={4}>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel
+                      htmlFor="gender"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      Gender
+                    </InputLabel>
+                    <Select
+                      native
+                      value={addCook.values.gender}
+                      onChange={addCook.getData}
+                      className={classes.underline}
+                      style={{ width: "100%" }}
+                      inputProps={{
+                        name: "gender",
+                        id: "gender",
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                    </Select>
+                  </FormControl>
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="Date of Birth"
+                    id="birthday"
+                    inputProps={{
+                      type: "date",
+                      name: "dateOfBirth",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="Account No"
+                    id="accountNumber"
+                    inputProps={{
+                      type: "number",
+                      name: "accountNo",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                </GridContainer>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={4}>
+                <FormControl className={classes.formControl}>
                     <InputLabel
                       htmlFor="bankName"
                       style={{ color: "#D2D2D2", fontWeight: "normal" }}
@@ -333,112 +379,184 @@ return (
                       <option value="Nova Merchant Bank">Nova Merchant Bank</option>
                     </Select>
                   </FormControl>
-            </GridItem>
-            </GridContainer>
-            <GridContainer>
-            <GridItem xs={12} sm={12} md={4}>
-              <CustomInput
-                labelText="BVN"
-                id="bvn"
-                inputProps={{
-                  type: "number",
-                  name: "bvn",
-                  onChange: (e) => addCook.getData(e),
-                }}
-                formControlProps={{
-                  fullWidth: true
-                }}
-              />
-            </GridItem>
-            <GridItem xs={12} sm={12} md={4}>
-              <CustomInput
-                labelText="Mobile Number"
-                id="phoneNumber"
-                inputProps={{
-                  type: "number",
-                  name: "mobileNumber",
-                  onChange: (e) => addCook.getData(e),
-                }}
-                formControlProps={{
-                  fullWidth: true
-                }}
-              />
-            </GridItem>
-            <GridItem xs={12} sm={12} md={4}>
-              <CustomInput
-                labelText="Email"
-                id="email"
-                inputProps={{
-                  type: "email",
-                  name: "email",
-                  onChange: (e) => addCook.getData(e),
-                }}
-                formControlProps={{
-                  fullWidth: true
-                }}
-              />
-            </GridItem>
-            </GridContainer>
-            <GridContainer>
-            <GridItem xs={12} sm={12} md={4}>
-              <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="state" style={{color: "#D2D2D2", fontWeight: "normal"}}>State</InputLabel>
-                <Select
-                  native
-                  value={addCook.values.state}
-                  onChange={(e) =>{handleChange(e)
-                    addCook.getData(e)}}
-                  className={classes.underline}
-                  style={{width: "100%"}}
-                  inputProps={{
-                    name: 'state',
-                    id: 'state',
-                  }}
-                >
-                  <option aria-label="None" value="" />
-                  {stateValue.map(({name, _id}) => {
-                    return <option value={name} id={_id}>{name}</option>
-                  })}
-                </Select>
-              </FormControl>
-            </GridItem>
-            <GridItem xs={12} sm={12} md={4}>
-              <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="lga" style={{color: "#D2D2D2", fontWeight: "normal"}}>LGA</InputLabel>
-                <Select
-                  native
-                  value={addCook.values.lga}
-                  onChange={addCook.getData}
-                  className={classes.underline}
-                  style={{width: "100%"}}
-                  inputProps={{
-                    name: 'lga',
-                    id: 'lga',
-                  }}
-                >
-                  <option aria-label="None" value="" />
-                  {lgaValue.map(({name}) => {
-                    return <option value={name}>{name}</option>
-                  })}
-                </Select>
-              </FormControl>
-            </GridItem>
-            <GridItem xs={12} sm={12} md={4}>
-              <CustomInput
-                labelText="School Name"
-                id="schoolName"
-                inputProps={{
-                  type: "text",
-                  name: "schoolName",
-                  onChange: (e) => addCook.getData(e),
-                }}
-                formControlProps={{
-                  fullWidth: true
-                }}
-              />
-            </GridItem>
-          </GridContainer>
-          {/* <GridContainer>
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="BVN"
+                    id="bvn"
+                    inputProps={{
+                      type: "number",
+                      name: "bvns",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="Mobile Number"
+                    id="phoneNumber"
+                    inputProps={{
+                      type: "number",
+                      name: "mobileNumber",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                </GridContainer>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="Email"
+                    id="email"
+                    inputProps={{
+                      type: "email",
+                      name: "emails",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="No. of Pulpil(s) to Feed"
+                    id="numberOfPulpilFed"
+                    inputProps={{
+                      type: "number",
+                      name: "numberOfPulpilFed",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="No. of Days Per Cycle"
+                    id="numberOfDaysPerCycle"
+                    inputProps={{
+                      type: "number",
+                      name: "numberOfDaysPerCycle",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                </GridContainer>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="Amount Per Meal"
+                    id="amountPerMeal"
+                    inputProps={{
+                      type: "email",
+                      name: "amountPerMeal",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel
+                      htmlFor="state"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      State
+                    </InputLabel>
+                    <Select
+                      native
+                      value={addCook.values.state}
+                      onChange={(e) => {
+                        handleChange(e);
+                        addCook.getData(e);
+                      }}
+                      className={classes.underline}
+                      style={{ width: "100%" }}
+                      inputProps={{
+                        name: "state",
+                        id: "state",
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      {stateValue.map(({ _id, name }) => {
+                        return (
+                          <option value={name} id={_id}>
+                            {name}
+                          </option>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel
+                      htmlFor="lga"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      LGA
+                    </InputLabel>
+                    <Select
+                      native
+                      value={addCook.values.lga}
+                      onChange={addCook.getData}
+                      className={classes.underline}
+                      style={{ width: "100%" }}
+                      inputProps={{
+                        name: "lga",
+                        id: "lga",
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      {lgaValue.map((lga) => {
+                        return <option value={lga}>{lga}</option>;
+                      })}
+                    </Select>
+                  </FormControl>
+                </GridItem>
+                </GridContainer>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={4}>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel
+                      htmlFor="schoolName"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      School Name
+                    </InputLabel>
+                    <Select
+                      native
+                      value={addCook.values.schoolName}
+                      onChange={addCook.getData}
+                      className={classes.underline}
+                      style={{ width: "100%" }}
+                      inputProps={{
+                        name: "schoolName",
+                        id: "schoolName",
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      {schools.map((schoolName) => {
+                        return <option value={schoolName.name}>{schoolName.name}</option>;
+                      })}
+                    </Select>
+                  </FormControl>
+                </GridItem>
+              </GridContainer>
+              {/* <GridContainer>
                 <GridItem xs={12} sm={12} md={6}>
                   <CustomInput
                     labelText="Number of pupils to feed"
@@ -454,36 +572,36 @@ return (
                   />
                 </GridItem>
               </GridContainer> */}
-          <GridContainer>
-            <GridItem xs={12} sm={12} md={12}>
-              {/* <InputLabel style={{ color: "#AAAAAA" }}>Address</InputLabel> */}
-              <CustomInput
-                labelText="Address"
-                id="address"
-                formControlProps={{
-                  fullWidth: true
-                }}
-                inputProps={{
-                  multiline: true,
-                  rows: 3,
-                  type: "text",
-                  name: "address",
-                  onChange: (e) => addCook.getData(e),
-                }}
-              />
-            </GridItem>
-          </GridContainer>
-          </CardBody>
-        <CardFooter>
-          <Button onClick={addCook.submit} color="primary">
-            {sendButton ? sendButton : "Edit Profile"}
-            {isLoading && <Loading />}
-            </Button>
-            <Toast message={message} />
-        </CardFooter>
-      </Card>
-    </GridItem>
-  </GridContainer>
-</div>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={12}>
+                  {/* <InputLabel style={{ color: "#AAAAAA" }}>Address</InputLabel> */}
+                  <CustomInput
+                    labelText="Address"
+                    id="address"
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                    inputProps={{
+                      multiline: true,
+                      rows: 3,
+                      type: "text",
+                      name: "address",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                  />
+                </GridItem>
+              </GridContainer>
+            </CardBody>
+            <CardFooter>
+              <Button onClick={addCook.submit} color="primary">
+                {sendButton ? sendButton : "Submit"}
+                {isLoading && <Loading />}
+              </Button>
+              <Toast message={message} />
+            </CardFooter>
+          </Card>
+        </GridItem>
+      </GridContainer>
+    </div>
 );
 }

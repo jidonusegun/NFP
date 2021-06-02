@@ -34,7 +34,7 @@ import TableAggregator from "views/TableList/TableAggregator.js";
 import TableSchools from "views/TableList/TableSchools.js";
 import TablePupils from "views/TableList/TablePupils";
 import EditIcon from '@material-ui/icons/Edit';
-import StateAdminProfile from 'views/ViewProfile/stateAdminProfile';
+import StateAdminProfile from 'views/ViewProfile/GeneralAdminProfile';
 import ReportTable from "views/Report/stateReportTable.js";
 import PersonIcon from '@material-ui/icons/Person';
 

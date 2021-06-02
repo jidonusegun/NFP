@@ -35,7 +35,7 @@ import Toast from "components/toast";
 
 const useStyles = makeStyles(styles);
 
-export default function TableAggregator() {
+export default function TableAggregator({state}) {
   const classes = useStyles();
   const { openDialog, closeDialog, isOpen } = useDialog();
   // const uploadExcel = userForm(sendToServer);
@@ -54,10 +54,10 @@ export default function TableAggregator() {
 
   useEffect(() => {
       setIsLoading(true);
-      getContent(`${baseUrl}/aggregators?state=${stateLogin}`, token)
+      getContent(`${baseUrl}/aggregators?state=${state}&status=APPROVED`, token)
       .then(data=>setAccount(data.data))
     setIsLoading(false);
-  }, [token, stateLogin]);
+  }, [token, state]);
 
   // async function sendToServer() {
   //   try {
@@ -185,45 +185,144 @@ export default function TableAggregator() {
                       
                       <TableHead style={{color: "#9c27b0"}}> 
                         <TableRow className={classes.tableHeadRow}>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>ACTION</TableCell>
-                            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>FIRST NAME</TableCell>
-                            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>LAST NAME</TableCell>
-                            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>GENDER</TableCell>
-                            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>DATE OF BIRTH</TableCell>
-                            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>ACCOUNT NO.</TableCell>
-                            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>BANK NAME</TableCell>
-                            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>BVN</TableCell>
-                            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>MOBILE NUMBER</TableCell>
-                            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>EMAIL</TableCell>
-                            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>ITEMS</TableCell>
-                            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>STATE</TableCell>
-                            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>LGA</TableCell>
-                            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>ADDRESS</TableCell>
-                            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>SCHOOL NAME</TableCell>
-                            <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>NO. OF PUPILS FEED</TableCell>
+                        <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            ACTION
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            COMPANY NAME
+                          </TableCell>
+                            <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            STATE
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            UNIT PRICE
+                          </TableCell> 
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            PHONE NUMBER
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            BANK NAME
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            ACCOUNT NUMBER
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            TIN
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            DAY FOR CONSUMPTION
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            FREQUENCY OF SUPPLY
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            NO. OF DAYS PER CYCLE
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            NO. OF PUPILS TO FEED
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                     <TableBody>
-                      {account.map(({_id, gender, items, firstName, lastName, birthday, accountNumber, bankName, bvn, phoneNumber, date_created_acc, email, state, address, lga, schoolName, image, status, pupilsFeed}) => {
+                      {account.map(({acctNumber, bankName, companyName, dayForConsumption, frequencyOfSupply, numberOfDaysPerCycle, numberOfPulpilFed, phoneNumber, registeredBy, state, status, tin, unitPrice, _id,}) => {
                         return (
-                          <TableRow key={_id} className={classes.tableBodyRow}>
-                                <TableCell className={classes.tableCell}><ViewListIcon style={{cursor: "pointer"}} onMouseUp={function(event){ setAggregatorDetails({_id, gender, firstName, lastName, accountNumber, bankName, bvn, phoneNumber, email, state, date_created_acc, birthday, address, lga, schoolName, image});}}  onClick={handleClickPop} /></TableCell>
-                                <TableCell className={classes.tableCell}>{firstName}</TableCell>
-                                <TableCell className={classes.tableCell}>{lastName}</TableCell>
-                                <TableCell className={classes.tableCell}>{gender}</TableCell>
-                                <TableCell className={classes.tableCell}>{birthday}</TableCell>
-                                <TableCell className={classes.tableCell}>{accountNumber}</TableCell>
-                                <TableCell className={classes.tableCell}>{bankName}</TableCell>
-                                <TableCell className={classes.tableCell}>{bvn}</TableCell>
-                                <TableCell className={classes.tableCell}>{phoneNumber}</TableCell>
-                                <TableCell className={classes.tableCell}>{email}</TableCell>
-                                <TableCell className={classes.tableCell}>{items}</TableCell>
-                                <TableCell className={classes.tableCell}>{state}</TableCell>
-                                <TableCell className={classes.tableCell}>{lga}</TableCell>
-                                <TableCell className={classes.tableCell}>{address}</TableCell>
-                                <TableCell className={classes.tableCell}>{schoolName}</TableCell>
-                                <TableCell className={classes.tableCell}>{pupilsFeed}</TableCell>
-                          </TableRow>
+                          <TableRow
+                                key={_id}
+                                className={classes.tableBodyRow}
+                              >
+                                <TableCell className={classes.tableCell}>
+                                  <ViewListIcon
+                                    style={{ cursor: "pointer" }}
+                                    onMouseUp={function (event) {
+                                      setAggregatorDetails({
+                                        acctNumber, bankName, companyName, dayForConsumption, frequencyOfSupply, numberOfDaysPerCycle, numberOfPulpilFed, phoneNumber, registeredBy, state, status, tin, unitPrice, _id,
+                                      });
+                                    }}
+                                    onClick={handleClickPop}
+                                  />
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {companyName}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {state}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {unitPrice}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {phoneNumber}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {bankName}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {acctNumber}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {tin}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {dayForConsumption}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {frequencyOfSupply}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {numberOfDaysPerCycle}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {numberOfPulpilFed}
+                                </TableCell>
+                              </TableRow>
                         )
                     })}
                     </TableBody>

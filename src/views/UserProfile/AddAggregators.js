@@ -89,6 +89,7 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
   const [stateID, setStateID] = useState();
   const [errorMessage, setErrorMessage] = useState("");
   const userId = localStorage.getItem("id");
+  const userRole = localStorage.getItem("role");
   const baseUrl = config.API_URL
 
   // let errorMessage = "";
@@ -125,12 +126,11 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
         'phoneNumber',
         'frequencyOfSupply',
         'dayForConsumption',
-        'numberOfPulpils',
+        'numberOfPulpilFed',
         'bankName',
         'acctNumber',
         'tin',
-        'state',
-        'registeredBy'];
+        'state'];
       exclude.forEach((key) => {
         if (!addCook.values[key]) {
           setErrorMessage(`${key} is required`);
@@ -152,7 +152,13 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
         addCook.values,
         token
       );
-      setMessage('Record sent for approval')
+      if(userRole === "SUPER_ADMIN") {
+        alert('Record Added')
+      }
+      {
+        alert('Record sent for approval')
+      }
+      
       content.unshift(data)
       setIsLoading(false);
       handleClose();
@@ -226,39 +232,7 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
               <div
                 style={{ color: "red", textAlign: "center", width: "100%" }}
               >{`${errorMessage}`}</div>
-              {/* <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CardAvatar profile style={{ marginTop: "2rem" }}>
-                    <form>
-                      <label htmlFor="filePicker">
-                        <IconButton
-                          color="primary"
-                          style={{ margin: "0", padding: "0" }}
-                          aria-label="upload picture"
-                          component="span"
-                        >
-                          <div style={{ borderRadius: "50%", margin: "0" }}>
-                            {$imagePreview}
-                          </div>
-                          <PhotoCamera className={classes.upload} />
-                        </IconButton>
-                      </label>
-                      <input
-                        id="filePicker"
-                        style={{ visibility: "hidden" }}
-                        type="file"
-                        name="uploadPicture"
-                        className={classes.input}
-                        onChange={(e) => {
-                          addCook.getFile(e);
-                          handleImageChange(e);
-                        }}
-                        accept="image/*"
-                      />
-                    </form>
-                  </CardAvatar>
-                </GridItem>
-              </GridContainer> */}
+              
               <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -333,19 +307,6 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                   />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
-                  {/* <CustomInput
-                    labelText="Bank Name"
-                    id="bankName"
-                    inputProps={{
-                      type: "text",
-                      name: "bankName",
-                      onChange: (e) => addCook.getData(e),
-                    }}
-                    formControlProps={{
-                      fullWidth: true,
-                    }}
-                  /> */}
-
                   <FormControl className={classes.formControl}>
                     <InputLabel
                       htmlFor="bankName"
@@ -427,10 +388,10 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="No. of pupils to feed"
-                    id="numberOfPulpils"
+                    id="numberOfPulpilFed"
                     inputProps={{
                       type: "number",
-                      name: "numberOfPulpils",
+                      name: "numberOfPulpilFed",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
@@ -461,6 +422,20 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                     inputProps={{
                       type: "number",
                       name: "frequencyOfSupply",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="No. of Days Per Cycle"
+                    id="numberOfDaysPerCycle"
+                    inputProps={{
+                      type: "number",
+                      name: "numberOfDaysPerCycle",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{

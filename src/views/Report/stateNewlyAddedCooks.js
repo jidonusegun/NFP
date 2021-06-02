@@ -101,7 +101,6 @@ const baseUrl = config.API_URL
                   return  status === "PENDING" ?
                     <TableRow key={_id} className={classes.tableBodyRow}>
                       <TableCell className={classes.tableCell}>
-                    <input type="number" id="approve" name="approve" onChange={approveCook.getData} value={_id} style={{display: "none"}}/>
                       <ViewListIcon style={{cursor: "pointer"}} onMouseUp={function(event){setSavedId(_id)}} onClick={handleClickPop} /></TableCell>
                       <TableCell className={classes.tableCell}>{firstName}</TableCell>
                       <TableCell className={classes.tableCell}>{lastName}</TableCell>

@@ -56,7 +56,7 @@ export default function TableAggregator(props) {
   useEffect(() => {
     setIsLoading(true);
     getContent(
-      `${baseUrl}/schools?state=${stateLogin}&lga=${lgaLogin}`,
+      `${baseUrl}/schools?state=${stateLogin}&status=APPROVED`,
       token
     ).then((data) => setAccount(data.data));
     setIsLoading(false);

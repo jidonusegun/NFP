@@ -43,8 +43,8 @@ export default function AddNewPost({details}) {
     <div style={{ width: "30rem", minHeight: "400px"}}>
       <form>
         <input style={{display: "block", padding: "12px 10px", border: "1px solid gray", borderRadius: "5px", margin: "1rem 0", width: "95%"}} type="text" name="title" value={addPost.values.title} placeholder="Your Post title here..." onChange={addPost.getData} />
-        <ReactQuill style={{backgrounColor: "white", height: "400px", width: "100%" }} name="content" value={addPost.values.content}
-        onChange={addPost.getData} />
+        <ReactQuill style={{backgrounColor: "white", height: "400px", width: "100%" }} name="content" value={addPost.getEditor}
+        onChange={addPost.getEditor} />
 
         <button style={{borderRadius: "5px", color: "white", padding: "5px 10px", border: "none", backgroundColor: "green"}} onClick={addPost.submit}>Send</button>
       </form>

@@ -90,6 +90,7 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
   const { handleClose } = useContext(dataContext)
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
+  const userRole = localStorage.getItem("role");
 // const { PatchAggregator } = useContext(dataContext)
 
   async function sendToServer() {
@@ -102,12 +103,11 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
         'phoneNumber',
         'frequencyOfSupply',
         'dayForConsumption',
-        'numberOfPulpils',
+        'numberOfPulpilFed',
         'bankName',
         'acctNumber',
         'tin',
-        'state',
-        'registeredBy'];
+        'state'];
       exclude.forEach((key) => {
         if (!addCook.values[key]) {
           setErrorMessage(`${key} is required`);
@@ -123,8 +123,13 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
       const tempData = {'tempData': JSON.stringify(addCook.values)};
 
       const {data} = await postContent(`${baseUrl}/aggregator/tempedit/${details._id}`, tempData, token);
-      setMessage('Record sent for approval')
-content.unshift(data)
+      if(userRole === "SUPER_ADMIN") {
+        alert('Record Added')
+      }
+      {
+        alert('Record sent for approval')
+      }
+// content.unshift(data)
       setIsLoading(false);
       handleClose();
     } catch ({ message }) {
@@ -176,10 +181,11 @@ content.unshift(data)
       // }
 
       useEffect(() => {
-        getContent("https://nsfp.herokuapp.com/v1/settings/states", token)
+        // addCook.setDefault(details)
+        getContent(`${baseUrl}/settings/states`, token)
         .then(data=>setStatevalue(data.data))
 
-        getContent(`https://nsfp.herokuapp.com/v1/settings/state/${stateID}/lgas`, token)
+        getContent(`${baseUrl}/settings/state/${stateID}/lgas`, token)
         .then(data=>setLgavalue(data.data))
 
       },[token, stateID])
@@ -208,39 +214,7 @@ content.unshift(data)
               <div
                 style={{ color: "red", textAlign: "center", width: "100%" }}
               >{`${errorMessage}`}</div>
-              {/* <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CardAvatar profile style={{ marginTop: "2rem" }}>
-                    <form>
-                      <label htmlFor="filePicker">
-                        <IconButton
-                          color="primary"
-                          style={{ margin: "0", padding: "0" }}
-                          aria-label="upload picture"
-                          component="span"
-                        >
-                          <div style={{ borderRadius: "50%", margin: "0" }}>
-                            {$imagePreview}
-                          </div>
-                          <PhotoCamera className={classes.upload} />
-                        </IconButton>
-                      </label>
-                      <input
-                        id="filePicker"
-                        style={{ visibility: "hidden" }}
-                        type="file"
-                        name="uploadPicture"
-                        className={classes.input}
-                        onChange={(e) => {
-                          addCook.getFile(e);
-                          handleImageChange(e);
-                        }}
-                        accept="image/*"
-                      />
-                    </form>
-                  </CardAvatar>
-                </GridItem>
-              </GridContainer> */}
+              
               <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -315,19 +289,6 @@ content.unshift(data)
                   />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
-                  {/* <CustomInput
-                    labelText="Bank Name"
-                    id="bankName"
-                    inputProps={{
-                      type: "text",
-                      name: "bankName",
-                      onChange: (e) => addCook.getData(e),
-                    }}
-                    formControlProps={{
-                      fullWidth: true,
-                    }}
-                  /> */}
-
                   <FormControl className={classes.formControl}>
                     <InputLabel
                       htmlFor="bankName"
@@ -409,10 +370,10 @@ content.unshift(data)
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="No. of pupils to feed"
-                    id="numberOfPulpils"
+                    id="numberOfPulpilFed"
                     inputProps={{
                       type: "number",
-                      name: "numberOfPulpils",
+                      name: "numberOfPulpilFed",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
@@ -443,6 +404,20 @@ content.unshift(data)
                     inputProps={{
                       type: "number",
                       name: "frequencyOfSupply",
+                      onChange: (e) => addCook.getData(e),
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="No. of Days Per Cycle"
+                    id="numberOfDaysPerCycle"
+                    inputProps={{
+                      type: "number",
+                      name: "numberOfDaysPerCycle",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{

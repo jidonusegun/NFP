@@ -20,7 +20,7 @@ import Popover from 'components/Popover/Popover.js';
 import DialogContainer from 'components/Dialog/DialogContainer.js';
 import AddCooks from 'views/UserProfile/AddCooks';
 import { dataContext } from 'components/context/DataContext';
-import SpeedDialCook from 'components/SpeedDialCooks/SpeedDialCook.js';
+import SpeedDialCook from 'components/SpeedDialCooks/SpeedDialCook.js'; 
 import Download from 'assets/img/Abuja.jpg';
 import DownloadCook from 'assets/img/COOKS.xlsx';
 // icon components
@@ -40,7 +40,7 @@ import Toast from "components/toast";
 
 const useStyles = makeStyles(styles);
 
-export default function TableList(props) {
+export default function TableList({state}) {
   const classes = useStyles();
   const { openDialog, closeDialog, isOpen } = useDialog();
   // const uploadExcel = userForm(sendToServer);
@@ -58,10 +58,10 @@ export default function TableList(props) {
 
   useEffect(() => {
     setIsLoading(true);
-      getContent(`${baseUrl}/cooks?state=${stateLogin}`, token)
+      getContent(`${baseUrl}/cooks?state=${state}&status=APPROVED`, token)
       .then(data=>setAccount(data.data))
     setIsLoading(false);
-  }, [token, stateLogin]);
+  }, [token, state]);
 
   // async function sendToServer() {
   //   try {
@@ -187,7 +187,7 @@ export default function TableList(props) {
                     <Table className={classes.table}>
                   
                     <TableHead style={{color: "#9c27b0"}}>
-                      <TableRow className={classes.tableHeadRow}>
+                    <TableRow className={classes.tableHeadRow}>
                         <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>ACTION</TableCell>
                           <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>FIRST NAME</TableCell>
                           <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>LAST NAME</TableCell>
@@ -199,19 +199,21 @@ export default function TableList(props) {
                           <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>MOBILE NUMBER</TableCell>
                           <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>EMAIL</TableCell>
                           <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>STATE</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>ADDRESS</TableCell>
                           <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>LGA</TableCell>
+                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>ADDRESS</TableCell>
                           <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>SCHOOL NAME</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>NO. OF PUPILS FEED</TableCell>
+                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>NO. OF PUPILS TO FEED</TableCell>
+                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>AMOUNT PER MEAL</TableCell>
+                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>NO. OF DAYS PER CYCLE</TableCell>
                       </TableRow>
                     </TableHead>
                   <TableBody>
-                    {account.map(({_id, gender, firstName, lastName, birthday, accountNumber, bankName, bvn, phoneNumber, email, date_created_acc, state, address, lga, schoolName, image, status, pupilsFeed}) => {
+                    {account.map(({_id, gender, firstName, lastName, birthday, accountNumber, bankName, bvn, phoneNumber, email, date_created_acc, state, address, lga, schoolName, image, status, pupilsFeed, numberOfPulpilFed, numberOfDaysPerCycle, amountPerMeal}) => {
                       
                       return (
                         <>
                           <TableRow key={_id} className={classes.tableBodyRow}>
-                            <TableCell className={classes.tableCell}><ViewListIcon style={{cursor: "pointer"}} onMouseUp={function(event){ setCookDetails({_id, gender, firstName, lastName, accountNumber, bankName, bvn, phoneNumber, email, state, date_created_acc, address, birthday, lga, schoolName, image});}}  onClick={handleClickPop}/></TableCell>
+                            <TableCell className={classes.tableCell}><ViewListIcon style={{cursor: "pointer"}} onMouseUp={function(event){ setCookDetails({_id, gender, firstName, lastName, accountNumber, bankName, bvn, phoneNumber, email, state, date_created_acc, address, birthday, lga, schoolName, image, numberOfPulpilFed, numberOfDaysPerCycle, amountPerMeal});}}  onClick={handleClickPop}/></TableCell>
                             <TableCell className={classes.tableCell}>{firstName}</TableCell>
                             <TableCell className={classes.tableCell}>{lastName}</TableCell>
                             <TableCell className={classes.tableCell}>{gender}</TableCell>
@@ -222,10 +224,12 @@ export default function TableList(props) {
                             <TableCell className={classes.tableCell}>{phoneNumber}</TableCell>
                             <TableCell className={classes.tableCell}>{email}</TableCell>
                             <TableCell className={classes.tableCell}>{state}</TableCell>
-                            <TableCell className={classes.tableCell}>{address}</TableCell>
                             <TableCell className={classes.tableCell}>{lga}</TableCell>
+                            <TableCell className={classes.tableCell}>{address}</TableCell>
                             <TableCell className={classes.tableCell}>{schoolName}</TableCell>
-                            <TableCell className={classes.tableCell}>{pupilsFeed}</TableCell>
+                            <TableCell className={classes.tableCell}>{numberOfPulpilFed}</TableCell>
+                            <TableCell className={classes.tableCell}>{amountPerMeal}</TableCell>
+                            <TableCell className={classes.tableCell}>{numberOfDaysPerCycle}</TableCell>
                           </TableRow>
                         </>
                       )

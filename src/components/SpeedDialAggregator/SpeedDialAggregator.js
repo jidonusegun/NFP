@@ -54,14 +54,14 @@ export default function SpeedDials({deleteContent, details}) {
               <ListItemText primary="Suspend Aggregator" onClick={handleClickOpenSuspend} />
             </ListItem>
             }
-            <ListItem button>
+            {/* <ListItem button>
               <ListItemAvatar className={classes.avatarContainer}>
                 <Avatar className={classes.avatar}>
                   <PopDeleteAggregator details={details} />
                 </Avatar>
               </ListItemAvatar>
               <ListItemText primary="Delete Aggregator" onClick={handleClickOpenDelete} />
-            </ListItem>
+            </ListItem> */}
           </List>
         </div>
   );

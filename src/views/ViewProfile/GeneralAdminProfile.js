@@ -7,7 +7,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import AccountProfile from './AccountProfile';
-// import GeneralAdminView from './GeneralAdminView';
+import GeneralAdminView from './GeneralAdminView';
 // import {getContent} from 'utils';
 
 function TabPanel(props) {
@@ -62,14 +62,14 @@ export default function GeneralAdminProfile() {
     <div className={classes.root}>
       <AppBar position="static">
         <Tabs indicatorColor="primary" disableElevation={false} style={{backgroundColor: "white", color: "black", fontWeight: "bold"}} value={value} onChange={handleChange} aria-label="simple tabs example">
-          {/* <Tab label="Overview" {...a11yProps(0)} /> */}
-          <Tab label="Account" {...a11yProps(0)} />
+          <Tab label="Overview" {...a11yProps(0)} />
+          <Tab label="Account" {...a11yProps(1)} />
         </Tabs>
       </AppBar>
-      {/* <TabPanel value={value} index={0}>
-        <GeneralAdminView />
-      </TabPanel> */}
       <TabPanel value={value} index={0}>
+        <GeneralAdminView />
+      </TabPanel>
+      <TabPanel value={value} index={1}>
         <AccountProfile />
       </TabPanel>
     </div>

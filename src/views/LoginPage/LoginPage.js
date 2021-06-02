@@ -91,14 +91,16 @@ export default function LoginPage(props) {
       // console.log(response);
 
       const body = await response;
-
+      // setValidate(true);
       setToken(body.data.token);
       localStorage.setItem("token", body.data.token);
+      localStorage.setItem("username", body.data.username);
       localStorage.setItem("state", body.data.state);
+      localStorage.setItem("role", body.data.role);
       localStorage.setItem("lga", body.data.lga);
       localStorage.setItem("id", body.data._id);
 
-      console.log(body.data.state, body.data.lga);
+      // console.log(body.data.state, body.data.lga);
 
       if (body.success === true && body.data.role === "ADMIN") {
         setLoggedIn(true);

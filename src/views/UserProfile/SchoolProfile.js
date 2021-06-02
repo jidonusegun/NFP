@@ -92,6 +92,7 @@ export default function SchoolProfile({
   const [imageUpload, setImageUpload] = useState({ image: "" });
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
+  const userRole = localStorage.getItem("role");
   const [errorMessage, setErrorMessage] = useState("");
   const baseUrl = config.API_URL
   // let errorMessage = "";
@@ -113,8 +114,8 @@ export default function SchoolProfile({
         "state",
         "totalPulpil",
         "email",
-        "contactPersonPhoneNumber",
-        "contactPersonName",
+        "phoneNumber",
+        "contactPerson",
         "name",
       ];
       exclude.forEach((key) => {
@@ -142,7 +143,12 @@ export default function SchoolProfile({
         );
       }
       // content.unshift(data);
-      setMessage("Record sent for approval");
+      if(userRole === "SUPER_ADMIN") {
+        alert('Record Added')
+      }
+      {
+        alert('Record sent for approval')
+      }
       setIsLoading(false);
       handleClose();
       window.location.reload();
@@ -196,12 +202,12 @@ export default function SchoolProfile({
 
   useEffect(() => {
     getContent(
-      "https://nsfp.herokuapp.com/v1/settings/states",
+      `${baseUrl}/settings/states`,
       token
     ).then((data) => setStatevalue(data.data));
 
     getContent(
-      `https://nsfp.herokuapp.com/v1/settings/state/${stateID}/lgas`,
+      `${baseUrl}/settings/state/${stateID}/lgas`,
       token
     ).then((data) => setLgavalue(data.data));
   }, [token, stateID]);
@@ -225,7 +231,7 @@ export default function SchoolProfile({
                 <GridItem xs={12} sm={12} md={4}>
                   <CardAvatar profile style={{ marginTop: "2rem" }}>
                     <form>
-                      <label htmlFor="filePicker">
+                      <label htmlFor="filePickerSchool">
                         <IconButton
                           color="primary"
                           style={{ margin: "0", padding: "0" }}
@@ -239,19 +245,19 @@ export default function SchoolProfile({
                         </IconButton>
                       </label>
                       <input
-                        id="filePicker"
+                        id="filePickerSchool"
                         style={{ visibility: "hidden" }}
                         type="file"
                         name="uploadPicture"
                         className={classes.input}
                         onChange={(e) => {
-                          addCook.getFile(e);
+                          handleImageUpload(e);
                           handleImageChange(e);
                         }}
                         accept="image/*"
                       />
                     </form>
-                  </CardAvatar>
+                  </CardAvatar> 
                 </GridItem>
               </GridContainer>
               <GridContainer>
@@ -272,10 +278,10 @@ export default function SchoolProfile({
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Contact Person"
-                    id="contactPersonName"
+                    id="contactPerson"
                     inputProps={{
                       type: "text",
-                      name: "contactPersonName",
+                      name: "contactPerson",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
@@ -286,10 +292,10 @@ export default function SchoolProfile({
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Contact Phone No"
-                    id="contactPersonPhoneNumber"
+                    id="phoneNumber"
                     inputProps={{
                       type: "number",
-                      name: "contactPersonPhoneNumber",
+                      name: "phoneNumber",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{

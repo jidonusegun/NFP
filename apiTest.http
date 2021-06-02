@@ -1,0 +1,229 @@
+###define baseURL
+@baseUrl = 164.160.129.145:3000/v1 
+
+# @name loginReq
+POST {{baseUrl}}/admin/login 
+content-type: application/json
+
+{
+    "username": "esther",
+    "password": "falola"
+}
+
+
+### Get notification list
+@tokenAdmin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDEzNmNlNjkwOWRiOWNjYjFkNDg0NzAiLCJ1c2VybmFtZSI6Im1vaGVtb3MiLCJlbWFpbCI6Im1vaGVtb3NAZ21haWwuY29tIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNjIxNTAxMDEyLCJleHAiOjE2MjE1ODc0MTJ9.IZOqfMvYG3tZoTjfGAOBTFNT3j6siIbR-OgWBs_fjy0
+@adminId = 60136ce6909db9ccb1d48470
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDIxMjM4MjYzZmZhMjAwMTVjOWViZDIiLCJ1c2VybmFtZSI6ImVzdGhlciIsImVtYWlsIjoiZmFsb2xhZXN0aGVyQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTYyMTUwNTIzMywiZXhwIjoxNjIxNTkxNjMzfQ.U8tSjpNVss565F2K9c78ubAgyN1W6KekqOTiz7dJuDs
+@_id = 6021238263ffa20015c9ebd2
+GET {{baseUrl}}/notification/{{_id}}/2/5 HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Add a school
+POST {{baseUrl}}/school
+content-type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "School Test0003",
+    "email": "email3@gmail.com",
+    "phoneNumber": "0885780620",
+    "contactPersonName": "Person 3",
+    "contactPersonPhoneNumber":"0885780620",
+    "totalPulpil": 1000,
+    "state": "Lagos",
+    "lga": "badagri",
+    "address": "address0003",
+    "registeredBy": "6021238263ffa20015c9ebd2" 
+}
+
+###Get all schools
+GET {{baseUrl}}/schools?state=Lagos&status=PENDING
+Authorization: Bearer {{token}}
+
+###Suspend Admin
+PATCH {{baseUrl}}/admin/6021238263ffa20015c9ebd2/suspend
+content-type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+
+###Reactivate Admin
+PATCH {{baseUrl}}/admin/6021238263ffa20015c9ebd2/reactivate
+content-type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+###edit Aggregator
+POST {{baseUrl}}/aggregator/tempedit/6021238263ffa20015c9ebd2
+content-type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+    "tempData": "{\"_id\":\"609db43630de5a2974b0a77e\",\"itemsToSupply\":\"['Coffee Decaf Colombian']\",\"unitPrice\":\"['51']\",\"status\":\"PENDING\",\"companyName\":\"Kimia\",\"image\":\"http:\/\/dummyimage.com\/131x100.png\/cc0000\/ffffff\",\"dayForConsumption\":\"4\/3\/2021\",\"numberOfPulpils\":50,\"bankName\":\"Wilderman Group\",\"acctNumber\":\"27\",\"tin\":\"81877\",\"state\":\"\",\"frequencyOfSupply\":71,\"phoneNumber\":\"162-208-2634\"}"
+}
+
+###Delete Aggregator
+POST {{baseUrl}}/aggregator/tempdelete/6021238263ffa20015c9ebd2
+content-type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+    "reason": "Did not supply for one month",
+    "tempData": "{\"_id\":\"609db43630de5a2974b0a77e\"}"
+
+}
+
+#####################################################################
+
+###edit Cook
+POST {{baseUrl}}/cook/tempedit/6021238263ffa20015c9ebd2
+content-type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+    "tempData": "{\"_id\":\"609db60251aafb2ff0082032\",\"status\":\"PENDING\",\"firstName\":\"John\",\"lastName\":\"Amos\",\"phoneNumber\":\"0803909230\",\"gender\":\"male\",\"birthday\":\"2000-04-06T23:00:00.000Z\",\"state\":\"lagos\",\"lga\":\"badagry\",\"address\":\"18, arukwe street, aradagun\",\"email\":\"yela.s@gmail20.com\",\"accountNumber\":\"2020305060\",\"bvn\":\"2020305060\",\"bankName\":\"first bank plc\",\"schoolName\":\"first bank plc\"}"
+}
+
+###Delete Cook
+POST {{baseUrl}}/cook/tempdelete/6021238263ffa20015c9ebd2
+content-type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+    "reason": "Did not supply for one month",
+    "tempData": "{\"_id\":\"609db60251aafb2ff0082032\"}"
+
+}
+
+##############################################################################
+
+###edit School
+POST {{baseUrl}}/school/tempedit/6021238263ffa20015c9ebd2
+content-type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+    "tempData": "{\"_id\":\"60a611d3d7b8460d602de8ab\",\"status\":\"PENDING\",\"name\":\"School test0001\",\"email\":\"email@gmail.com\",\"phoneNumber\":\"0884520620\",\"contactPersonName\":\"Person 1\",\"contactPersonPhoneNumber\":\"0884520620\",\"totalPulpil\":1000,\"state\":\"Lagos\",\"lga\":\"badagri\",\"address\":\"address0001\"}"
+}
+
+###Delete School
+POST {{baseUrl}}/school/tempdelete/6021238263ffa20015c9ebd2
+content-type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+    "reason": "Did not supply for one month",
+    "tempData": "{\"_id\":\"60a611d3d7b8460d602de8ab\"}"
+
+} 
+content-type: application/json
+
+{
+    "username": "esther",
+    "password": "falola"
+}
+
+
+### Get notification list
+@tokenAdmin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDEzNmNlNjkwOWRiOWNjYjFkNDg0NzAiLCJ1c2VybmFtZSI6Im1vaGVtb3MiLCJlbWFpbCI6Im1vaGVtb3NAZ21haWwuY29tIiwicm9sZSI6IlNVUEVSX0FETUlOIiwiaWF0IjoxNjIxNTAxMDEyLCJleHAiOjE2MjE1ODc0MTJ9.IZOqfMvYG3tZoTjfGAOBTFNT3j6siIbR-OgWBs_fjy0
+@adminId = 60136ce6909db9ccb1d48470
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDIxMjM4MjYzZmZhMjAwMTVjOWViZDIiLCJ1c2VybmFtZSI6ImVzdGhlciIsImVtYWlsIjoiZmFsb2xhZXN0aGVyQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTYyMTUwNTIzMywiZXhwIjoxNjIxNTkxNjMzfQ.U8tSjpNVss565F2K9c78ubAgyN1W6KekqOTiz7dJuDs
+@_id = 6021238263ffa20015c9ebd2
+GET {{baseUrl}}/notification/{{_id}}/2/5 HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Add a school
+POST {{baseUrl}}/school
+content-type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "School Test0003",
+    "email": "email3@gmail.com",
+    "phoneNumber": "0885780620",
+    "contactPersonName": "Person 3",
+    "contactPersonPhoneNumber":"0885780620",
+    "totalPulpil": 1000,
+    "state": "Lagos",
+    "lga": "badagri",
+    "address": "address0003",
+    "registeredBy": "6021238263ffa20015c9ebd2" 
+}
+
+###Get all schools
+GET {{baseUrl}}/schools?state=Lagos&status=PENDING
+Authorization: Bearer {{token}}
+
+###Suspend Admin
+PATCH {{baseUrl}}/admin/6021238263ffa20015c9ebd2/suspend
+content-type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+
+###Reactivate Admin
+PATCH {{baseUrl}}/admin/6021238263ffa20015c9ebd2/reactivate
+content-type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+###edit Aggregator
+POST {{baseUrl}}/aggregator/tempedit/6021238263ffa20015c9ebd2
+content-type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+    "tempData": "{\"_id\":\"609db43630de5a2974b0a77e\",\"itemsToSupply\":\"['Coffee Decaf Colombian']\",\"unitPrice\":\"['51']\",\"status\":\"PENDING\",\"companyName\":\"Kimia\",\"image\":\"http:\/\/dummyimage.com\/131x100.png\/cc0000\/ffffff\",\"dayForConsumption\":\"4\/3\/2021\",\"numberOfPulpils\":50,\"bankName\":\"Wilderman Group\",\"acctNumber\":\"27\",\"tin\":\"81877\",\"state\":\"\",\"frequencyOfSupply\":71,\"phoneNumber\":\"162-208-2634\"}"
+}
+
+###Delete Aggregator
+POST {{baseUrl}}/aggregator/tempdelete/6021238263ffa20015c9ebd2
+content-type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+    "reason": "Did not supply for one month",
+    "tempData": "{\"_id\":\"609db43630de5a2974b0a77e\"}"
+
+}
+
+#####################################################################
+
+###edit Cook
+POST {{baseUrl}}/cook/tempedit/6021238263ffa20015c9ebd2
+content-type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+    "tempData": "{\"_id\":\"609db60251aafb2ff0082032\",\"status\":\"PENDING\",\"firstName\":\"John\",\"lastName\":\"Amos\",\"phoneNumber\":\"0803909230\",\"gender\":\"male\",\"birthday\":\"2000-04-06T23:00:00.000Z\",\"state\":\"lagos\",\"lga\":\"badagry\",\"address\":\"18, arukwe street, aradagun\",\"email\":\"yela.s@gmail20.com\",\"accountNumber\":\"2020305060\",\"bvn\":\"2020305060\",\"bankName\":\"first bank plc\",\"schoolName\":\"first bank plc\"}"
+}
+
+###Delete Cook
+POST {{baseUrl}}/cook/tempdelete/6021238263ffa20015c9ebd2
+content-type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+    "reason": "Did not supply for one month",
+    "tempData": "{\"_id\":\"609db60251aafb2ff0082032\"}"
+
+}
+
+##############################################################################
+
+###edit School
+POST {{baseUrl}}/school/tempedit/6021238263ffa20015c9ebd2
+content-type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+    "tempData": "{\"_id\":\"60a611d3d7b8460d602de8ab\",\"status\":\"PENDING\",\"name\":\"School test0001\",\"email\":\"email@gmail.com\",\"phoneNumber\":\"0884520620\",\"contactPersonName\":\"Person 1\",\"contactPersonPhoneNumber\":\"0884520620\",\"totalPulpil\":1000,\"state\":\"Lagos\",\"lga\":\"badagri\",\"address\":\"address0001\"}"
+}
+
+###Delete School
+POST {{baseUrl}}/school/tempdelete/6021238263ffa20015c9ebd2
+content-type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+    "reason": "Did not supply for one month",
+    "tempData": "{\"_id\":\"60a611d3d7b8460d602de8ab\"}"
+
+}

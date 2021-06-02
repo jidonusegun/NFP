@@ -70,7 +70,7 @@ export default function UserProfile({title, subTitle, sendButton, details, conte
 
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
-
+  const userRole = localStorage.getItem("role");
   const handleImageUpload = (e) => {
     setImageUpload({ image: e.target.files[0] });
   };
@@ -104,7 +104,12 @@ export default function UserProfile({title, subTitle, sendButton, details, conte
         );
       }
 // content.unshift(data)
-setMessage('Record sent for approval')
+if(userRole === "SUPER_ADMIN") {
+  alert('Record Added')
+}
+{
+  alert('Record sent for approval')
+}
     setIsLoading(false);
     }
     catch({message}) {
