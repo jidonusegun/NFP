@@ -168,7 +168,7 @@ export default function TableAggregator(props) {
                         target="_blank"
                         style={{color: 'white'}}
                         rel="noopener noreferrer"
-                        download
+                        download={DownloadSchool.xlsx}
                       >
                         <GetAppIcon
                           fontSize="large"
