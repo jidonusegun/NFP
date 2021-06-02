@@ -151,7 +151,7 @@ export default function TableAggregator({state}) {
                       }}
                     >
                       <a
-                        href={DownloadSchool}
+                        href="/media/images/SCHOOL.xlsx"
                         target="_blank"
                         style={{color: 'white'}}
                         rel="noopener noreferrer"

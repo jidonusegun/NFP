@@ -155,7 +155,7 @@ export default function TableList({state}) {
                       }}
                     >
                       <a
-                        href={DownloadCook}
+                        href="/media/images/COOKS.xlsx"
                         target="_blank"
                         style={{color: 'white'}}
                         rel="noopener noreferrer"

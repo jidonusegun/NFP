@@ -164,11 +164,11 @@ export default function TableAggregator(props) {
                       }}
                     >
                       <a
-                        href={DownloadSchool}
+                        href="/media/images/SCHOOL.xlsx"
                         target="_blank"
                         style={{color: 'white'}}
                         rel="noopener noreferrer"
-                        download={DownloadSchool.xlsx}
+                        download
                       >
                         <GetAppIcon
                           fontSize="large"
