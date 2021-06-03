@@ -160,7 +160,7 @@ console.log(account)
                       }}
                     >
                       <a
-                        href="/media/images/COOKS.xlsx"
+                        href="/media/excel/COOKS.xlsx"
                         target="_blank"
                         style={{color: 'white'}}
                         rel="noopener noreferrer"

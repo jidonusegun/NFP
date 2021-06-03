@@ -16,7 +16,9 @@ import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
 // import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import bgImage from "assets/img/sidebar-2.jpg";
-import logos from "assets/img/logos.png";
+// import logos from "assets/img/logos.png";
+
+const logos = '/media/img/logos.png'
 
 let ps;
 
