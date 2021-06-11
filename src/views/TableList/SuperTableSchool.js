@@ -40,7 +40,7 @@ export default function TableAggregator({state}) {
   const classes = useStyles();
   const { openDialog, closeDialog, isOpen } = useDialog();
   // const uploadExcel = userForm(sendToServer);
-  const { handleClickPop, handleClickOpen } = useContext(dataContext);
+  const { handleClickPop, handleClickOpen, setSchool, school  } = useContext(dataContext);
   const [loading, setLoading] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
@@ -55,7 +55,7 @@ export default function TableAggregator({state}) {
   useEffect(() => {
     setIsLoading(true);
       getContent(`${baseUrl}/schools?state=${state}&status=APPROVED`, token)
-      .then(data=>setAccount(data.data))
+      .then(data=>setSchool(data.data))
     setIsLoading(false);
   }, [token, state]);
 
@@ -179,7 +179,7 @@ export default function TableAggregator({state}) {
                   </div>
                   </CardHeader>
                   <CardBody>
-                  { account.length > 0 ?
+                  { setSchool.length > 0 ?
                   <Table className={classes.table}>
                       
                       <TableHead style={{color: "#9c27b0"}}>
@@ -250,7 +250,7 @@ export default function TableAggregator({state}) {
                         </TableRow>
                       </TableHead>
                     <TableBody> 
-                      {account.map(({_id, name, contactPerson, phoneNumber, email, state, address, lga, totalPulpil, image, date_created_acc, status}) => {
+                      {setSchool.map(({_id, name, contactPerson, phoneNumber, email, state, address, lga, totalPulpil, image, date_created_acc, status}, index) => {
                           return (
                             <TableRow
                                 key={_id}
@@ -273,6 +273,7 @@ export default function TableAggregator({state}) {
                                         image,
                                         date_created_acc,
                                         status,
+                                        index
                                       });
                                     }}
                                     onClick={handleClickPop}

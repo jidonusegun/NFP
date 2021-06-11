@@ -94,6 +94,7 @@ export default function LoginPage(props) {
       // setValidate(true);
       setToken(body.data.token);
       localStorage.setItem("token", body.data.token);
+      sessionStorage.setItem("token", body.data.token);
       localStorage.setItem("username", body.data.username);
       localStorage.setItem("state", body.data.state);
       localStorage.setItem("role", body.data.role);
@@ -122,9 +123,16 @@ export default function LoginPage(props) {
   const classes = useStyles();
   const { ...rest } = props;
 
+  const newToken = localStorage.getItem('token')
 
+// console.log(newToken)
   return (
     <>
+    {/* {newToken ? <> */}
+      {loggedIn ? <Redirect to="/state-admin/home" /> : null}
+    {/* </> : <Redirect from="/state-admin/home" to="/login-page" />} */}
+    
+
       <Dialog
         open={isOpen}
         handleClose={closeDialog}
@@ -154,7 +162,6 @@ export default function LoginPage(props) {
         </>
       </Dialog>
 
-      {loggedIn ? <Redirect to="/state-admin/home" /> : null}
       <div>
         <Header
           absolute

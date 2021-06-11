@@ -22,6 +22,7 @@ import CardBody from "components/Card/CardBody.js";
 import PersonIcon from '@material-ui/icons/Person';
 import CardFooter from "components/Card/CardFooter.js";
 // import { dataContext } from 'components/context/DataContext';
+import LoginPage from "views/LoginPage/LoginPage.js";
 import {getContent, kCount} from 'utils';
 import config from 'utils/config';
 
@@ -40,9 +41,12 @@ export default function Dashboard() {
   const [cook, setCook] = useState([])
   const [aggregator, setAggregator] = useState([])
   const token = localStorage.getItem("token");
+  const token2 = sessionStorage.getItem("token");
   const stateLogin = localStorage.getItem("state")
   const lgaLogin = localStorage.getItem("lga")
   const baseUrl = config.API_URL
+
+  // console.log(token2)
 
   useEffect(() => {  
       getContent(`${baseUrl}/schools?state=${stateLogin}&lga=${lgaLogin}`, token)
@@ -55,7 +59,9 @@ export default function Dashboard() {
       .then(data=>setAggregator(data.data))
   }, [token, stateLogin, lgaLogin]);
 
-  return (
+  
+
+  return  (
     <div>
       <GridContainer>
         <GridItem xs={12} sm={6} md={3}>
@@ -192,4 +198,5 @@ export default function Dashboard() {
       </GridContainer>
     </div>
   );
+  
 }

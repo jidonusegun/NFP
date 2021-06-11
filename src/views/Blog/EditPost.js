@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import ReactQuill from 'react-quill'; // ES6
 import 'react-quill/dist/quill.snow.css'; // ES6
-// import { dataContext } from 'components/context/DataContext';
+import { dataContext } from 'components/context/DataContext';
 import userForm from "../../hooks/useForm";
 import {patchContent} from 'utils';
 import config from 'utils/config';
@@ -10,12 +10,17 @@ export default function AddNewPost({details}) {
   const addPost = userForm(sendToServer);
   const baseUrl = config.API_URL
   const token = localStorage.getItem("token")
+  const { handleClose } = useContext(dataContext);
 
   async function sendToServer() {
-    
-    const response = await patchContent(`${baseUrl}/${details.id}`, addPost.values, token);
-    // addPost.reset();
+    try {
+      const response = await patchContent(`${baseUrl}/${details.id}`, addPost.values, token);
     console.log(response);
+    
+    handleClose()
+    } catch ({message}) {
+      alert(message)
+    }
   }
 
   // const [posts, setPosts] = useState({

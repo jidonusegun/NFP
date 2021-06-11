@@ -13,7 +13,11 @@ import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
+import CustomInput from "components/CustomInput/CustomInput.js";
 import CardBody from "components/Card/CardBody.js";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select"; 
 import userForm from "../../hooks/useForm";
 import config from 'utils/config';
 import Loading from "components/isLoading";
@@ -61,8 +65,9 @@ const useStyles = makeStyles(styles);
 
 
 
-export default function SummaryReport({summaryTable}) {
+export default function SummaryReport({summaryTable, setMonth, stateLogin}) {
   const classes = useStyles();
+  const addMonth = userForm();
   const sendReport = userForm(sendToServer);
   const token = localStorage.getItem("token");
   const [isLoading, setIsLoading] = useState(false)
@@ -75,8 +80,9 @@ export default function SummaryReport({summaryTable}) {
   async function sendToServer() {
     try {
       setIsLoading(true)
-      const response = await postContent(`${baseUrl}/payment-report/sendtoadmin/${state[0]}/${lga[0]}/${month[0]}/SUMMARY`, token);
-      alert("Summary payments has been sent")
+      
+      const {message} = await postContent(`${baseUrl}/payment-report/send_summary_toadmin?state=${stateLogin}&month=${addMonth.values.month}`, {}, token); 
+      alert(message)
       setIsLoading(false)
     } catch ({message}) {
       alert(message)
@@ -86,9 +92,30 @@ export default function SummaryReport({summaryTable}) {
     }
   }
 
+  setMonth(addMonth.values.month)
+
   return (
     <div>
       <GridContainer>
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={12}>
+          <div style={{marginBottom: '1rem'}}>
+          <CustomInput
+            labelText="Select Month"
+            id="month"
+            inputProps={{
+              type: "month",
+              name: "month",
+              onChange: (e) => addMonth.getData(e),
+            }}
+            formControlProps={{
+              fullWidth: true,
+              
+            }}
+          />
+          </div>
+          </GridItem>
+        </GridContainer>
       <GridItem xs={12} sm={12} md={12}>
         {summaryTable?.length > 0 ? 
           <Card>
@@ -110,34 +137,40 @@ export default function SummaryReport({summaryTable}) {
                 <TableHead style={{color: "#9c27b0"}}>
                   <TableRow className={classes.tableHeadRow}>
                       <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>STATE</TableCell>
+                      <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>MONTH</TableCell>
                       <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>PAYMENT TRANCHE</TableCell>
                       <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>FEEDING CYCLE</TableCell>
-                      <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>DIFFERENCE FROM LAST MONTH'S TOTAL</TableCell>
-                      <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>NO. OF CHILDREN</TableCell>
-                      <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>NO. OF COOKS</TableCell>
+                      <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>DIFFERENCE FROM LAST MONTH TOTAL</TableCell>
+                      <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>TOTAL NO. SCHOOLS</TableCell>
+                      <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>TOTAL NO. OF CHILDREN</TableCell>
+                      <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>TOTAL NO. OF COOKS</TableCell>
                       <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>TOTAL AMOUNT TO COOKS</TableCell>
+                      <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>TOTAL NO. OF AGGREGATORS</TableCell>
                       <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>TOTAL AMOUNT TO AGGREGATORS</TableCell>
                       <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>TOTAL AMOUNT TO STATE</TableCell>
-                      <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>Number of Schools</TableCell>
                   </TableRow>
                 </TableHead>
               <TableBody>
-                {summaryTable.map(({id, state, paymentTranch, feedCycle, diffrenceMonth, NoOfChildren, NoOfCook, totalAmountCook, totalAmountAggregator, totalAmountState, NumberOfPublicSchool}) => {
-                  return (
+                {summaryTable.map(({paymentTranch, feedingCycle, diffLastMonthTotal, numChildren,
+                  numCooks, numAggregators, numSchools, totalAmountCook, totalAmountAggregator,
+                  totalAmountState, status, _id, state, month,
+                }) => {
+                  return status === "PENDING" ?
                     <TableRow className={classes.tableBodyRow}>
-                          <TableCell className={classes.tableCell}>{summaryTable.id}</TableCell>
-                          <TableCell className={classes.tableCell}>{summaryTable.state}</TableCell>
-                          <TableCell className={classes.tableCell}>{summaryTable.paymentTranch}</TableCell>
-                          <TableCell className={classes.tableCell}>{summaryTable.feedCycle}</TableCell>
-                          <TableCell className={classes.tableCell}>{summaryTable.diffrenceMonth}</TableCell>
-                          <TableCell className={classes.tableCell}>{summaryTable.NoOfChildren}</TableCell>
-                          <TableCell className={classes.tableCell}>{summaryTable.NoOfCook}</TableCell>
-                          <TableCell className={classes.tableCell}>{summaryTable.totalAmountCook}</TableCell>
-                          <TableCell className={classes.tableCell}>{summaryTable.totalAmountAggregator}</TableCell>
-                          <TableCell className={classes.tableCell}>{summaryTable.totalAmountState}</TableCell>
-                          <TableCell className={classes.tableCell}>{summaryTable.NumberOfPublicSchool}</TableCell>
+                          <TableCell className={classes.tableCell}>{state}</TableCell>
+                          <TableCell className={classes.tableCell}>{month}</TableCell>
+                          <TableCell className={classes.tableCell}>{paymentTranch}</TableCell>
+                          <TableCell className={classes.tableCell}>{feedingCycle}</TableCell>
+                          <TableCell className={classes.tableCell}>{diffLastMonthTotal}</TableCell>
+                          <TableCell className={classes.tableCell}>{numSchools}</TableCell>
+                          <TableCell className={classes.tableCell}>{numChildren}</TableCell>
+                          <TableCell className={classes.tableCell}>{numCooks}</TableCell>
+                          <TableCell className={classes.tableCell}>{totalAmountCook}</TableCell>
+                          <TableCell className={classes.tableCell}>{numAggregators}</TableCell>
+                          <TableCell className={classes.tableCell}>{totalAmountAggregator}</TableCell>
+                          <TableCell className={classes.tableCell}>{totalAmountState}</TableCell>
                     </TableRow>
-                  )
+                  : null
                 })}
               </TableBody>
             </Table>

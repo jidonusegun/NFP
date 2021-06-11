@@ -40,7 +40,7 @@ export default function TableAggregator(props) {
   const classes = useStyles();
   const { openDialog, closeDialog, isOpen } = useDialog();
   // const uploadExcel = userForm(sendToServer);
-  const { handleClickPop, handleClickOpen } = useContext(dataContext);
+  const { handleClickPop, handleClickOpen, setSchool, school  } = useContext(dataContext);
   const [schoolDetails, setSchoolDetails] = useState();
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false)
@@ -58,7 +58,7 @@ export default function TableAggregator(props) {
     getContent(
       `${baseUrl}/schools?state=${stateLogin}&status=APPROVED`,
       token
-    ).then((data) => setAccount(data.data));
+    ).then((data) => setSchool(data.data));
     setIsLoading(false);
   }, [token, stateLogin, lgaLogin]);
 
@@ -192,7 +192,7 @@ export default function TableAggregator(props) {
                   </div>
                   </CardHeader>
                   <CardBody>
-                  { account.length > 0 ?
+                  { school.length > 0 ?
                     <Table className={classes.table}>
                       <TableHead style={{ color: "#9c27b0" }}>
                         <TableRow className={classes.tableHeadRow}>
@@ -262,7 +262,7 @@ export default function TableAggregator(props) {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {account.map(
+                        {school.map(
                           ({
                             _id,
                             name,
@@ -276,7 +276,7 @@ export default function TableAggregator(props) {
                             image,
                             date_created_acc,
                             status,
-                          }) => {
+                          }, index) => {
                             return (
                               <TableRow
                                 key={_id}
@@ -298,6 +298,7 @@ export default function TableAggregator(props) {
                                         totalPulpil,
                                         date_created_acc,
                                         image,
+                                        index
                                       });
                                     }}
                                     onClick={handleClickPop}

@@ -15,6 +15,7 @@ import Select from "@material-ui/core/Select";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
 import config from 'utils/config';
+import {Formik} from 'formik'
 
 const useStyles = makeStyles((theme) => ({
   imgPreview: {
@@ -163,7 +164,7 @@ export default function UpdateAdmin({ details }) {
     $imagePreview = <div className="previewText"></div>;
   }
 
-  const handleChange = (e) => {
+  const handleChangeState = (e) => {
     var index = e.target.selectedIndex;
     var optionElement = e.target.childNodes[index];
     var option = optionElement.getAttribute("id");
@@ -177,8 +178,89 @@ export default function UpdateAdmin({ details }) {
         style={{ color: "red", textAlign: "center", width: "100%" }}
       >{`${errorMessage}`}</div>
       <div style={{color: 'green', textAlign: 'center', padding: '1.5rem'}}>{successMessage}</div>
+      <Formik
+       initialValues={{ 
+       address: '',
+       lga: '',
+       state: '',
+       email: '',
+       phoneNumber: '',
+       birthday: '',
+       gender: '',
+       lastName: '',
+       firstName: '',
+       role: '',
+       password: '',
+       username: '',
+      }}
+
+       validate={values => {
+         const errors = {};
+         if (!values.address) {
+           errors.address = 'Required';
+         }
+
+        if (!values.lga) {
+          errors.lga = 'Required';
+        } 
+
+        if (!values.state) {
+          errors.state = 'Required';
+        }
+        if (!values.email) {
+          errors.email = 'Required';
+        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+          errors.email = 'Invalid email address';
+        }
+
+        if (!values.phoneNumber) {
+          errors.phoneNumber = 'Required';
+        } else if (values.phoneNumber.length > 11 || values.phoneNumber.length < 11 ) {
+          errors.phoneNumber = 'Invalid Phone Number';
+        }
+
+        if (!values.birthday) {
+          errors.birthday = 'Required';
+        }
+        if (!values.gender) {
+          errors.gender = 'Required';
+        }
+
+        if (!values.lastName) {
+          errors.lastName = 'Required';
+        } 
+
+        if (!values.firstName) {
+          errors.firstName = 'Required';
+        } 
+        if (!values.role) {
+          errors.role = 'Required';
+        } 
+        if (!values.password) {
+          errors.password = 'Required';
+        } 
+        if (!values.username) {
+          errors.username = 'Required';
+        } 
+
+         return errors;
+       }}
+       onSubmit={(values, { setSubmitting }) => {
+        sendToServer()
+       }}
+     >
+       {({
+         values,
+         errors,
+         touched,
+         handleChange,
+         handleBlur,
+         handleSubmit,
+         isSubmitting,
+         /* and other goodies */
+       }) => (
+        <form onSubmit={handleSubmit}>
       <GridContainer>
-            
         <GridItem xs={12} sm={12} md={12}>
           <GridContainer>
             <GridItem xs={12} sm={12} md={4}>
@@ -218,12 +300,16 @@ export default function UpdateAdmin({ details }) {
                 inputProps={{
                   type: "text",
                   name: "firstName",
-                  onChange: (e) => addCook.getData(e),
+                  onChange: (e) => {handleChange(e); addCook.getData(e)},
+                  onBlur: handleBlur
                 }}
                 formControlProps={{
                   fullWidth: true,
                 }}
               />
+              <div style={{color: 'red'}}>
+                    {errors.firstName && touched.firstName && errors.firstName}
+                  </div>
             </GridItem>
             <GridItem xs={12} sm={12} md={4}>
               <CustomInput
@@ -232,12 +318,16 @@ export default function UpdateAdmin({ details }) {
                 inputProps={{
                   type: "text",
                   name: "lastName",
-                  onChange: (e) => addCook.getData(e),
+                  onChange: (e) => {handleChange(e); addCook.getData(e)},
+                  onBlur: handleBlur
                 }}
                 formControlProps={{
                   fullWidth: true,
                 }}
               />
+              <div style={{color: 'red'}}>
+                    {errors.firstName && touched.firstName && errors.firstName}
+                  </div>
             </GridItem>
             <GridItem xs={12} sm={12} md={4}>
               <CustomInput
@@ -246,12 +336,16 @@ export default function UpdateAdmin({ details }) {
                 inputProps={{
                   type: "number",
                   name: "phoneNumber",
-                  onChange: (e) => addCook.getData(e),
+                  onChange: (e) => {handleChange(e); addCook.getData(e)},
+                  onBlur: handleBlur
                 }}
                 formControlProps={{
                   fullWidth: true,
                 }}
               />
+              <div style={{color: 'red'}}>
+                    {errors.phoneNumber && touched.phoneNumber && errors.phoneNumber}
+                  </div>
             </GridItem>
           </GridContainer>
           <GridContainer>
@@ -260,14 +354,18 @@ export default function UpdateAdmin({ details }) {
                 labelText="Username"
                 id="username"
                 inputProps={{
-                  type: "username",
+                  type: "text",
                   name: "username",
-                  onChange: (e) => addCook.getData(e),
+                  onChange: (e) => {handleChange(e); addCook.getData(e)},
+                  onBlur: handleBlur
                 }}
                 formControlProps={{
                   fullWidth: true,
                 }}
               />
+              <div style={{color: 'red'}}>
+                    {errors.username && touched.username && errors.username}
+                  </div>
             </GridItem>
             <GridItem xs={12} sm={12} md={4}>
             <FormControl className={classes.formControl}>
@@ -280,7 +378,8 @@ export default function UpdateAdmin({ details }) {
                     <Select
                       native
                       value={addCook.values.gender}
-                      onChange={addCook.getData}
+                      onChange={(e) => {handleChange(e); addCook.getData(e)}}
+                      onBlur={handleBlur}
                       className={classes.underline}
                       style={{ width: "100%" }}
                       inputProps={{
@@ -293,6 +392,9 @@ export default function UpdateAdmin({ details }) {
                       <option value="female">Female</option>
                     </Select>
                   </FormControl>
+                  <div style={{color: 'red'}}>
+                    {errors.gender && touched.gender && errors.gender}
+                  </div>
             </GridItem>
             <GridItem xs={12} sm={12} md={4}>
               <CustomInput
@@ -301,12 +403,16 @@ export default function UpdateAdmin({ details }) {
                 inputProps={{
                   type: "date",
                   name: "birthday",
-                  onChange: (e) => addCook.getData(e),
+                  onChange: (e) => {handleChange(e); addCook.getData(e)},
+                  onBlur: handleBlur
                 }}
                 formControlProps={{
                   fullWidth: true,
                 }}
               />
+              <div style={{color: 'red'}}>
+                    {errors.birthday && touched.birthday && errors.birthday}
+                  </div>
             </GridItem>
           </GridContainer>
           <GridContainer>
@@ -317,12 +423,16 @@ export default function UpdateAdmin({ details }) {
                 inputProps={{
                   type: "email",
                   name: "email",
-                  onChange: (e) => addCook.getData(e),
+                  onChange: (e) => {handleChange(e); addCook.getData(e)},
+                  onBlur: handleBlur
                 }}
                 formControlProps={{
                   fullWidth: true,
                 }}
               />
+              <div style={{color: 'red'}}>
+                    {errors.email && touched.email && errors.email}
+                  </div>
             </GridItem>
             <GridItem xs={12} sm={12} md={4}>
             <FormControl className={classes.formControl}>
@@ -336,9 +446,11 @@ export default function UpdateAdmin({ details }) {
                       native
                       value={addCook.values.state}
                       onChange={(e) => {
-                        handleChange(e);
+                        handleChangeState(e);
                         addCook.getData(e);
+                        handleChange(e); 
                       }}
+                      onBlur={handleBlur}
                       className={classes.underline}
                       style={{ width: "100%" }}
                       inputProps={{
@@ -356,6 +468,9 @@ export default function UpdateAdmin({ details }) {
                       })}
                     </Select>
                   </FormControl>
+                  <div style={{color: 'red'}}>
+                    {errors.state && touched.state && errors.state}
+                  </div>
             </GridItem>
             <GridItem xs={12} sm={12} md={4}>
             <FormControl className={classes.formControl}>
@@ -368,7 +483,8 @@ export default function UpdateAdmin({ details }) {
                     <Select
                       native
                       value={addCook.values.lga}
-                      onChange={addCook.getData}
+                      onChange={(e) => {handleChange(e); addCook.getData(e)}}
+                      onBlur={handleBlur}
                       className={classes.underline}
                       style={{ width: "100%" }}
                       inputProps={{
@@ -382,6 +498,9 @@ export default function UpdateAdmin({ details }) {
                       })}
                     </Select>
                   </FormControl>
+                  <div style={{color: 'red'}}>
+                    {errors.lga && touched.lga && errors.lga}
+                  </div>
             </GridItem>
             </GridContainer>
             <GridContainer>
@@ -397,9 +516,13 @@ export default function UpdateAdmin({ details }) {
                       rows: 3,
                       type: "text",
                       name: "address",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                   />
+                  <div style={{color: 'red'}}>
+                    {errors.address && touched.address && errors.address}
+                  </div>
                 </GridItem>
             </GridContainer>
           <Button onClick={addCook.submit} type="submit" color="primary">
@@ -409,6 +532,9 @@ export default function UpdateAdmin({ details }) {
           <Toast message={message} />
         </GridItem>
       </GridContainer>
+      </form>
+      )}
+    </Formik>
     </div>
   );
 }

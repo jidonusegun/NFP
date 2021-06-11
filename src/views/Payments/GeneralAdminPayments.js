@@ -75,7 +75,9 @@ export default function GeneralAdminPayments(props) {
     const sendReport = userForm(sendToServer);
     const [cooks, setCooks] = useState([])
     const [isLoading, setIsLoading] = useState(false)
+    const [month, setMonth] = useState()
     const [aggregators, setAggregators] = useState([])
+    const [summary, setSummary] = useState([])
     // const { token } = useContext(dataContext);
     const token = localStorage.getItem("token")
     const baseUrl = config.API_URL
@@ -85,13 +87,16 @@ export default function GeneralAdminPayments(props) {
 
     useEffect(() => { 
         setLoading(true);
-        getContent(`${baseUrl}/`, token)
+        getContent(`${baseUrl}/payment-report?state=${stateName}&month=${month}`, token)
         .then(data=>setCooks(data.data))
 
-      getContent(`${baseUrl}/`, token)
+      getContent(`${baseUrl}/payment-report?state=${stateName}&month=${month}`, token)
       .then(data=>setAggregators(data.data))
+
+      getContent(`${baseUrl}/payment-report/summary?state=${stateName}&month=${month}`, token)
+        .then(data=>setSummary(data.data))
         setLoading(false);
-    }, [token]);
+    }, [token, month, stateName]);
 
     async function sendToServer() {
         try {
@@ -128,7 +133,7 @@ export default function GeneralAdminPayments(props) {
                         tabContent: (
                             <div>
                                 {loading ? <div>Loading... Please wait</div> : 
-                                <CooksPaymentsReport cookPaymentDetails={cooks} />}
+                                <CooksPaymentsReport cookPaymentDetails={cooks} setMonth={setMonth} stateName={stateName} />}
                             </div>
                         )
                         },
@@ -138,7 +143,7 @@ export default function GeneralAdminPayments(props) {
                         tabContent: (
                             <div>
                                 {loading ? <div>Loading... Please wait</div> : 
-                                <AggregatorsPaymentsReport aggregatorPaymentDetails={aggregators} />}
+                                <AggregatorsPaymentsReport aggregatorPaymentDetails={aggregators}  setMonth={setMonth} stateName={stateName} />}
                             </div>
                         )
                         },
@@ -148,7 +153,7 @@ export default function GeneralAdminPayments(props) {
                         tabContent: (
                             <div>
                                 {loading ? <div>Loading... Please wait</div> : 
-                                <SummaryReport />}
+                                <SummaryReport summaryTable={summary} setMonth={setMonth} stateName={stateName} />}
                             </div>
                         )
                         },

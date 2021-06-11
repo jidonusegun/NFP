@@ -19,11 +19,14 @@ import Select from "@material-ui/core/Select";
 import { dataContext } from "components/context/DataContext";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import { postContent, getContent, postImageContent } from "utils";
-import loogos from "assets/img/loogos.png";
+// import loogos from "assets/img/loogos.png"; 
 import userForm from "../../hooks/useForm";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
 import config from 'utils/config';
+import { Formik } from 'formik';
+
+const loogos = '/media/img/loogos.png'
 
 const styles = {
   cardCategoryWhite: {
@@ -87,7 +90,7 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
   // let errorMessage = "";
   const [imageUpload, setImageUpload] = useState({ image: "" });
   const [schools, setSchools] = useState([]);
-  const { handleClose } = useContext(dataContext);
+  const { handleClose, setCook, cook  } = useContext(dataContext);
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
   const stateLogin = localStorage.getItem("state");
@@ -181,12 +184,12 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
     var file = element.files[0];
     var reader = new FileReader();
     reader.onloadend = function () {
-      console.log("RESULT", reader.result);
+      // console.log("RESULT", reader.result);
     };
     reader.readAsDataURL(file);
   }
 
-  const handleChange = (e) => {
+  const handleChangeState = (e) => {
     var index = e.target.selectedIndex;
     var optionElement = e.target.childNodes[index];
     var option = optionElement.getAttribute("id");
@@ -232,6 +235,115 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
   // }
   return (
     <div>
+      <Formik
+       initialValues={{ 
+        address: '',
+       schoolName: '',
+       lga: '',
+       state: '',
+       email: '',
+       phoneNumber: '',
+       bvn: '',
+       bankName: '',
+       accountNumber: '',
+       birthday: '',
+       gender: '',
+       lastName: '',
+       firstName: '',
+       middleName: '',
+       numberOfPulpilFed: '',
+       numberOfDaysPerCycle: '',
+       amountPerMeal: '',
+      }}
+
+       validate={values => {
+         const errors = {};
+         if (!values.address) {
+           errors.address = 'Required';
+         }
+
+         if (!values.schoolName) {
+          errors.schoolName = 'Required';
+        }
+
+        if (!values.lga) {
+          errors.lga = 'Required';
+        } 
+
+        if (!values.state) {
+          errors.state = 'Required';
+        }
+        if (!values.email) {
+          errors.email = 'Required';
+        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+          errors.email = 'Invalid email address';
+        }
+
+        if (!values.phoneNumber) {
+          errors.phoneNumber = 'Required';
+        } else if (values.phoneNumber.length > 11 || values.phoneNumber.length < 11 ) {
+          errors.phoneNumber = 'Invalid Phone Number';
+        }
+        
+        if (!values.bvn) {
+          errors.bvn = 'Required';
+        } else if (values.bvn.toString().length > 10 || values.bvn.toString().length < 10 ) {
+          errors.bvn = 'Invalid bvn';
+        }
+
+        if (!values.bankName) {
+          errors.bankName = 'Required';
+        }
+        if (!values.accountNumber) {
+          errors.accountNumber = 'Required';
+        } else if (values.accountNumber.toString().length > 10 || values.accountNumber.toString().length < 10 ) {
+          errors.accountNumber = 'Invalid account number';
+        }
+
+        if (!values.birthday) {
+          errors.birthday = 'Required';
+        }
+        if (!values.gender) {
+          errors.gender = 'Required';
+        }
+
+        if (!values.lastName) {
+          errors.lastName = 'Required';
+        } 
+
+        if (!values.firstName) {
+          errors.firstName = 'Required';
+        } 
+        if (!values.middleName) {
+          errors.middleName = 'Required';
+        } 
+        if (!values.numberOfPulpilFed) {
+          errors.numberOfPulpilFed = 'Required';
+        } 
+        if (!values.numberOfDaysPerCycle) {
+          errors.numberOfDaysPerCycle = 'Required';
+        } 
+        if (!values.amountPerMeal) {
+          errors.amountPerMeal = 'Required';
+        } 
+
+         return errors;
+       }}
+       onSubmit={(values, { setSubmitting }) => {
+        sendToServer()
+       }}
+     >
+       {({
+         values,
+         errors,
+         touched,
+         handleChange,
+         handleBlur,
+         handleSubmit,
+         isSubmitting,
+         /* and other goodies */
+       }) => (
+        <form onSubmit={handleSubmit}>
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
@@ -279,6 +391,7 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                   </CardAvatar>
                 </GridItem>
               </GridContainer>
+
               <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -287,12 +400,17 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     inputProps={{
                       type: "text",
                       name: "firstName",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>
+                    {errors.firstName && touched.firstName && errors.firstName}
+                  </div>
+                  
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -301,12 +419,16 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     inputProps={{
                       type: "text",
                       name: "middleName",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>
+                  {errors.middleName && touched.middleName && errors.middleName}
+                    </div>
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -315,12 +437,15 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     inputProps={{
                       type: "text",
                       name: "lastName",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{errors.lastName && touched.lastName && errors.lastName}</div>
+                  
                 </GridItem>
                 </GridContainer>
               <GridContainer>
@@ -335,8 +460,9 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     <Select
                       native
                       value={addCook.values.gender}
-                      onChange={addCook.getData}
+                      onChange={(e) => {handleChange(e); addCook.getData(e)}}
                       className={classes.underline}
+                      onBlur={handleBlur}
                       style={{ width: "100%" }}
                       inputProps={{
                         name: "gender",
@@ -348,6 +474,8 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                       <option value="female">Female</option>
                     </Select>
                   </FormControl>
+                  <div style={{color: 'red'}}>{errors.gender && touched.gender && errors.gender}</div>
+                  
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -355,13 +483,16 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     id="birthday"
                     inputProps={{
                       type: "date",
-                      name: "dateOfBirth",
-                      onChange: (e) => addCook.getData(e),
+                      name: "birthday",
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{errors.birthday && touched.birthday && errors.birthday}</div>
+                  
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -369,13 +500,16 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     id="accountNumber"
                     inputProps={{
                       type: "number",
-                      name: "accountNo",
-                      onChange: (e) => addCook.getData(e),
+                      name: "accountNumber",
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{errors.accountNumber && touched.accountNumber && errors.accountNumber}</div>
+                  
                 </GridItem>
                 </GridContainer>
               <GridContainer>
@@ -390,8 +524,9 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     <Select
                       native
                       value={addCook.values.bankName}
-                      onChange={addCook.getData}
+                      onChange={(e) => {handleChange(e); addCook.getData(e)}}
                       className={classes.underline}
+                      onBlur={handleBlur}
                       style={{ width: "100%" }}
                       inputProps={{
                         name: "bankName",
@@ -441,6 +576,8 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                       <option value="Nova Merchant Bank">Nova Merchant Bank</option>
                     </Select>
                   </FormControl>
+                  <div style={{color: 'red'}}>{errors.bankName && touched.bankName && errors.bankName}</div>
+                  
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -448,27 +585,33 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     id="bvn"
                     inputProps={{
                       type: "number",
-                      name: "bvns",
-                      onChange: (e) => addCook.getData(e),
+                      name: "bvn",
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{errors.bvn && touched.bvn && errors.bvn}</div>
+                  
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Mobile Number"
                     id="phoneNumber"
                     inputProps={{
-                      type: "number",
-                      name: "mobileNumber",
-                      onChange: (e) => addCook.getData(e),
+                      type: "tel",
+                      name: "phoneNumber",
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{errors.phoneNumber && touched.phoneNumber && errors.phoneNumber}</div>
+                  
                 </GridItem>
                 </GridContainer>
               <GridContainer>
@@ -478,13 +621,16 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     id="email"
                     inputProps={{
                       type: "email",
-                      name: "emails",
-                      onChange: (e) => addCook.getData(e),
+                      name: "email",
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{errors.email && touched.email && errors.email}</div>
+                  
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -493,12 +639,15 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     inputProps={{
                       type: "number",
                       name: "numberOfPulpilFed",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{errors.numberOfPulpilFed && touched.numberOfPulpilFed && errors.numberOfPulpilFed}</div>
+                  
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -507,12 +656,15 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     inputProps={{
                       type: "number",
                       name: "numberOfDaysPerCycle",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{errors.numberOfDaysPerCycle && touched.numberOfDaysPerCycle && errors.numberOfDaysPerCycle}</div>
+                  
                 </GridItem>
                 </GridContainer>
               <GridContainer>
@@ -521,14 +673,17 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     labelText="Amount Per Meal"
                     id="amountPerMeal"
                     inputProps={{
-                      type: "email",
+                      type: "number",
                       name: "amountPerMeal",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{errors.amountPerMeal && touched.amountPerMeal && errors.amountPerMeal}</div>
+                  
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className={classes.formControl}>
@@ -542,10 +697,12 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                       native
                       value={addCook.values.state}
                       onChange={(e) => {
-                        handleChange(e);
+                        handleChangeState(e);
                         addCook.getData(e);
+                        handleChange(e);
                       }}
                       className={classes.underline}
+                      onBlur={handleBlur}
                       style={{ width: "100%" }}
                       inputProps={{
                         name: "state",
@@ -562,6 +719,8 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                       })}
                     </Select>
                   </FormControl>
+                  <div style={{color: 'red'}}>{errors.state && touched.state && errors.state}</div>
+                  
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className={classes.formControl}>
@@ -574,8 +733,9 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     <Select
                       native
                       value={addCook.values.lga}
-                      onChange={addCook.getData}
+                      onChange={(e) => {handleChange(e); addCook.getData(e)}}
                       className={classes.underline}
+                      onBlur={handleBlur}
                       style={{ width: "100%" }}
                       inputProps={{
                         name: "lga",
@@ -588,6 +748,8 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                       })}
                     </Select>
                   </FormControl>
+                  <div style={{color: 'red'}}>{errors.lga && touched.lga && errors.lga}</div>
+                  
                 </GridItem>
                 </GridContainer>
               <GridContainer>
@@ -602,8 +764,9 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                     <Select
                       native
                       value={addCook.values.schoolName}
-                      onChange={addCook.getData}
+                      onChange={(e) => {handleChange(e); addCook.getData(e)}}
                       className={classes.underline}
+                      onBlur={handleBlur}
                       style={{ width: "100%" }}
                       inputProps={{
                         name: "schoolName",
@@ -616,6 +779,8 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                       })}
                     </Select>
                   </FormControl>
+                  <div style={{color: 'red'}}>{errors.schoolName && touched.schoolName && errors.schoolName}</div>
+                  
                 </GridItem>
               </GridContainer>
               {/* <GridContainer>
@@ -648,14 +813,17 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
                       rows: 3,
                       type: "text",
                       name: "address",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                   />
+                  <div style={{color: 'red'}}>{errors.address && touched.address && errors.address}</div>
+                  
                 </GridItem>
               </GridContainer>
             </CardBody>
             <CardFooter>
-              <Button onClick={addCook.submit} color="primary">
+              <Button type="submit" color="primary">
                 {sendButton ? sendButton : "Submit"}
                 {isLoading && <Loading />}
               </Button>
@@ -664,6 +832,9 @@ export default function UserProfile({ title, subTitle, sendButton, content }) {
           </Card>
         </GridItem>
       </GridContainer>
+      </form>
+      )}
+    </Formik>
     </div>
   );
 }

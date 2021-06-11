@@ -1,11 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import BlockIcon from '@material-ui/icons/Block';
 import DialogSuspend from 'components/Dialog/DialogSuspend.js';
 import CustomInput from "components/CustomInput/CustomInput.js";
 import { dataContext } from 'components/context/DataContext';
-import { postContent } from "utils";
+import { postContent, patchContent } from "utils";
 import config from 'utils/config';
+import Loading from "components/isLoading";
 import userForm from "../../hooks/useForm"; 
 // import AddNewPost from 'views/Blog/AddNewPost';
 
@@ -25,24 +26,24 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PopSuspend({details}) {
   const addCook = userForm(sendToServer);
+  // const rejectCook = userForm(sendRejectToServer);
   const classes = useStyles();
-  const { handleClickOpenSuspend, handleCloseSuspend } = useContext(dataContext);
+  const [isLoading, setIsLoading] = useState(false)
+  const { handleClickOpenSuspend, handleCloseSuspend, handleClose } = useContext(dataContext);
   const token = localStorage.getItem("token");
   const baseUrl = config.API_URL
   
   async function sendToServer() { 
     try {
-      // console.log(addCook.values);
-    handleCloseSuspend();
-    const response = await postContent(
+      setIsLoading(true)
+    const {message} = await patchContent(
       `${baseUrl}/school/${details._id}/suspend`,
       addCook.values,
       token
     );
-    
-    console.log(response);
-    //   const body = await result;
-    //   console.log(body);
+    alert(message)
+    setIsLoading(false)
+    handleCloseSuspend()
     } catch ({message}) {
       alert(message)
     }
@@ -79,17 +80,17 @@ export default function PopSuspend({details}) {
             <DialogSuspend title="Suspend" children={
                 <CustomInput
                     labelText="Reason for suspension"
-                    id="middle-name"
+                    id="reason"
                     inputProps={{
                       type: "text",
-                      name: "suspendReason",
+                      name: "reason",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
                     fullWidth: true
                     }}
                 />
-            } noButton="Cancel" yesButton="Suspend" handleSuspend={addCook.submit}  />
+            } noButton="Cancel" yesButton={<>Suspend {isLoading && <Loading />}</>} handleSuspend={addCook.submit}  />
             <button onClick={handleClickOpenSuspend} className={classes.button} title="Suspend"><BlockIcon /></button>
         </div>
     );

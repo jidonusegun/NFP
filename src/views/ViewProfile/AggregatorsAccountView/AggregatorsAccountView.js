@@ -2,13 +2,15 @@ import React, {useState, useEffect} from 'react';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
-import Logo from 'assets/img/loogos.png';
+// import Logo from 'assets/img/loogos.png';
 import {getContent, postContent} from 'utils';
 import userForm from "../../../hooks/useForm";
 import Dialog from 'components/useDialog';
 import useDialog from 'components/useDialog/useHook';
 import Loading from "components/isLoading";
 import config from 'utils/config';
+
+const Logo = '/media/img/loogos.png'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -77,7 +79,7 @@ export default function AdminAccountView({details}) {
     const [isLoading, setIsLoading] = useState(false)
     const newImage = details?.image?.split('/').pop()
 
-    console.log(details)
+    // console.log(details)
 
     useEffect(() => {
         getContent(`${baseUrl}/aggregator/${details?._id}`, token)

@@ -23,6 +23,7 @@ import { postContent, getContent } from "utils";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
 import config from 'utils/config';
+import { Formik, useFormik } from 'formik';
 // import loogos from "assets/img/loogos.png";
 
 const styles = {
@@ -75,11 +76,69 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
+const validate = values => {
+  const errors = {};
+   if (!values.companyName) {
+    errors.companyName = 'Required';
+  }
+
+  if (!values.itemsToSupply) {
+  errors.itemsToSupply = 'Required';
+  }
+
+if (!values.unitPrice) {
+  errors.unitPrice = 'Required';
+} 
+
+if (!values.phoneNumber) {
+  errors.phoneNumber = 'Required';
+}
+else if (values.phoneNumber.length > 11 || values.phoneNumber.length < 11 ) {
+  errors.phoneNumber = 'Invalid Phone Number';
+}
+if (!values.frequencyOfSupply) {
+  errors.frequencyOfSupply = 'Required';
+}
+
+if (!values.dayForConsumption) {
+  errors.dayForConsumption = 'Required';
+}
+
+if (!values.numberOfDaysPerCycle) {
+  errors.numberOfDaysPerCycle = 'Required';
+}
+
+if (!values.numberOfPulpilFed) {
+  errors.numberOfPulpilFed = 'Required';
+}
+
+if (!values.bankName) {
+  errors.bankName = 'Required';
+}
+
+if (!values.acctNumber) {
+  errors.acctNumber = 'Required';
+} else if(values.acctNumber.toString().length > 10 || values.acctNumber.toString().length < 10) {
+  errors.acctNumber = 'Invalid account number';
+  }
+
+if (!values.tin) {
+  errors.tin = 'Required';
+} 
+
+if (!values.state) {
+  errors.state = 'Required';
+} 
+
+  return errors;
+};
+
+
 export default function AddAggregators({ title, subTitle, sendButton, content }) {
   const addCook = userForm(sendToServer);
   const classes = useStyles();
 
-  const { handleClose } = useContext(dataContext);
+  const { handleClose, setAggregator, aggregator } = useContext(dataContext);
   const token = localStorage.getItem("token");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -94,6 +153,8 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
 
   // let errorMessage = "";
 
+  // console.log(aggregator)
+
   useEffect(() => {
     getContent(
       `${baseUrl}/settings/states`,
@@ -106,7 +167,7 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
     ).then((data) => setLgavalue(data.data));
   }, [token, stateID]);
 
-  const handleChange = (e) => {
+  const handleChangeState = (e) => {
 
     var index = e.target.selectedIndex;
     var optionElement = e.target.childNodes[index]
@@ -159,7 +220,7 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
         alert('Record sent for approval')
       }
       
-      content.unshift(data)
+      // content.unshift(data)
       setIsLoading(false);
       handleClose();
     } catch ({ message }) {
@@ -170,55 +231,32 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
     }
   }
 
-  // const handleChange = (e) => {
-  //   var index = e.target.selectedIndex;
-  //   var optionElement = e.target.childNodes[index];
-  //   var option = optionElement.getAttribute("id");
-
-  //   setStateID(option);
-  // };
-
-  // const handleImageChange = (e) => {
-  //   e.preventDefault();
-
-  //   let reader = new FileReader();
-  //   let file = e.target.files[0];
-
-  //   reader.onloadend = () => {
-  //     setImageFile({
-  //       file: file,
-  //       imagePreviewUrl: reader.result,
-  //     });
-  //   };
-  //   // console.log(e.target.files[0])
-  //   reader.readAsDataURL(file);
-  // };
-
-  // let { imagePreviewUrl } = imageFile;
-  // let $imagePreview = null;
-  // if (imagePreviewUrl) {
-  //   $imagePreview = (
-  //     <img src={imagePreviewUrl} alt="upload" className={classes.img} />
-  //   );
-  // } else {
-  //   $imagePreview = (
-  //     <div className="previewText" style={{ borderRadius: "50%", margin: "0" }}>
-  //       <img src={loogos} alt="logo" />
-  //     </div>
-  //   );
-  // }
-
-  // Aggregator's Company Name,
-  // Items to Supply,
-  // Unit Post,
-  // Day for Consumption,
-  // Number of Pupils,
-  // Bank,
-  // Acct. Number,
-  // TIN
+  
+  const formik = useFormik({
+    initialValues: {
+      companyName: '', 
+      itemsToSupply: '', 
+      unitPrice: '', 
+      phoneNumber: '', 
+      frequencyOfSupply: '', 
+      dayForConsumption: '', 
+      numberOfPulpilFed: '', 
+      bankName: '', 
+      acctNumber: '', 
+      tin: '', 
+      state: ''
+    },
+    validate,
+    onSubmit: values => {
+      sendToServer()
+    },
+  });
+  
 
   return (
     <div>
+      
+         <form onSubmit={formik.handleSubmit}>
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
@@ -233,20 +271,24 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                 style={{ color: "red", textAlign: "center", width: "100%" }}
               >{`${errorMessage}`}</div>
               
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
+              <GridContainer> 
+                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Company's Name"
                     id="companyName"
                     inputProps={{
                       type: "text",
                       name: "companyName",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); formik.handleChange(e)},
+                      onBlur: formik.handleBlur,
+                      value: formik.values.companyName
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{formik.errors.companyName && formik.touched.companyName && formik.errors.companyName}</div>
+                  
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                 <CustomInput
@@ -255,26 +297,34 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                     inputProps={{
                       type: "text",
                       name: "itemsToSupply",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); formik.handleChange(e)},
+                      onBlur: formik.handleBlur,
+                      value: formik.values.itemsToSupply
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                <CustomInput
+                  <div style={{color: 'red'}}>{formik.errors.itemsToSupply && formik.touched.itemsToSupply && formik.errors.itemsToSupply}</div>
+                  
+                </GridItem> 
+                 <GridItem xs={12} sm={12} md={4}> 
+                 <CustomInput
                     labelText="Unit Price"
                     id="unitPrice"
                     inputProps={{
                       type: "number",
                       name: "unitPrice",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); formik.handleChange(e)},
+                      onBlur: formik.handleBlur,
+                      value: formik.values.unitPrice
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{formik.errors.unitPrice && formik.touched.unitPrice && formik.errors.unitPrice}</div>
+                  
                 </GridItem>
               </GridContainer>
               <GridContainer>
@@ -285,12 +335,16 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                     inputProps={{
                       type: "number",
                       name: "dayForConsumption",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); formik.handleChange(e)},
+                      onBlur: formik.handleBlur,
+                      value: formik.values.dayForConsumption
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{formik.errors.dayForConsumption && formik.touched.dayForConsumption && formik.errors.dayForConsumption}</div>
+                  
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -299,12 +353,15 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                     inputProps={{
                       type: "number",
                       name: "acctNumber",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); formik.handleChange(e)},                     onBlur: formik.handleBlur,
+                      value: formik.values.acctNumber
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{formik.errors.acctNumber && formik.touched.acctNumber && formik.errors.acctNumber}</div>
+                  
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className={classes.formControl}>
@@ -317,7 +374,8 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                     <Select
                       native
                       value={addCook.values.bankName}
-                      onChange={addCook.getData}
+                      onChange={(e) => {addCook.getData(e); formik.handleChange(e)}}
+                      onBlur={formik.handleBlur}
                       className={classes.underline}
                       style={{ width: "100%" }}
                       inputProps={{
@@ -368,9 +426,11 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                       <option value="Nova Merchant Bank">Nova Merchant Bank</option>
                     </Select>
                   </FormControl>
+                  <div style={{color: 'red'}}>{formik.errors.bankName && formik.touched.bankName && formik.errors.bankName}</div>
+                  
                 </GridItem>
-              </GridContainer>
-              <GridContainer>
+              </GridContainer> 
+               <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="TIN"
@@ -378,12 +438,16 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                     inputProps={{
                       type: "number",
                       name: "tin",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); formik.handleChange(e)},
+                      onBlur: formik.handleBlur,
+                      value: formik.values.tin
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{formik.errors.tin && formik.touched.tin && formik.errors.tin}</div>
+                  
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -392,28 +456,36 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                     inputProps={{
                       type: "number",
                       name: "numberOfPulpilFed",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); formik.handleChange(e)},
+                      onBlur: formik.handleBlur,
+                      value: formik.values.numberOfPulpilFed
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{formik.errors.numberOfPulpilFed && formik.touched.numberOfPulpilFed && formik.errors.numberOfPulpilFed}</div>
+                  
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Mobile Number"
                     id="phoneNumber"
                     inputProps={{
-                      type: "number",
-                      name: "mobileNumber",
-                      onChange: (e) => addCook.getData(e),
+                      type: "tel",
+                      name: "phoneNumber",
+                      onChange: (e) => {addCook.getData(e); formik.handleChange(e)},
+                      onBlur: formik.handleBlur,
+                      value: formik.values.phoneNumber
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{formik.errors.phoneNumber && formik.touched.phoneNumber && formik.errors.phoneNumber}</div>
+                  
                 </GridItem>
-                </GridContainer>
+                </GridContainer> 
               <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -422,12 +494,16 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                     inputProps={{
                       type: "number",
                       name: "frequencyOfSupply",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); formik.handleChange(e)},
+                      onBlur: formik.handleBlur,
+                      value: formik.values.frequencyOfSupply
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{formik.errors.frequencyOfSupply && formik.touched.frequencyOfSupply && formik.errors.frequencyOfSupply}</div>
+                  
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -436,12 +512,16 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                     inputProps={{
                       type: "number",
                       name: "numberOfDaysPerCycle",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); formik.handleChange(e)},
+                      onBlur: formik.handleBlur,
+                      value: formik.values.numberOfDaysPerCycle
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>{formik.errors.numberOfDaysPerCycle && formik.touched.numberOfDaysPerCycle && formik.errors.numberOfDaysPerCycle}</div>
+                  
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                 <FormControl className={classes.formControl}>
@@ -449,8 +529,9 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                     <Select
                       native
                       value={addCook.values.state}
-                      onChange={(e) =>{handleChange(e)
-                        addCook.getData(e)}}
+                      onChange={(e) =>{handleChangeState(e)
+                        addCook.getData(e); formik.handleChange(e)}}
+                      onBlur={formik.handleBlur}
                       className={classes.underline}
                       style={{width: "100%"}}
                       inputProps={{
@@ -464,11 +545,13 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
                       })}
                     </Select>
                   </FormControl>
+                  <div style={{color: 'red'}}>{formik.errors.state && formik.touched.state && formik.errors.state}</div>
+                  
                   </GridItem>
               </GridContainer>
             </CardBody>
             <CardFooter>
-              <Button onClick={addCook.submit} color="primary">
+              <Button type='submit' color="primary">
                 {sendButton ? sendButton : "Submit"}
                 {isLoading && <Loading />}
               </Button>
@@ -477,6 +560,9 @@ export default function AddAggregators({ title, subTitle, sendButton, content })
           </Card>
         </GridItem>
       </GridContainer>
-    </div>
+      </form>
+    </div> 
   );
 }
+// onChange={handleChange}
+//              onBlur={handleBlur}

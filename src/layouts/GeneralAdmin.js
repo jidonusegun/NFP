@@ -21,13 +21,12 @@ import bgImage from "assets/img/sidebar-2.jpg";
 const logos = '/media/img/logos.png'
 
 let ps;
+const tokensession  = sessionStorage.getItem('token')
 const tokenLocal  = localStorage.getItem('token')
 const user = localStorage.getItem('username')
 // console.log(user)
 const switchRoutes = (
   <Switch>
-    {/* {tokenLocal ? 
-    <> */}
     {generalRoutes.map((prop, key) => {
       if (prop.layout === "/admin") {
         return (
@@ -40,10 +39,9 @@ const switchRoutes = (
       }
       return null;
     })}
-    <Redirect from="/admin" to="/admin/home" />
-    {/* </>
-    :
-    <Redirect from="/state-admin" to="federal-login-page" />} */}
+
+    
+    {tokenLocal ? <Redirect from="/admin" to="/admin/home" /> : <Redirect from="/admin/home" to="/login-page" />}
   </Switch>
 );
 

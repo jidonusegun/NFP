@@ -30,7 +30,7 @@ import Loading from "components/isLoading";
 import {getContent} from 'utils';
 import config from 'utils/config'; 
 // icon components
-
+const loogos = '/media/img/loogos.png'
 const useStyles = makeStyles((theme) => ({
     cardContainer: {
         display: "flex",
@@ -101,6 +101,7 @@ export default function StateView(props) {
   // const [status, setStatus] = useState()
   var token = localStorage.getItem("token");
   const baseUrl = config.API_URL
+  const imageUrl = config.IMAGE_URL
 
   const newState = stateName.toLowerCase()
 
@@ -179,7 +180,7 @@ export default function StateView(props) {
                                       return (
                                           <div className={classes.cardContent} key={_id}>
                                             <div   onClick={handleClickPopSuper} onMouseUp={function(event){ setUserDetails({_id, username, gender, birthday, role, firstName, lastName, phoneNumber, email, state, lga, address, image, status});}}>
-                                              <ImageCard cardTitle={firstName} cardImage={image} /> 
+                                              <ImageCard cardTitle={firstName} cardImage={image ? imageUrl+image : loogos} /> 
                                             </div>
                                           </div> 
                                         )

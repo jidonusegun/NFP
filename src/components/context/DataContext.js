@@ -7,6 +7,11 @@ export default function DataContext(props) {
 
     const [userProfile] = useState({active: false});
 
+    const [school, setSchool] = useState([])
+    const [cook, setCook] = useState([])
+    const [aggregator, setAggregator] = useState([])
+    const [stateAdmin, setStateAdmin] = useState([])
+
     const [token, setToken] = useState();
 
     const [open, setOpen] = useState(false);
@@ -166,7 +171,7 @@ export default function DataContext(props) {
     return (
         <dataContext.Provider value={{open, handleClickOpen, handleClose, 
           openDelete, handleClickOpenDelete, handleCloseDelete, openSuspend, handleClickOpenSuspend, handleCloseSuspend, openView, handleClickOpenView, handleCloseView,
-          anchorEl, handleClickPop, handleClosePop, userProfile, state, notification,handleCloseNotification, handleClickOpenNotification, openNotification, token, setToken, anchorElSuper, handleClickPopSuper, handleClosePopSuper}}>
+          anchorEl, handleClickPop, handleClosePop, userProfile, state, notification,handleCloseNotification, handleClickOpenNotification, openNotification, token, setToken, anchorElSuper, handleClickPopSuper, handleClosePopSuper, school, setSchool, cook, setCook, aggregator, setAggregator, stateAdmin, setStateAdmin}}>
             {props.children}
         </dataContext.Provider>
     )

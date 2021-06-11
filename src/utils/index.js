@@ -24,11 +24,12 @@ export async function getContent(url,token,method='GET'){
 
 export async function postContent(url,data,token,method='POST'){
 	try{
-		// console.log(data)
-		const result = await Axios({url,method,data, headers: {
-			  'Authorization': `Bearer ${token}` 
-			}
-		});
+		const config = {url,method,data, headers: {
+			'Authorization': `Bearer ${token}` 
+		  }
+	  }
+		console.log(config)
+		const result = await Axios(config);
 		return result.data;
 	} catch(err){
 		throw err;

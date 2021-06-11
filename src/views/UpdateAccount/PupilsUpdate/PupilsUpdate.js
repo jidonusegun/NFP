@@ -19,12 +19,12 @@ import Select from '@material-ui/core/Select';
 import { dataContext } from 'components/context/DataContext';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import {patchContent, getContent, postContent, postImageContent} from 'utils';
-import loogos from "assets/img/loogos.png";
+// import loogos from "assets/img/loogos.png";
 import userForm from "../../hooks/useForm";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
 import config from 'utils/config';
-
+const loogos = '/media/img/loogos.png'
 const styles = {
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
@@ -135,7 +135,7 @@ setMessage('Edit Record sent for approval')
     }
   }
 
-  console.log(details._id)
+  // console.log(details._id)
 
   const handleChange = (e) => {
 
@@ -150,7 +150,7 @@ setMessage('Edit Record sent for approval')
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('handle uploading-', imageFile.file);
+        // console.log('handle uploading-', imageFile.file);
       }
 
       const handleImageChange = (e) => {

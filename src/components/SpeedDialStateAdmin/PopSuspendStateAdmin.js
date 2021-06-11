@@ -4,8 +4,9 @@ import BlockIcon from '@material-ui/icons/Block';
 import DialogSuspend from 'components/Dialog/DialogSuspend.js';
 import CustomInput from "components/CustomInput/CustomInput.js";
 import { dataContext } from 'components/context/DataContext';
-import { postContent } from "utils";
+import { postContent, patchContent } from "utils";
 import userForm from "../../hooks/useForm"; 
+import Loading from "components/isLoading";
 import config from 'utils/config';
 // import AddNewPost from 'views/Blog/AddNewPost';
 
@@ -26,21 +27,22 @@ const useStyles = makeStyles((theme) => ({
 export default function PopSuspend({details}) {
   const addCook = userForm(sendToServer);
   const classes = useStyles();
+  const [isLoading, setIsLoading] = useState(false)
   const token = localStorage.getItem("token");
   const baseUrl = config.API_URL
-  const { handleClickOpenSuspend, handleCloseSuspend } = useContext(dataContext);
+  const { handleClickOpenSuspend, handleCloseSuspend, handleClose } = useContext(dataContext);
   
   async function sendToServer() {
     try {
+      setIsLoading(true)
       console.log(addCook.values);
-    handleCloseSuspend();
-  const response = await postContent({
+  const {message} = await patchContent({
     url:`${baseUrl}/admin/${details._id}/suspend`,
     data: addCook.values, token
   });
-  console.log(response);
-  //   const body = await result;
-  //   console.log(body);
+  alert(message)
+  setIsLoading(false)
+  handleCloseSuspend()
     } catch ({message}) {
       alert(message)
     }
@@ -77,17 +79,17 @@ export default function PopSuspend({details}) {
             <DialogSuspend title="Suspend" children={
                 <CustomInput
                     labelText="Reason for suspension"
-                    id="middle-name"
+                    id="reason"
                     inputProps={{
                       type: "text",
-                      name: "suspendReason",
+                      name: "reason",
                       onChange: (e) => addCook.getData(e),
                     }}
                     formControlProps={{
                     fullWidth: true
                     }}
                 />
-            } noButton="Cancel" yesButton="Suspend" handleSuspend={handleSubmitAll}  />
+            } noButton="Cancel" yesButton={<>Suspend {isLoading && <Loading />}</>} handleSuspend={handleSubmitAll}  />
             <button onClick={handleClickOpenSuspend} className={classes.button} title="Suspend"><BlockIcon /></button>
         </div>
     );

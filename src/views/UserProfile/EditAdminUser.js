@@ -19,11 +19,14 @@ import Select from '@material-ui/core/Select';
 import { dataContext } from 'components/context/DataContext';
 import CardAvatar from "components/Card/CardAvatar.js";
 import {patchContent, getContent, postContent, postImageContent} from 'utils';
-import loogos from "assets/img/loogos.png";
+// import loogos from "assets/img/loogos.png";
 import userForm from "../../hooks/useForm"; 
 import Loading from "components/isLoading";
 import Toast from "components/toast";
 import config from 'utils/config';
+import { Formik } from 'formik';
+
+const loogos = '/media/img/loogos.png'
 
 const styles = {
   cardCategoryWhite: {
@@ -77,7 +80,7 @@ export default function UserProfile({title, subTitle, sendButton, details, conte
   const classes = useStyles();
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { handleClose } = useContext(dataContext)
+  const { handleClose, setStateAdmin, stateAdmin  } = useContext(dataContext)
   const token = localStorage.getItem("token");
   const [imageUpload, setImageUpload] = useState({ image: "" });
 // const { PatchAdmin } = useContext(dataContext)
@@ -85,6 +88,7 @@ const [stateValue, setStatevalue] = useState([])
   const [lgaValue, setLgavalue] = useState([])
   const [stateID, setStateID] = useState()
   const [errorMessage, setErrorMessage] = useState("")
+  const [result, setResult] = useState(stateAdmin[details?.index])
   const userId = localStorage.getItem("id");
   const userRole = localStorage.getItem("role");
   const baseUrl = config.API_URL
@@ -141,7 +145,7 @@ if(userRole === "SUPER_ADMIN") {
     }
   }
 
-  const handleChange = (e) => {
+  const handleChangeState = (e) => {
 
     var index = e.target.selectedIndex;
     var optionElement = e.target.childNodes[index]
@@ -154,7 +158,7 @@ if(userRole === "SUPER_ADMIN") {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('handle uploading-', imageFile.file);
+        // console.log('handle uploading-', imageFile.file);
       }
 
       const handleImageChange = (e) => {
@@ -182,45 +186,147 @@ if(userRole === "SUPER_ADMIN") {
       }
 
       useEffect(() => {
+        addCook.setDefault(result)
         getContent(`${baseUrl}/settings/states`, token)
         .then(data=>setStatevalue(data.data))
 
         getContent(`${baseUrl}/settings/state/${stateID}/lgas`, token)
         .then(data=>setLgavalue(data.data))
 
-      },[token, stateID])
+      },[token, stateID, result])
+
+      const onChangeFunction = (e) => {
+        setResult({[e.target.name]: e.target.value});
+      }
   
   return (
     <div>
+      <Formik
+       initialValues={{ 
+       address: '',
+       lga: '',
+       state: '',
+       email: '',
+       phoneNumber: '',
+       birthday: '',
+       gender: '',
+       lastName: '',
+       firstName: '',
+       role: '',
+       password: '',
+       username: '',
+      }}
+
+       validate={values => {
+         const errors = {};
+         if (!values.address) {
+           errors.address = 'Required';
+         }
+
+        if (!values.lga) {
+          errors.lga = 'Required';
+        } 
+
+        if (!values.state) {
+          errors.state = 'Required';
+        }
+        if (!values.email) {
+          errors.email = 'Required';
+        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+          errors.email = 'Invalid email address';
+        }
+
+        if (!values.phoneNumber) {
+          errors.phoneNumber = 'Required';
+        } else if (values.phoneNumber.length > 11 || values.phoneNumber.length < 11 ) {
+          errors.phoneNumber = 'Invalid Phone Number';
+        }
+
+        if (!values.birthday) {
+          errors.birthday = 'Required';
+        }
+        if (!values.gender) {
+          errors.gender = 'Required';
+        }
+
+        if (!values.lastName) {
+          errors.lastName = 'Required';
+        } 
+
+        if (!values.firstName) {
+          errors.firstName = 'Required';
+        } 
+        if (!values.role) {
+          errors.role = 'Required';
+        } 
+        if (!values.password) {
+          errors.password = 'Required';
+        } 
+        if (!values.username) {
+          errors.username = 'Required';
+        } 
+
+         return errors;
+       }}
+       onSubmit={(values, { setSubmitting }) => {
+        sendToServer()
+       }}
+     >
+       {({
+         values,
+         errors,
+         touched,
+         handleChange,
+         handleBlur,
+         handleSubmit,
+         isSubmitting,
+         /* and other goodies */
+       }) => (
+        <form onSubmit={handleSubmit}>
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>{title ? title : "Edit Data"}</h4>
+              <h4 className={classes.cardTitleWhite}>
+                {title ? title : "Edit Data"}
+              </h4>
               <p className={classes.cardCategoryWhite}>{subTitle}</p>
             </CardHeader>
             <CardBody>
-            <div style={{color: "red", textAlign: "center", width: "100%"}}>{`${errorMessage}`}</div>
-            <GridContainer>
+              <div
+                style={{ color: "red", textAlign: "center", width: "100%" }}
+              >{`${errorMessage}`}</div>
+              <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
-                <CardAvatar profile style={{marginTop: "2rem"}}>
-                  <form onSubmit={handleSubmit}>
-                    <label htmlFor="filePicker">
-                      <IconButton color="primary"  style={{margin: "0", padding: "0"}} aria-label="upload picture" component="span">
-                        <div style={{borderRadius: "50%", margin: "0"}}>
-                          {$imagePreview}
-                        </div>
-                      <PhotoCamera className={classes.upload} />
-                      </IconButton>
-                    </label>
-                    <input id="filePicker" style={{visibility:"hidden"}} 
-                      type="file" name="uploadPicture"  className={classes.input}
-                      onChange={(e)=>{
-                        addCook.getFile(e)
-                        handleImageChange(e)
-                      }} accept="image/*" />
-                  </form>
-                </CardAvatar>
+                  <CardAvatar profile style={{ marginTop: "2rem" }}>
+                    <form onSubmit={handleSubmit}>
+                      <label htmlFor="filePicker">
+                        <IconButton
+                          color="primary"
+                          style={{ margin: "0", padding: "0" }}
+                          aria-label="upload picture"
+                          component="span"
+                        >
+                          <div style={{ borderRadius: "50%", margin: "0" }}>
+                            {$imagePreview}
+                          </div>
+                          <PhotoCamera className={classes.upload} />
+                        </IconButton>
+                      </label>
+                      <input
+                        id="filePicker"
+                        style={{ visibility: "hidden" }}
+                        type="file"
+                        name="uploadPicture"
+                        className={classes.input}
+                        onChange={(e) => {
+                          handleImageUpload(e)
+                          handleImageChange(e);
+                        }}
+                        accept="image/*"
+                      />
+                    </form>
+                  </CardAvatar>
                 </GridItem>
               </GridContainer>
               <GridContainer>
@@ -231,12 +337,17 @@ if(userRole === "SUPER_ADMIN") {
                     inputProps={{
                       type: "text",
                       name: "firstName",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {onChangeFunction(e); handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur,
+                      value: addCook.values.firstName,
                     }}
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>
+                    {errors.firstName && touched.firstName && errors.firstName}
+                  </div>
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -245,25 +356,36 @@ if(userRole === "SUPER_ADMIN") {
                     inputProps={{
                       type: "text",
                       name: "lastName",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {onChangeFunction(e); handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur,
+                      value: addCook.values.lastName,
                     }}
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>
+                    {errors.lastName && touched.lastName && errors.lastName}
+                  </div>
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="gender" style={{color: "#D2D2D2", fontWeight: "normal"}}>Gender</InputLabel>
+                    <InputLabel
+                      htmlFor="gender"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      Gender
+                    </InputLabel>
                     <Select
                       native
                       value={addCook.values.gender}
-                      onChange={addCook.getData}
+                      onChange={(e) => {onChangeFunction(e); handleChange(e); addCook.getData(e)}}
+                      onBlur={handleBlur}
                       className={classes.underline}
-                      style={{width: "100%"}}
+                      style={{ width: "100%" }}
                       inputProps={{
-                        name: 'gender',
-                        id: 'gender',
+                        name: "gender",
+                        id: "gender",
                       }}
                     >
                       <option aria-label="None" value="" />
@@ -271,6 +393,9 @@ if(userRole === "SUPER_ADMIN") {
                       <option value="female">Female</option>
                     </Select>
                   </FormControl>
+                  <div style={{color: 'red'}}>
+                    {errors.gender && touched.gender && errors.gender}
+                  </div>
                 </GridItem>
               </GridContainer>
               <GridContainer>
@@ -279,14 +404,19 @@ if(userRole === "SUPER_ADMIN") {
                     labelText="Phone Number"
                     id="phoneNumber"
                     inputProps={{
-                      type: "number",
+                      type: "tel",
                       name: "phoneNumber",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {onChangeFunction(e); handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur,
+                      value: addCook.values.phoneNumber,
                     }}
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>
+                    {errors.phoneNumber && touched.phoneNumber && errors.phoneNumber}
+                  </div>
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -294,13 +424,18 @@ if(userRole === "SUPER_ADMIN") {
                     id="email"
                     inputProps={{
                       type: "email",
-                      name: "emails",
-                      onChange: (e) => addCook.getData(e),
+                      name: "email",
+                      onChange: (e) => {onChangeFunction(e); handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur,
+                      value: addCook.values.email,
                     }}
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>
+                    {errors.email && touched.email && errors.email}
+                  </div>
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -308,58 +443,89 @@ if(userRole === "SUPER_ADMIN") {
                     id="birthday"
                     inputProps={{
                       type: "date",
-                      name: "dateOfBirth",
-                      onChange: (e) => addCook.getData(e),
+                      name: "birthday",
+                      onChange: (e) => {onChangeFunction(e); handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur,
+                      value: addCook.values.birthday,
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>
+                    {errors.birthday && touched.birthday && errors.birthday}
+                  </div>
                 </GridItem>
-                </GridContainer>
-                <GridContainer>
+              </GridContainer>
+              <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="state" style={{color: "#D2D2D2", fontWeight: "normal"}}>State</InputLabel>
+                    <InputLabel
+                      htmlFor="state"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      State
+                    </InputLabel>
                     <Select
                       native
                       value={addCook.values.state}
-                      onChange={(e) =>{handleChange(e)
-                        addCook.getData(e)}}
+                      onChange={(e) => {
+                        handleChangeState(e);
+                        addCook.getData(e);
+                        handleChange(e); 
+                        onChangeFunction(e); 
+                      }}
+                      onBlur={handleBlur}
                       className={classes.underline}
-                      style={{width: "100%"}}
+                      style={{ width: "100%" }}
                       inputProps={{
-                        name: 'state',
-                        id: 'state',
+                        name: "state",
+                        id: "state",
                       }}
                     >
                       <option aria-label="None" value="" />
-                      {stateValue.map(({name, _id}) => {
-                        return <option value={name} id={_id}>{name}</option>
+                      {stateValue.map(({ name, _id }) => {
+                        return (
+                          <option value={name} id={_id} key={_id}>
+                            {name}
+                          </option>
+                        );
                       })}
                     </Select>
                   </FormControl>
+                  <div style={{color: 'red'}}>
+                    {errors.state && touched.state && errors.state}
+                  </div>
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="lga" style={{color: "#D2D2D2", fontWeight: "normal"}}>LGA</InputLabel>
+                    <InputLabel
+                      htmlFor="lga"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      LGA
+                    </InputLabel>
                     <Select
                       native
                       value={addCook.values.lga}
-                      onChange={addCook.getData}
+                      onChange={(e) => {onChangeFunction(e); handleChange(e); addCook.getData(e)}}
+                      onBlur={handleBlur}
                       className={classes.underline}
-                      style={{width: "100%"}}
+                      style={{ width: "100%" }}
                       inputProps={{
-                        name: 'lga',
-                        id: 'lga',
+                        name: "lga",
+                        id: "lga",
                       }}
                     >
                       <option aria-label="None" value="" />
-                      {lgaValue.map(lga => {
-                        return <option value={lga}>{lga}</option>
+                      {lgaValue.map((lga) => {
+                        return <option value={lga}>{lga}</option>;
                       })}
                     </Select>
                   </FormControl>
+                  <div style={{color: 'red'}}>
+                    {errors.lga && touched.lga && errors.lga}
+                  </div>
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -367,75 +533,107 @@ if(userRole === "SUPER_ADMIN") {
                     id="username"
                     inputProps={{
                       type: "text",
-                      name: "usernames",
-                      onChange: (e) => addCook.getData(e),
-                  }}
+                      name: "username",
+                      onChange: (e) => {onChangeFunction(e); handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur,
+                      value: addCook.values.username,
+                    }}
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                   />
-                  </GridItem>
-                </GridContainer>
-                <GridContainer>
+                  <div style={{color: 'red'}}>
+                    {errors.username && touched.username && errors.username}
+                  </div>
+                </GridItem>
+              </GridContainer>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={4}>
+                  <CustomInput
+                    labelText="Password"
+                    id="password"
+                    inputProps={{
+                      type: "password",
+                      name: "password",
+                      onChange: (e) => {onChangeFunction(e); handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
+                    }}
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                  />
+                  <div style={{color: 'red'}}>
+                    {errors.password && touched.password && errors.password}
+                  </div>
+                </GridItem>
+                <GridItem xs={12} sm={12} md={4}>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel
+                      htmlFor="role"
+                      style={{ color: "#D2D2D2", fontWeight: "normal" }}
+                    >
+                      Role
+                    </InputLabel>
+                    <Select
+                      native
+                      value={addCook.values.role}
+                      onChange={(e) => {onChangeFunction(e); handleChange(e); addCook.getData(e)}}
+                      onBlur={handleBlur}
+                      className={classes.underline}
+                      style={{ width: "100%" }}
+                      inputProps={{
+                        name: "role",
+                        id: "role",
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      <option value="SUPER_ADMIN">Super Admin</option>
+                      <option value="ADMIN">Program Manager</option>
+                    </Select>
+                  </FormControl>
+                  <div style={{color: 'red'}}>
+                    {errors.role && touched.role && errors.role}
+                  </div>
+                </GridItem>
+              </GridContainer>
+              <GridContainer>
                 <GridItem xs={12} sm={12} md={12}>
                   {/* <InputLabel style={{ color: "#AAAAAA" }}>Address</InputLabel> */}
                   <CustomInput
                     labelText="Address"
                     id="address"
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                     inputProps={{
                       multiline: true,
                       rows: 3,
                       type: "text",
-                      name: "addressd",
-                      onChange: (e) => addCook.getData(e),
+                      name: "address",
+                      onChange: (e) => {onChangeFunction(e); handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur,
+                      value: addCook.values.address,
                     }}
                   />
+                  <div style={{color: 'red'}}>
+                    {errors.address && touched.address && errors.address}
+                  </div>
                 </GridItem>
               </GridContainer>
-              {/* <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="Username"
-                    id="username"
-                    inputProps={{
-                      type: "text",
-                      name: "usernames",
-                      onChange: (e) => addCook.getData(e),
-                  }}
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="Password"
-                    id="password"
-                    inputProps={{
-                        type: "password",
-                        name: "passwords",
-                      onChange: (e) => addCook.getData(e),
-                    }}
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-              </GridContainer> */}
             </CardBody>
             <CardFooter>
-              <Button onClick={addCook.submit} color="primary">
+              <Button type="submit" color="primary">
                 {sendButton ? sendButton : "Edit Profile"}
                 {isLoading && <Loading />}
-                </Button>
-                <Toast message={message} />
+              </Button>
+              <Toast message={message} />
             </CardFooter>
           </Card>
         </GridItem>
       </GridContainer>
+      </form>
+      )}
+    </Formik>
     </div>
   );
 }

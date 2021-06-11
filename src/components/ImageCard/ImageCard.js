@@ -9,7 +9,7 @@ export default function ImageCard({cardTitle, cardImage}) {
     const classes = useStyles();
     const baseUrl = config.API_URL
     const image = baseUrl+'/'+cardImage
-    console.log(image)
+    console.log(cardImage)
     return (
         <div style={{textAlign: "center"}}>
               <img

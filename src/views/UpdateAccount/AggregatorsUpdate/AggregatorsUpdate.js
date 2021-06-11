@@ -15,6 +15,7 @@ import userForm from "../../hooks/useForm";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
 import config from 'utils/config';
+import { Formik } from 'formik';
 
 const useStyles = makeStyles((theme) => ({
     imgPreview: {
@@ -169,6 +170,86 @@ export default function UpdateAdmin({details, content}) {
 
 return (
   <div>
+      <Formik
+       initialValues={{ companyName: '', itemsToSupply: '', unitPrice: '', phoneNumber: '', frequencyOfSupply: '', dayForConsumption: '', numberOfPulpilFed: '', bankName: '', acctNumber: '', tin: '', state: '' }}
+
+       validate={values => {
+         const errors = {};
+         if (!values.companyName) {
+           errors.companyName = 'Required';
+         }else if(typeof values.companyName !== "string") {
+          errors.companyName = 'This input is not an alphabet';
+         }
+
+         if (!values.itemsToSupply) {
+          errors.itemsToSupply = 'Required';
+        }else if(typeof values.itemsToSupply !== "string") {
+          errors.itemsToSupply = 'This input is not an alphabet';
+         }
+
+        if (!values.unitPrice) {
+          errors.unitPrice = 'Required';
+        } else if(!(isNaN(values.unitPrice))) {
+          errors.unitPrice = 'This input is not a number';
+         }
+
+        if (!values.phoneNumber) {
+          errors.phoneNumber = 'Required';
+        }
+        else if (values.phoneNumber.length > 11 || values.phoneNumber.length < 11) {
+          errors.phoneNumber = 'Invalid Phone Number';
+        }
+        if (!values.frequencyOfSupply) {
+          errors.frequencyOfSupply = 'Required';
+        }
+
+        if (!values.dayForConsumption) {
+          errors.dayForConsumption = 'Required';
+        }
+        
+        if (!values.numberOfDaysPerCycle) {
+          errors.numberOfDaysPerCycle = 'Required';
+        }
+
+        if (!values.numberOfPulpilFed) {
+          errors.numberOfPulpilFed = 'Required';
+        }
+
+        if (!values.bankName) {
+          errors.bankName = 'Required';
+        }
+
+        if (!values.acctNumber) {
+          errors.acctNumber = 'Required';
+        } else if(values.acctNumber.length > 10 || values.acctNumber.length < 10) {
+          errors.acctNumber = 'This input is not a number';
+         }
+
+        if (!values.tin) {
+          errors.tin = 'Required';
+        } 
+
+        if (!values.state) {
+          errors.state = 'Required';
+        } 
+
+         return errors;
+       }}
+       onSubmit={(values, { setSubmitting }) => {
+        sendToServer()
+       }}
+     >
+       {({
+         values,
+         errors,
+         touched,
+         handleChange,
+         handleBlur,
+         handleSubmit,
+         isSubmitting,
+         /* and other goodies */
+       }) => (
+        <form onSubmit={handleSubmit}>
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
@@ -191,12 +272,14 @@ return (
                     inputProps={{
                       type: "text",
                       name: "companyName",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.companyName && touched.companyName && errors.companyName}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                 <CustomInput
@@ -205,12 +288,14 @@ return (
                     inputProps={{
                       type: "text",
                       name: "itemsToSupply",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.itemsToSupply && touched.itemsToSupply && errors.itemsToSupply}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                 <CustomInput
@@ -219,12 +304,14 @@ return (
                     inputProps={{
                       type: "number",
                       name: "unitPrice",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.unitPrice && touched.unitPrice && errors.unitPrice}
                 </GridItem>
               </GridContainer>
               <GridContainer>
@@ -235,12 +322,14 @@ return (
                     inputProps={{
                       type: "number",
                       name: "dayForConsumption",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.dayForConsumption && touched.dayForConsumption && errors.dayForConsumption}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -249,12 +338,13 @@ return (
                     inputProps={{
                       type: "number",
                       name: "acctNumber",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); handleChange(e)},                     onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.acctNumber && touched.acctNumber && errors.acctNumber}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className={classes.formControl}>
@@ -267,7 +357,8 @@ return (
                     <Select
                       native
                       value={addCook.values.bankName}
-                      onChange={addCook.getData}
+                      onChange={(e) => {addCook.getData(e); handleChange(e)}}
+                      onBlur={handleBlur}
                       className={classes.underline}
                       style={{ width: "100%" }}
                       inputProps={{
@@ -318,6 +409,7 @@ return (
                       <option value="Nova Merchant Bank">Nova Merchant Bank</option>
                     </Select>
                   </FormControl>
+                  {errors.bankName && touched.bankName && errors.bankName}
                 </GridItem>
               </GridContainer>
               <GridContainer>
@@ -328,12 +420,14 @@ return (
                     inputProps={{
                       type: "number",
                       name: "tin",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.tin && touched.tin && errors.tin}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -342,12 +436,14 @@ return (
                     inputProps={{
                       type: "number",
                       name: "numberOfPulpilFed",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.numberOfPulpilFed && touched.numberOfPulpilFed && errors.numberOfPulpilFed}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -355,13 +451,15 @@ return (
                     id="phoneNumber"
                     inputProps={{
                       type: "number",
-                      name: "mobileNumber",
-                      onChange: (e) => addCook.getData(e),
+                      name: "phoneNumber",
+                      onChange: (e) => {addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.phoneNumber && touched.phoneNumber && errors.phoneNumber}
                 </GridItem>
                 </GridContainer>
               <GridContainer>
@@ -372,12 +470,14 @@ return (
                     inputProps={{
                       type: "number",
                       name: "frequencyOfSupply",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.frequencyOfSupply && touched.frequencyOfSupply && errors.frequencyOfSupply}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -386,12 +486,14 @@ return (
                     inputProps={{
                       type: "number",
                       name: "numberOfDaysPerCycle",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.numberOfDaysPerCycle && touched.numberOfDaysPerCycle && errors.numberOfDaysPerCycle}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                 <FormControl className={classes.formControl}>
@@ -399,8 +501,9 @@ return (
                     <Select
                       native
                       value={addCook.values.state}
-                      onChange={(e) =>{handleChange(e)
-                        addCook.getData(e)}}
+                      onChange={(e) =>{handleChangeState(e)
+                        addCook.getData(e); handleChange(e)}}
+                      onBlur={handleBlur}
                       className={classes.underline}
                       style={{width: "100%"}}
                       inputProps={{
@@ -414,11 +517,12 @@ return (
                       })}
                     </Select>
                   </FormControl>
+                  {errors.state && touched.state && errors.state}
                   </GridItem>
               </GridContainer>
             </CardBody>
             <CardFooter>
-              <Button onClick={addCook.submit} color="primary">
+              <Button type='submit' color="primary">
                 {sendButton ? sendButton : "Submit"}
                 {isLoading && <Loading />}
               </Button>
@@ -427,6 +531,9 @@ return (
           </Card>
         </GridItem>
       </GridContainer>
+      </form>
+      )}
+    </Formik>
     </div>
 );
 }

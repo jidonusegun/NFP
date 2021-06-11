@@ -48,6 +48,23 @@ const tableStyle = theme => ({
       fontSize: "1em"
     }
   },
+  formControl: {
+    width: "30%",
+    // height: '30px',
+    // marginTop: "1.8rem",
+    [theme.breakpoints.down('sm')]: {
+      width: "100%",
+    }
+  },
+  underline: {
+    "&:hover:not($disabled):before,&:before": {
+      borderColor: "#D2D2D2 !important",
+      borderWidth: "1px !important",
+    },
+    "&:after": {
+      borderColor: "#9c27b0",
+    },
+  },
   tableCell: {
     ...defaultFont,
     lineHeight: "1.42857143",

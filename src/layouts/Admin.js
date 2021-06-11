@@ -22,42 +22,45 @@ const logos = '/media/img/logos.png'
 
 let ps;
 
+const tokensession  = sessionStorage.getItem('token')
 const tokenLocal  = localStorage.getItem('token')
 const user = localStorage.getItem('username')
-console.log(user)
+const stateLogin = localStorage.getItem("state")
+// console.log(user)
 const token = props => {
   return props
 }
 
+console.log('=====================')
+console.log(tokensession)
+
 const switchRoutes = (
   <Switch>
-    {/* {tokenLocal ? 
-    <> */}
     {routes.map((prop, key) => {
       if (prop.layout === "/state-admin") {
+        
         return (
           <Route
             path={prop.layout + prop.path}
             component={prop.component} 
             key={key}
           />
+          
         );
       }
-      // props => <prop.component token={props.location.state} />
       return null;
     })}
-    <Redirect from="/state-admin" to="/state-admin/home" />
-    {/* </>
-    :
-    <Redirect from="/state-admin" to="login-page" />} */}
+  {tokenLocal ? <Redirect from="/state-admin" to="/state-admin/home" /> : <Redirect from="/state-admin/home" to="/login-page" />}
+    
   </Switch>
 );
 // const {state} = props
-console.log({tokenLocal})
+// console.log(tokenLocal)
 const useStyles = makeStyles(styles);
 
 export default function Admin({ ...rest }) {
   // styles
+  // return (<label>{tokensession}</label>);
   const classes = useStyles();
   // ref to help us initialize PerfectScrollbar on windows devices
   const mainPanel = React.createRef();
@@ -99,7 +102,7 @@ export default function Admin({ ...rest }) {
     <div className={classes.wrapper}>
       <Sidebar
         routes={routes}
-        logoText={user}
+        logoText={`${stateLogin} Admin`}
         logo={logos}
         image={image}
         handleDrawerToggle={handleDrawerToggle}
@@ -114,9 +117,10 @@ export default function Admin({ ...rest }) {
           {...rest}
         />
         {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
+        {/* tokenLocal ? switchRoutes : <Redirect from="/state-admin/home" to="/login-page" /> */}
         {getRoute() ? (
           <div className={classes.content}>
-            <div className={classes.container}>{switchRoutes}</div>
+            <div className={classes.container}>{ switchRoutes }</div>
           </div>
         ) : (
           <div className={classes.map}>{switchRoutes}</div>

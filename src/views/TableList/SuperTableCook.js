@@ -44,7 +44,7 @@ export default function TableList({state}) {
   const classes = useStyles();
   const { openDialog, closeDialog, isOpen } = useDialog();
   // const uploadExcel = userForm(sendToServer);
-  const { handleClickPop, handleClickOpen } = useContext(dataContext);
+  const { handleClickPop, handleClickOpen, setCook, cook  } = useContext(dataContext);
   const [cookDetails, setCookDetails] = useState();
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
@@ -59,7 +59,7 @@ export default function TableList({state}) {
   useEffect(() => {
     setIsLoading(true);
       getContent(`${baseUrl}/cooks?state=${state}&status=APPROVED`, token)
-      .then(data=>setAccount(data.data))
+      .then(data=>setCook(data.data))
     setIsLoading(false);
   }, [token, state]);
 
@@ -183,7 +183,7 @@ export default function TableList({state}) {
                   </div>
               </CardHeader>
               <CardBody> 
-              { account.length > 0 ?
+              { cook.length > 0 ?
                     <Table className={classes.table}>
                   
                     <TableHead style={{color: "#9c27b0"}}>
@@ -208,7 +208,7 @@ export default function TableList({state}) {
                       </TableRow>
                     </TableHead>
                   <TableBody>
-                    {account.map(({_id, gender, firstName, lastName, birthday, accountNumber, bankName, bvn, phoneNumber, email, date_created_acc, state, address, lga, schoolName, image, status, pupilsFeed, numberOfPulpilFed, numberOfDaysPerCycle, amountPerMeal}) => {
+                    {cook.map(({_id, gender, firstName, lastName, birthday, accountNumber, bankName, bvn, phoneNumber, email, date_created_acc, state, address, lga, schoolName, image, status, pupilsFeed, numberOfPulpilFed, numberOfDaysPerCycle, amountPerMeal}, index) => {
                       
                       return (
                         <>

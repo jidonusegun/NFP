@@ -23,7 +23,11 @@ import userForm from "../../hooks/useForm";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
 import config from 'utils/config';
-import loogos from "assets/img/loogos.png";
+import { Formik } from 'formik';
+
+// import loogos from "assets/img/loogos.png";
+
+const loogos = '/media/img/loogos.png'
 
 const styles = {
   cardCategoryWhite: {

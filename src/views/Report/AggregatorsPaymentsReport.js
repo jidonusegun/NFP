@@ -15,7 +15,11 @@ import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js"; 
 import PublishIcon from '@material-ui/icons/Publish';
-import { postContent } from "utils"; 
+import CustomInput from "components/CustomInput/CustomInput.js";
+import { postContent } from "utils";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select"; 
 import userForm from "../../hooks/useForm";
 import config from 'utils/config';
 // import { dataContext } from "components/context/DataContext";
@@ -53,19 +57,22 @@ import config from 'utils/config';
 //   cardHeader: {
 //     display: "flex",
 //     justifyContent: "space-between",
-//     alignItems: "center",
+//     alignItems: "center", 
 //   },
 // };
 
 const useStyles = makeStyles(styles);
 
-export default function NewlyRegisteredAggregators({aggregatorPaymentDetails}) {
+export default function NewlyRegisteredAggregators({aggregatorPaymentDetails, setMonth, stateLogin}) {
   const sendReport = userForm(sendToServer);
+  const addMonth = userForm();
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false)
   // const [status, setStatus] = useState({active: "", category: ""})
   var token = localStorage.getItem("token");
   const baseUrl = config.API_URL
+
+  console.log(token)
 
   const state = aggregatorPaymentDetails.map(({state}) => {return state} )
   const lga = aggregatorPaymentDetails.map(({lga}) => { return lga} )
@@ -74,8 +81,8 @@ export default function NewlyRegisteredAggregators({aggregatorPaymentDetails}) {
   async function sendToServer() {
     try {
       setIsLoading(true)
-      const response = await postContent(`${baseUrl}/payment-report/sendtoadmin/${state[0]}/${lga[0]}/${month[0]}/AGGREGATOR`, token);
-      alert("Payments report has been sent")
+      const {message} = await postContent(`${baseUrl}/payment-report/sendtoadmin?state=${stateLogin}&month=${addMonth.values.month}&userType=AGGREGATOR`, {}, token);
+      alert(message)
       setIsLoading(false)
     } catch ({message}) {
       alert(message)
@@ -85,9 +92,30 @@ export default function NewlyRegisteredAggregators({aggregatorPaymentDetails}) {
     }
   }
 
+  setMonth(addMonth.values.month)
+
   return (
     <div>
       <GridContainer>
+      <GridContainer>
+      <GridItem xs={12} sm={12} md={12}>
+      <div style={{marginBottom: '1rem', marginLeft: '3rem'}}>
+        <CustomInput
+          labelText="Select Month"
+          id="month"
+          inputProps={{
+            type: "month",
+            name: "month",
+            onChange: (e) => addMonth.getData(e),
+          }}
+          formControlProps={{
+            fullWidth: true,
+
+          }}
+        />
+        </div>
+        </GridItem>
+      </GridContainer>
       <GridItem xs={12} sm={12} md={12}>
         { aggregatorPaymentDetails.length > 0 ?
         <Card>
@@ -106,33 +134,46 @@ export default function NewlyRegisteredAggregators({aggregatorPaymentDetails}) {
               
               <TableHead style={{color: "#9c27b0"}}>
                 <TableRow className={classes.tableHeadRow}>
-                    <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>S/N</TableCell>
+                    <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>COMPANY'S NAME</TableCell>
+                    <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>STATE</TableCell>
+                    <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>PHONE NUMBER</TableCell>
+                    <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>ITEM TO SUPPLY</TableCell>
+                    <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>BANK NAME</TableCell>
+                    <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>ACCOUNT NUMBER</TableCell>
+                    <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>TIN</TableCell>
+                    <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>UNIT PRICE</TableCell>
+                    <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>FREQUENCY OF SUPPLY</TableCell>
                     <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>START DATE</TableCell>
                     <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>END DATE</TableCell>
-                    <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>AMOUNT PER MEAL</TableCell>
                     <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>NO. OF PUPILS FED</TableCell>
                     <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>NO. OF DAYS FED</TableCell>
                     <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>MONTH</TableCell>
+                    <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>TOTAL AMOUNT TO PAY</TableCell>
                     <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>CATEGORY</TableCell>
-                    <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>STATE</TableCell>
-                    <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>LGA</TableCell>
                 </TableRow>
               </TableHead>
             <TableBody>
-              {aggregatorPaymentDetails.map(({status, _id, state, lga, userType, month, startDate, endDate, amountPerMeal, userId, pulpilFeed, Days}) => {
+              {aggregatorPaymentDetails.map(({status, _id, state, tin, bankName, acctNumber, dayForConsumption, companyName, itemsToSupply, userType, month, startDate, endDate, unitPrice, userId, pulpilFeed, phoneNumber, frequencyOfSupply, totalAmountToPay, userRecord, Days}) => {
                 // id, companyName, item, consumption, Cost, noOfChildren, total
                 return status === "PENDING" && userType === "AGGREGATOR" ?
                   <TableRow key={_id} className={classes.tableBodyRow}>
-                        <TableCell className={classes.tableCell}>{userId}</TableCell>
+                        <TableCell className={classes.tableCell}>{userRecord.companyName}</TableCell>
+                        <TableCell className={classes.tableCell}>{state}</TableCell>
+                        <TableCell className={classes.tableCell}>{userRecord.phoneNumber}</TableCell>
+                        <TableCell className={classes.tableCell}>{userRecord.itemsToSupply}</TableCell>
+                        <TableCell className={classes.tableCell}>{userRecord.bankName}</TableCell>
+                        <TableCell className={classes.tableCell}>{userRecord.acctNumber}</TableCell>
+                        <TableCell className={classes.tableCell}>{userRecord.tin}</TableCell>
+                        <TableCell className={classes.tableCell}>{userRecord.unitPrice}</TableCell>
+                        <TableCell className={classes.tableCell}>{frequencyOfSupply}</TableCell>
                         <TableCell className={classes.tableCell}>{startDate}</TableCell>
                         <TableCell className={classes.tableCell}>{endDate}</TableCell>
-                        <TableCell className={classes.tableCell}>{amountPerMeal}</TableCell>
                         <TableCell className={classes.tableCell}>{pulpilFeed}</TableCell>
+                        {/* <TableCell className={classes.tableCell}>{pulpilFeed}</TableCell> */}
                         <TableCell className={classes.tableCell}>{Days}</TableCell>
                         <TableCell className={classes.tableCell}>{month}</TableCell>
+                        <TableCell className={classes.tableCell}>{totalAmountToPay}</TableCell>
                         <TableCell className={classes.tableCell}>{userType}</TableCell>
-                        <TableCell className={classes.tableCell}>{state}</TableCell>
-                        <TableCell className={classes.tableCell}>{lga}</TableCell>
                   </TableRow>
                 : null
               })}

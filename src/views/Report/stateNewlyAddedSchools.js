@@ -31,24 +31,48 @@ import config from 'utils/config';
 const useStyles = makeStyles(styles);
 
 export default function NewlyRegisteredCooks({schoolsList}) {
-  const sendReport = userForm(sendToServer);
+  const rejectCook = userForm(sendRejectToServer);
+  const download = userForm(sendDownloadToServer);
+  const approveCook = userForm(sendToServer);
   const classes = useStyles();
   const baseUrl = config.API_URL
   const token = localStorage.getItem("token")
   const [savedId, setSavedId] = useState()
-  const approveCook = userForm(sendToServer);
+
   const { handleClickPop, handleClosePop } = useContext(dataContext);
   const stateLogin = localStorage.getItem("stateAdminState")
     const lgaLogin = localStorage.getItem("stateAdminLga")
 
     async function sendToServer() {
-      handleClosePop()
-      const response = await patchContent(`${baseUrl}/school/${savedId}/approve`, token);
-      // addCook.reset();
+      try {
+        const response = await patchContent(`${baseUrl}/school/${savedId}/approve`, {}, token);
       console.log(response);
-      //   const body = await result;
-      //   console.log(body);
+      handleClosePop()
+      } catch ({message}) {
+        alert(message)
       }
+      
+    }
+
+    async function sendRejectToServer() {
+      try {
+        const response = await patchContent(`${baseUrl}/school/${savedId}/reject`, token);
+      console.log(response);
+      handleClosePop()
+      } catch ({message}) {
+        alert(message)
+      }
+    }
+
+    async function sendDownloadToServer() {
+      try {
+        const response = await patchContent(`${baseUrl}/school/${savedId}/approve`, token);
+      console.log(response);
+      handleClosePop()
+      } catch ({message}) {
+        alert(message)
+      }
+    }
 
   return (
     <div>
@@ -58,7 +82,7 @@ export default function NewlyRegisteredCooks({schoolsList}) {
               <ListItemText primary="Approve" onClick={approveCook.submit} />
             </ListItem>
             <ListItem button>
-              <ListItemText primary="Reject" onClick={handleClosePop} />
+              <ListItemText primary="Reject" onClick={rejectCook.submit} />
             </ListItem>
           </List>
       </Popover>
@@ -73,7 +97,7 @@ export default function NewlyRegisteredCooks({schoolsList}) {
                 </p>
               </div>
               <div> 
-                  <PublishIcon fontSize="large" style={{marginRight: "30px", cursor: "pointer"}} onClick={sendReport.submit} />
+                  <PublishIcon fontSize="large" style={{marginRight: "30px", cursor: "pointer"}} onClick={download.submit} />
               </div>
             </CardHeader>
             <CardBody>

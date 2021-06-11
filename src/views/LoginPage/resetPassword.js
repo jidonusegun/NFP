@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -37,7 +37,7 @@ const useStyles = makeStyles(styles);
 
 export default function LoginPage(props) {
   const { openDialog, closeDialog, isOpen } = useDialog();
-  const addLogin = userForm(sendLoginToServer);
+  const changePassword = userForm(sendToServer);
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
   const [validate, setValidate] = useState(false);
   const [passwordCheck, setPasswordCheck] = useState(false);
@@ -45,39 +45,66 @@ export default function LoginPage(props) {
   const [message, setMessage] = useState("");
   const [getEmail, setGetEmail] = useState()
   const [isLoading, setIsLoading] = useState(false);
+  const [recoverId, setRecoverId] = useState()
+  const baseUrl = config.API_URL
+  const routeParams = props.match.params.emailCode
+  const token = localStorage.getItem("token");
+
+
+  // useEffect(() => {
+  //   const response = getContent(`${baseUrl}/random/${routeParams}`)
+  //   const body = await response
+  //   setRecoverId(body?._id)
+  //   if(body.success === true){
+  //     setLoggedIn(true)
+  //   }
+  // },[routeParams])
 
   const { handleClickOpenSuspend, handleCloseSuspend, setToken } = useContext(
     dataContext
   );
-  const baseUrl = config.API_URL
-  var token = localStorage.getItem("token");
 
-  async function sendLoginToServer() {
+
+  async function sendToServer() {
     try {
-      setIsLoading(true);
-      const response = await postContentLogin(
-        `${baseUrl}/admin/login`,
-        addLogin.values
-      );
+      if (changePassword.values.password === changePassword.values.newPassword) {
+        changePassword.setData("uniqueCode", routeParams);
+        delete changePassword.values.password;
+        const response = await postContent(
+          `${baseUrl}/random`,
+          changePassword.values,
+          token
+        );
+        
+        if(response.success === true) {
+          alert("Password reset successfully");
+          setLoggedIn(true)
+        } else {
+          alert("An error occur");
+        }
+      } else {
+        setMessage("Password did not match");
+      }
 
       setIsLoading(false);
     } catch ({ message }) {
       alert(message);
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
-    
   }
+
 
   setTimeout(function () {
     setCardAnimation("");
   }, 700);
   const classes = useStyles();
   const { ...rest } = props;
-
-  return (
+//  console.log(props.match.params.name)
+ 
+  return  (
     <>
-      {loggedIn ? <Redirect to="/admin/home" /> : null}
+    {loggedIn ? <Redirect to="/login-page" /> : null}
       <div>
         <Header
           absolute
@@ -110,20 +137,20 @@ export default function LoginPage(props) {
                         {message}
                       </div>
 
-                      <div
+                      {/* <div
                         className={
                           passwordCheck ? classes.dBlockPassword : classes.dNone
                         }
                       >
                         Check your email to get your password{" "}
-                      </div>
+                      </div> */}
                         <CustomInput
                             labelText="Enter New Password"
                             id="newPassword"
                             inputProps={{
                             type: "password",
                             name: "newPassword",
-                            onChange: (e) => changeUser.getData(e),
+                            onChange: (e) => changePassword.getData(e),
                             }}
                             formControlProps={{
                             fullWidth: true,
@@ -135,7 +162,7 @@ export default function LoginPage(props) {
                             inputProps={{
                             type: "password",
                             name: "password",
-                            onChange: (e) => changeUser.getData(e),
+                            onChange: (e) => changePassword.getData(e),
                             }}
                             formControlProps={{
                             fullWidth: true,
@@ -146,12 +173,12 @@ export default function LoginPage(props) {
                       {/* <Link to="/state-admin/home">  */}
                       <Button
                         type="submit"
-                        onClick={addLogin.submit}
+                        onClick={changePassword.submit}
                         simple
                         color="primary"
                         size="lg"
                       >
-                        Login
+                        Reset Password
                       </Button>
                       {/* </Link> */}
                       {isLoading && <Loading />}
@@ -166,6 +193,7 @@ export default function LoginPage(props) {
         </div>
       </div>
     </>
-  );
+  )
+
   // Loading Data... Please wait
 }

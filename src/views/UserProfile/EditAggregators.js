@@ -24,6 +24,7 @@ import userForm from "../../hooks/useForm";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
 import config from 'utils/config';
+import { Formik } from 'formik';
 
 const styles = {
   cardCategoryWhite: {
@@ -87,11 +88,12 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
   const baseUrl = config.API_URL
   // let errorMessage = "";
 
-  const { handleClose } = useContext(dataContext)
+  const { handleClose, setAggregator, aggregator  } = useContext(dataContext)
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
   const userRole = localStorage.getItem("role");
 // const { PatchAggregator } = useContext(dataContext)
+const [result, setResult] = useState(aggregator[details?.index])
 
   async function sendToServer() {
 
@@ -140,7 +142,7 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
     }
   }
 
-  const handleChange = (e) => {
+  const handleChangeState = (e) => {
 
     var index = e.target.selectedIndex;
     var optionElement = e.target.childNodes[index]
@@ -181,14 +183,14 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
       // }
 
       useEffect(() => {
-        // addCook.setDefault(details)
+        addCook.setDefault(result)
         getContent(`${baseUrl}/settings/states`, token)
         .then(data=>setStatevalue(data.data))
 
         getContent(`${baseUrl}/settings/state/${stateID}/lgas`, token)
         .then(data=>setLgavalue(data.data))
 
-      },[token, stateID])
+      },[token, stateID, result])
 
       // Aggregator's Company Name,
       // Items to Supply,
@@ -198,9 +200,93 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
       // Bank,
       // Acct. Number,
       // TIN
-   
+      
+      const onChangeFunction = (e) => {
+        setResult({[e.target.name]: e.target.value});
+      }
+
   return (
     <div>
+      <Formik
+       initialValues={{ companyName: '', itemsToSupply: '', unitPrice: '', phoneNumber: '', frequencyOfSupply: '', dayForConsumption: '', numberOfPulpilFed: '', bankName: '', acctNumber: '', tin: '', state: '' }}
+
+       validate={values => {
+         const errors = {};
+         if (!values.companyName) {
+           errors.companyName = 'Required';
+         }else if(typeof values.companyName !== "string") {
+          errors.companyName = 'This input is not an alphabet';
+         }
+
+         if (!values.itemsToSupply) {
+          errors.itemsToSupply = 'Required';
+        }else if(typeof values.itemsToSupply !== "string") {
+          errors.itemsToSupply = 'This input is not an alphabet';
+         }
+
+        if (!values.unitPrice) {
+          errors.unitPrice = 'Required';
+        } else if(!(isNaN(values.unitPrice))) {
+          errors.unitPrice = 'This input is not a number';
+         }
+
+        if (!values.phoneNumber) {
+          errors.phoneNumber = 'Required';
+        }
+        else if (values.phoneNumber.length > 11 || values.phoneNumber.length < 11) {
+          errors.phoneNumber = 'Invalid Phone Number';
+        }
+        if (!values.frequencyOfSupply) {
+          errors.frequencyOfSupply = 'Required';
+        }
+
+        if (!values.dayForConsumption) {
+          errors.dayForConsumption = 'Required';
+        }
+        
+        if (!values.numberOfDaysPerCycle) {
+          errors.numberOfDaysPerCycle = 'Required';
+        }
+
+        if (!values.numberOfPulpilFed) {
+          errors.numberOfPulpilFed = 'Required';
+        }
+
+        if (!values.bankName) {
+          errors.bankName = 'Required';
+        }
+
+        if (!values.acctNumber) {
+          errors.acctNumber = 'Required';
+        } else if(values.acctNumber.length > 10 || values.acctNumber.length < 10) {
+          errors.acctNumber = 'This input is not a number';
+         }
+
+        if (!values.tin) {
+          errors.tin = 'Required';
+        } 
+
+        if (!values.state) {
+          errors.state = 'Required';
+        } 
+
+         return errors;
+       }}
+       onSubmit={(values, { setSubmitting }) => {
+        sendToServer()
+       }}
+     >
+       {({
+         values,
+         errors,
+         touched,
+         handleChange,
+         handleBlur,
+         handleSubmit,
+         isSubmitting,
+         /* and other goodies */ 
+       }) => (
+        <form onSubmit={handleSubmit}>
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
@@ -223,12 +309,15 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
                     inputProps={{
                       type: "text",
                       name: "companyName",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {onChangeFunction(e); addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur,
+                      value: addCook.values.companyName,
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.companyName && touched.companyName && errors.companyName}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                 <CustomInput
@@ -237,12 +326,15 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
                     inputProps={{
                       type: "text",
                       name: "itemsToSupply",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {onChangeFunction(e); addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur,
+                      value: addCook.values.itemsToSupply,
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.itemsToSupply && touched.itemsToSupply && errors.itemsToSupply}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                 <CustomInput
@@ -251,12 +343,15 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
                     inputProps={{
                       type: "number",
                       name: "unitPrice",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {onChangeFunction(e); addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur,
+                      value: addCook.values.unitPrice,
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.unitPrice && touched.unitPrice && errors.unitPrice}
                 </GridItem>
               </GridContainer>
               <GridContainer>
@@ -267,12 +362,15 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
                     inputProps={{
                       type: "number",
                       name: "dayForConsumption",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {onChangeFunction(e); addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur,
+                      value: addCook.values.dayForConsumption,
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.dayForConsumption && touched.dayForConsumption && errors.dayForConsumption}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -281,12 +379,15 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
                     inputProps={{
                       type: "number",
                       name: "acctNumber",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {onChangeFunction(e); addCook.getData(e); handleChange(e)},                     
+                      onBlur: handleBlur,
+                      value: addCook.values.acctNumber,
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.acctNumber && touched.acctNumber && errors.acctNumber}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className={classes.formControl}>
@@ -299,7 +400,8 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
                     <Select
                       native
                       value={addCook.values.bankName}
-                      onChange={addCook.getData}
+                      onChange={(e) => {onChangeFunction(e); addCook.getData(e); handleChange(e)}}
+                      onBlur={handleBlur}
                       className={classes.underline}
                       style={{ width: "100%" }}
                       inputProps={{
@@ -350,6 +452,7 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
                       <option value="Nova Merchant Bank">Nova Merchant Bank</option>
                     </Select>
                   </FormControl>
+                  {errors.bankName && touched.bankName && errors.bankName}
                 </GridItem>
               </GridContainer>
               <GridContainer>
@@ -360,12 +463,15 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
                     inputProps={{
                       type: "number",
                       name: "tin",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {onChangeFunction(e); addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur,
+                      value: addCook.values.tin,
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.tin && touched.tin && errors.tin}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -374,26 +480,32 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
                     inputProps={{
                       type: "number",
                       name: "numberOfPulpilFed",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {onChangeFunction(e); addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur,
+                      value: addCook.values.numberOfPulpilFed,
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.numberOfPulpilFed && touched.numberOfPulpilFed && errors.numberOfPulpilFed}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Mobile Number"
                     id="phoneNumber"
                     inputProps={{
-                      type: "number",
-                      name: "mobileNumber",
-                      onChange: (e) => addCook.getData(e),
+                      type: "tel",
+                      name: "phoneNumber",
+                      onChange: (e) => {onChangeFunction(e); addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur,
+                      value: addCook.values.phoneNumber,
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.phoneNumber && touched.phoneNumber && errors.phoneNumber}
                 </GridItem>
                 </GridContainer>
               <GridContainer>
@@ -404,12 +516,15 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
                     inputProps={{
                       type: "number",
                       name: "frequencyOfSupply",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {onChangeFunction(e); addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur,
+                      value: addCook.values.frequencyOfSupply,
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.frequencyOfSupply && touched.frequencyOfSupply && errors.frequencyOfSupply}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -418,12 +533,15 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
                     inputProps={{
                       type: "number",
                       name: "numberOfDaysPerCycle",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {onChangeFunction(e); addCook.getData(e); handleChange(e)},
+                      onBlur: handleBlur,
+                      value: addCook.values.numberOfDaysPerCycle,
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  {errors.numberOfDaysPerCycle && touched.numberOfDaysPerCycle && errors.numberOfDaysPerCycle}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                 <FormControl className={classes.formControl}>
@@ -431,8 +549,9 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
                     <Select
                       native
                       value={addCook.values.state}
-                      onChange={(e) =>{handleChange(e)
-                        addCook.getData(e)}}
+                      onChange={(e) =>{onChangeFunction(e); handleChangeState(e)
+                        addCook.getData(e); handleChange(e)}}
+                      onBlur={handleBlur}
                       className={classes.underline}
                       style={{width: "100%"}}
                       inputProps={{
@@ -446,11 +565,12 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
                       })}
                     </Select>
                   </FormControl>
+                  {errors.state && touched.state && errors.state}
                   </GridItem>
               </GridContainer>
             </CardBody>
             <CardFooter>
-              <Button onClick={addCook.submit} color="primary">
+              <Button type='submit' color="primary">
                 {sendButton ? sendButton : "Submit"}
                 {isLoading && <Loading />}
               </Button>
@@ -459,6 +579,9 @@ export default function EditAggregator({title, subTitle, sendButton, details, co
           </Card>
         </GridItem>
       </GridContainer>
+      </form>
+      )}
+    </Formik>
     </div>
   );
 }

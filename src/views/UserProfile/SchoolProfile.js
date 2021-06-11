@@ -19,12 +19,14 @@ import Select from "@material-ui/core/Select";
 import { dataContext } from "components/context/DataContext";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import { postContent, getContent, postImageContent } from "utils";
-import loogos from "assets/img/loogos.png";
+// import loogos from "assets/img/loogos.png";
 import userForm from "../../hooks/useForm";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
 import config from 'utils/config';
+import { Formik } from 'formik';
 
+const loogos = '/media/img/nsfr.png'
 const styles = {
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
@@ -85,7 +87,7 @@ export default function SchoolProfile({
   const classes = useStyles();
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { handleClose } = useContext(dataContext);
+  const { handleClose, setSchool, school  } = useContext(dataContext);
   const [stateValue, setStatevalue] = useState([]);
   const [lgaValue, setLgavalue] = useState([]);
   const [stateID, setStateID] = useState();
@@ -160,7 +162,7 @@ export default function SchoolProfile({
     }
   }
 
-  const handleChange = (e) => {
+  const handleChangeState = (e) => {
     var index = e.target.selectedIndex;
     var optionElement = e.target.childNodes[index];
     var option = optionElement.getAttribute("id");
@@ -216,6 +218,71 @@ export default function SchoolProfile({
 
   return (
     <div>
+      <Formik
+       initialValues={{ 
+        address: '',
+       lga: '',
+       state: '',
+       email: '',
+       phoneNumber: '',
+       name: '',
+       contactPerson: '',
+       totalPulpil: '',
+      }}
+
+       validate={values => {
+         const errors = {};
+         if (!values.address) {
+           errors.address = 'Required';
+         }
+
+        if (!values.lga) {
+          errors.lga = 'Required';
+        } 
+
+        if (!values.state) {
+          errors.state = 'Required';
+        }
+        if (!values.email) {
+          errors.email = 'Required';
+        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+          errors.email = 'Invalid email address';
+        }
+
+        if (!values.phoneNumber) {
+          errors.phoneNumber = 'Required';
+        } else if (values.phoneNumber.length > 11 || values.phoneNumber.length < 11 ) {
+          errors.phoneNumber = 'Invalid Phone Number';
+        }
+        
+        if (!values.name) {
+          errors.name = 'Required';
+        }
+
+        if (!values.contactPerson) {
+          errors.contactPerson = 'Required';
+        }
+        if (!values.totalPulpil) {
+          errors.totalPulpil = 'Required';
+        } 
+
+         return errors;
+       }}
+       onSubmit={(values, { setSubmitting }) => {
+        sendToServer()
+       }}
+     >
+       {({
+         values,
+         errors,
+         touched,
+         handleChange,
+         handleBlur,
+         handleSubmit,
+         isSubmitting,
+         /* and other goodies */
+       }) => (
+        <form onSubmit={handleSubmit}>
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
@@ -267,13 +334,17 @@ export default function SchoolProfile({
                     id="name"
                     inputProps={{
                       type: "text",
-                      name: "schoolName",
-                      onChange: (e) => addCook.getData(e),
+                      name: "name",
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>
+                  {errors.name && touched.name && errors.name}
+                    </div>
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -282,26 +353,34 @@ export default function SchoolProfile({
                     inputProps={{
                       type: "text",
                       name: "contactPerson",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>
+                  {errors.contactPerson && touched.contactPerson && errors.contactPerson}
+                    </div>
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
                     labelText="Contact Phone No"
                     id="phoneNumber"
                     inputProps={{
-                      type: "number",
+                      type: "tel",
                       name: "phoneNumber",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>
+                  {errors.phoneNumber && touched.phoneNumber && errors.phoneNumber}
+                    </div>
                 </GridItem>
               </GridContainer>
               <GridContainer>
@@ -311,13 +390,17 @@ export default function SchoolProfile({
                     id="email"
                     inputProps={{
                       type: "email",
-                      name: "emails",
-                      onChange: (e) => addCook.getData(e),
+                      name: "email",
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>
+                  {errors.email && touched.email && errors.email}
+                    </div>
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <CustomInput
@@ -326,12 +409,16 @@ export default function SchoolProfile({
                     inputProps={{
                       type: "number",
                       name: "totalPulpil",
-                      onChange: (e) => addCook.getData(e),
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                     formControlProps={{
                       fullWidth: true,
                     }}
                   />
+                  <div style={{color: 'red'}}>
+                  {errors.totalPulpil && touched.totalPulpil && errors.totalPulpil}
+                    </div>
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <FormControl className={classes.formControl}>
@@ -345,9 +432,11 @@ export default function SchoolProfile({
                       native
                       value={addCook.values.state}
                       onChange={(e) => {
-                        handleChange(e);
+                        handleChangeState(e);
                         addCook.getData(e);
+                        handleChange(e); 
                       }}
+                      onBlur={handleBlur}
                       className={classes.underline}
                       style={{ width: "100%" }}
                       inputProps={{
@@ -365,6 +454,9 @@ export default function SchoolProfile({
                       })}
                     </Select>
                   </FormControl>
+                  <div style={{color: 'red'}}>
+                  {errors.state && touched.state && errors.state}
+                    </div>
                 </GridItem>
               </GridContainer>
               <GridContainer>
@@ -379,7 +471,8 @@ export default function SchoolProfile({
                     <Select
                       native
                       value={addCook.values.lga}
-                      onChange={addCook.getData}
+                      onChange={(e) => {handleChange(e); addCook.getData(e)}}
+                      onBlur={handleBlur}
                       className={classes.underline}
                       style={{ width: "100%" }}
                       inputProps={{
@@ -393,6 +486,9 @@ export default function SchoolProfile({
                       })}
                     </Select>
                   </FormControl>
+                  <div style={{color: 'red'}}>
+                  {errors.lga && touched.lga && errors.lga}
+                    </div>
                 </GridItem>
               </GridContainer>
               <GridContainer>
@@ -407,15 +503,19 @@ export default function SchoolProfile({
                       multiline: true,
                       rows: 3,
                       type: "text",
-                      name: "addressd",
-                      onChange: (e) => addCook.getData(e),
+                      name: "address",
+                      onChange: (e) => {handleChange(e); addCook.getData(e)},
+                      onBlur: handleBlur
                     }}
                   />
+                  <div style={{color: 'red'}}>
+                  {errors.address && touched.address && errors.address}
+                    </div>
                 </GridItem>
               </GridContainer>
             </CardBody>
             <CardFooter>
-              <Button onClick={addCook.submit} color="primary">
+              <Button type="submit" color="primary">
                 Submit
                 {isLoading && <Loading />}
               </Button>
@@ -424,6 +524,9 @@ export default function SchoolProfile({
           </Card>
         </GridItem>
       </GridContainer>
+      </form>
+      )}
+    </Formik>
     </div>
   );
 }

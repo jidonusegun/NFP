@@ -58,7 +58,7 @@ const useStyles = makeStyles(styles);
 
 export default function TableStateAdmin() {
   const classes = useStyles();
-  const { handleClickPop, handleClickOpen } = useContext(dataContext);
+  const { handleClickPop, handleClickOpen, setStateAdmin, stateAdmin  } = useContext(dataContext);
   return (
     <div>
       <Popover children={<SpeedDialStateAdmin />} />

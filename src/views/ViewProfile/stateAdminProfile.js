@@ -114,7 +114,7 @@ export default function UpdateAdmin({ details }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("handle uploading-", imageFile.file);
+    // console.log("handle uploading-", imageFile.file);
   };
 
   const handleImageChange = (e) => {

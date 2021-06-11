@@ -1,11 +1,12 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import BlockIcon from "@material-ui/icons/Block";
 import DialogSuspend from "components/Dialog/DialogSuspend.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import { dataContext } from "components/context/DataContext";
-import { postContent } from "utils";
+import { postContent, patchContent } from "utils";
 import userForm from "../../hooks/useForm";
+import Loading from "components/isLoading";
 import config from 'utils/config';
 // import AddNewPost from 'views/Blog/AddNewPost';
 
@@ -25,24 +26,23 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PopSuspend({ details }) {
   const addCook = userForm(sendToServer);
+  const [isLoading, setIsLoading] = useState(false)
   const classes = useStyles();
   const baseUrl = config.API_URL
   const token = localStorage.getItem("token")
-  const { handleClickOpenSuspend, handleCloseSuspend } = useContext(
+  const { handleClickOpenSuspend, handleCloseSuspend, handleClose } = useContext(
     dataContext
   );
 
   async function sendToServer() {
     try {
-      console.log(addCook.values);
-      handleCloseSuspend();
-      const response = await postContent({
-        url: `${baseUrl}/cook/${details._id}/suspend`,
-        data: addCook.values, token
-      });
-      console.log(response);
-      //   const body = await result;
-      //   console.log(body);
+      setIsLoading(true)
+      const {message} = await patchContent(`${baseUrl}/cook/${details._id}/suspend`,
+       addCook.values, token
+      );
+      alert(message)
+      setIsLoading(false)
+      handleCloseSuspend()
     } catch ({ message }) {
       alert(message);
     }
@@ -81,10 +81,10 @@ export default function PopSuspend({ details }) {
         children={
           <CustomInput
             labelText="Reason for suspension"
-            id="middle-name"
+            id="reason"
             inputProps={{
               type: "text",
-              name: "suspendReason",
+              name: "reason",
               onChange: (e) => addCook.getData(e),
             }}
             formControlProps={{
@@ -93,7 +93,7 @@ export default function PopSuspend({ details }) {
           />
         }
         noButton="Cancel"
-        yesButton="Suspend"
+        yesButton={<>Suspend {isLoading && <Loading />}</>}
         handleSuspend={addCook.submit}
       />
       <button

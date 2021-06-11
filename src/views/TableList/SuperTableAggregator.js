@@ -39,7 +39,7 @@ export default function TableAggregator({state}) {
   const classes = useStyles();
   const { openDialog, closeDialog, isOpen } = useDialog();
   // const uploadExcel = userForm(sendToServer);
-  const { handleClickPop, handleClickOpen } = useContext(dataContext);
+  const { handleClickPop, handleClickOpen, setAggregator, aggregator  } = useContext(dataContext);
   const [message, setMessage] = useState('')
   const [aggregatorDetails, setAggregatorDetails] = useState();
   const [loading, setLoading] = useState(false)
@@ -55,7 +55,7 @@ export default function TableAggregator({state}) {
   useEffect(() => {
       setIsLoading(true);
       getContent(`${baseUrl}/aggregators?state=${state}&status=APPROVED`, token)
-      .then(data=>setAccount(data.data))
+      .then(data=>setAggregator(data.data))
     setIsLoading(false);
   }, [token, state]);
 
@@ -180,7 +180,7 @@ export default function TableAggregator({state}) {
                   </div> */}
                   </CardHeader>
                   <CardBody>
-                  { account.length > 0 ?
+                  { aggregator.length > 0 ?
                   <Table className={classes.table}>
                       
                       <TableHead style={{color: "#9c27b0"}}> 
@@ -272,7 +272,7 @@ export default function TableAggregator({state}) {
                         </TableRow>
                       </TableHead>
                     <TableBody>
-                      {account.map(({acctNumber, bankName, companyName, dayForConsumption, frequencyOfSupply, numberOfDaysPerCycle, numberOfPulpilFed, phoneNumber, registeredBy, state, status, tin, unitPrice, _id,}) => {
+                      {aggregator.map(({acctNumber, bankName, companyName, dayForConsumption, frequencyOfSupply, numberOfDaysPerCycle, numberOfPulpilFed, phoneNumber, registeredBy, state, status, tin, unitPrice, _id}, index) => {
                         return (
                           <TableRow
                                 key={_id}
@@ -284,6 +284,7 @@ export default function TableAggregator({state}) {
                                     onMouseUp={function (event) {
                                       setAggregatorDetails({
                                         acctNumber, bankName, companyName, dayForConsumption, frequencyOfSupply, numberOfDaysPerCycle, numberOfPulpilFed, phoneNumber, registeredBy, state, status, tin, unitPrice, _id,
+                                        index
                                       });
                                     }}
                                     onClick={handleClickPop}

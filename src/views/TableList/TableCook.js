@@ -15,27 +15,26 @@ import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import AddButton from 'components/AddButton/AddButton';
-import Popover from 'components/Popover/Popover.js';
-import DialogContainer from 'components/Dialog/DialogContainer.js';
-import AddCooks from 'views/UserProfile/AddCooks';
-import { dataContext } from 'components/context/DataContext';
-import SpeedDialCook from 'components/SpeedDialCooks/SpeedDialCook.js';
-import Download from 'assets/img/Abuja.jpg';
-import DownloadCook from 'assets/img/COOKS.xlsx';
+import AddButton from "components/AddButton/AddButton";
+import Popover from "components/Popover/Popover.js";
+import DialogContainer from "components/Dialog/DialogContainer.js";
+import AddCooks from "views/UserProfile/AddCooks";
+import { dataContext } from "components/context/DataContext";
+import SpeedDialCook from "components/SpeedDialCooks/SpeedDialCook.js";
+import Download from "assets/img/Abuja.jpg";
+import DownloadCook from "assets/img/COOKS.xlsx";
 // icon components
-import ViewListIcon from '@material-ui/icons/ViewList';
-import userForm from "../../hooks/useForm"; 
-import config from 'utils/config';
-import {postContent, getContent, postImageContent} from 'utils';
-import PublishIcon from '@material-ui/icons/Publish';
+import ViewListIcon from "@material-ui/icons/ViewList";
+import userForm from "../../hooks/useForm";
+import config from "utils/config";
+import { postContent, getContent, postImageContent } from "utils";
+import PublishIcon from "@material-ui/icons/Publish";
 import GetAppIcon from "@material-ui/icons/GetApp";
-import Dialog from 'components/useDialog';
-import useDialog from 'components/useDialog/useHook';
+import Dialog from "components/useDialog";
+import useDialog from "components/useDialog/useHook";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
 // import {Link, Router} from 'react-router-dom';
-
 
 const useStyles = makeStyles(styles);
 
@@ -43,25 +42,31 @@ export default function TableList(props) {
   const classes = useStyles();
   const { openDialog, closeDialog, isOpen } = useDialog();
   // const uploadExcel = userForm(sendToServer);
-  const { handleClickPop, handleClickOpen } = useContext(dataContext);
+  const { handleClickPop, handleClickOpen, setCook, cook } = useContext(
+    dataContext
+  );
   const [cookDetails, setCookDetails] = useState();
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [account, setAccount] = useState([]) 
-  const [message, setMessage] = useState('')
-  const token = localStorage.getItem("token")
-  const userId = localStorage.getItem("id")
-  const stateLogin = localStorage.getItem("state")
-  const lgaLogin = localStorage.getItem("lga")
-  const [imageUpload, setImageUpload] = useState({image: ''})
-  const baseUrl = config.API_URL
+  const [account, setAccount] = useState([]);
+  const [message, setMessage] = useState("");
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("id");
+  const stateLogin = localStorage.getItem("state");
+  const lgaLogin = localStorage.getItem("lga");
+  const [imageUpload, setImageUpload] = useState({ image: "" });
+  const baseUrl = config.API_URL;
 
   useEffect(() => {
     setIsLoading(true);
-      getContent(`${baseUrl}/cooks?state=${stateLogin}&status=APPROVED`, token)
-      .then(data=>setAccount(data.data))
+    getContent(
+      `${baseUrl}/cooks?state=${stateLogin}&status=APPROVED`,
+      token
+    ).then((data) => setCook(data.data));
     setIsLoading(false);
   }, [token, stateLogin, lgaLogin]);
+
+  // console.log(cook)
 
   // async function sendToServer() {
   //   try {
@@ -81,70 +86,78 @@ export default function TableList(props) {
   // }
 
   const handleChange = (e) => {
-    setImageUpload({image: e.target.files[0]})
-  }
+    setImageUpload({ image: e.target.files[0] });
+  };
 
   async function submitUpload() {
     try {
       setLoading(true);
-      const data = new FormData()
-      data.append('files', imageUpload.image)
-    const result = await postImageContent(`${baseUrl}/cook/uploadcsv/${userId}`, data, token);
-    alert("Cook list has been sent for approval")
-    closeDialog();
-    }
-    catch ({message}) {
-      setMessage(message)
-    }
-    finally {
+      const data = new FormData();
+      data.append("files", imageUpload.image);
+      const result = await postImageContent(
+        `${baseUrl}/cook/uploadcsv/${userId}`,
+        data,
+        token
+      );
+      alert("Cook list has been sent for approval");
+      closeDialog();
+    } catch ({ message }) {
+      setMessage(message);
+    } finally {
       setLoading(false);
     }
   }
 
-  if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+  if (
+    window.performance &&
+    window.performance.navigation.type ===
+      window.performance.navigation.TYPE_BACK_FORWARD
+  ) {
     alert('Got here using the browser "Back" or "Forward" button.');
-}
-console.log(account)
+  }
+
   return (
     <div>
-      <DialogContainer children= {<AddCooks content={account} />} /> 
+      <DialogContainer children={<AddCooks content={account} />} />
       <Dialog
-                open={isOpen}
-                handleClose={closeDialog}
-                title="Upload Cook's List in Excel"
-                size="sm"
-                buttons={[
-                    {
-                        value: <>Upload {loading && <Loading />}</>,
-                        onClick: () => submitUpload(),
-                    },
-                ]}
-            >
-                <form>
-                    <input
-                        id="files"
-                        onChange={(e) => handleChange(e)}
-                        type="file"
-                        name="files"
-                        placeholder="Upload Cooks"
-                        accept=".xlsx, .xls, .csv"
-                    />
-                </form>
-            </Dialog>
-      <Popover children={<SpeedDialCook details={cookDetails} />} /> 
+        open={isOpen}
+        handleClose={closeDialog}
+        title="Upload Cook's List in Excel"
+        size="sm"
+        buttons={[
+          {
+            value: <>Upload {loading && <Loading />}</>,
+            onClick: () => submitUpload(),
+          },
+        ]}
+      >
+        <form>
+          <input
+            id="files"
+            onChange={(e) => handleChange(e)}
+            type="file"
+            name="files"
+            placeholder="Upload Cooks"
+            accept=".xlsx, .xls, .csv"
+          />
+        </form>
+      </Dialog>
+      <Popover children={<SpeedDialCook details={cookDetails} />} />
       <GridContainer>
-      <GridItem xs={12} sm={12} md={12}>
-        {isLoading ? <Loading /> :
-          <div>
-            <Card>
-              <CardHeader color="primary" className={classes.cardHeader}>
-                <div>
-                  <h4 className={classes.cardTitleWhite}>Cooks Details</h4>
-                  <p className={classes.cardCategoryWhite}>
-                    List of all Cooks
-                  </p>
-                </div>
-                <div
+        <GridItem xs={12} sm={12} md={12}>
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <div>
+              <Card>
+                <CardHeader color="primary" className={classes.cardHeader}>
+                  <div>
+                    <h4 className={classes.cardTitleWhite}>Cooks Details</h4>
+                    <p className={classes.cardCategoryWhite}>
+                      List of all Cooks
+                    </p>
+                  </div>
+                  <div
                     style={{
                       marginRight: "30px",
                       display: "flex",
@@ -156,13 +169,13 @@ console.log(account)
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        marginRight: '2rem'
+                        marginRight: "2rem",
                       }}
                     >
                       <a
                         href="/media/excel/COOKS.xlsx"
                         target="_blank"
-                        style={{color: 'white'}}
+                        style={{ color: "white" }}
                         rel="noopener noreferrer"
                         download
                       >
@@ -175,7 +188,13 @@ console.log(account)
                         Download Excel Template
                       </p>
                     </div>
-                    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                      }}
+                    >
                       <PublishIcon
                         onClick={() => openDialog()}
                         fontSize="large"
@@ -186,73 +205,263 @@ console.log(account)
                       </p>
                     </div>
                   </div>
-              </CardHeader>
-              <CardBody> 
-              { account.length > 0 ?
+                </CardHeader>
+                <CardBody>
+                  {cook.length > 0 ? (
                     <Table className={classes.table}>
-                  
-                    <TableHead style={{color: "#9c27b0"}}>
-                      <TableRow className={classes.tableHeadRow}>
-                        <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>ACTION</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>FIRST NAME</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>LAST NAME</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>GENDER</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>DATE OF BIRTH</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>ACCOUNT NO.</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>BANK NAME</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>BVN</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>MOBILE NUMBER</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>EMAIL</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>STATE</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>LGA</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>ADDRESS</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>SCHOOL NAME</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>NO. OF PUPILS TO FEED</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>AMOUNT PER MEAL</TableCell>
-                          <TableCell className={classes.tableCell + " " + classes.tableHeadCell}>NO. OF DAYS PER CYCLE</TableCell>
-                      </TableRow>
-                    </TableHead>
-                  <TableBody>
-                    {account.map(({_id, gender, firstName, lastName, birthday, accountNumber, bankName, bvn, phoneNumber, email, date_created_acc, state, address, lga, schoolName, image, status, pupilsFeed, numberOfPulpilFed, numberOfDaysPerCycle, amountPerMeal}) => {
-                      
-                      return (
-                        <>
-                          <TableRow key={_id} className={classes.tableBodyRow}>
-                            <TableCell className={classes.tableCell}><ViewListIcon style={{cursor: "pointer"}} onMouseUp={function(event){ setCookDetails({_id, gender, firstName, lastName, accountNumber, bankName, bvn, phoneNumber, email, state, date_created_acc, address, birthday, lga, schoolName, image, numberOfPulpilFed, numberOfDaysPerCycle, amountPerMeal});}}  onClick={handleClickPop}/></TableCell>
-                            <TableCell className={classes.tableCell}>{firstName}</TableCell>
-                            <TableCell className={classes.tableCell}>{lastName}</TableCell>
-                            <TableCell className={classes.tableCell}>{gender}</TableCell>
-                            <TableCell className={classes.tableCell}>{birthday}</TableCell>
-                            <TableCell className={classes.tableCell}>{accountNumber}</TableCell>
-                            <TableCell className={classes.tableCell}>{bankName}</TableCell>
-                            <TableCell className={classes.tableCell}>{bvn}</TableCell>
-                            <TableCell className={classes.tableCell}>{phoneNumber}</TableCell>
-                            <TableCell className={classes.tableCell}>{email}</TableCell>
-                            <TableCell className={classes.tableCell}>{state}</TableCell>
-                            <TableCell className={classes.tableCell}>{lga}</TableCell>
-                            <TableCell className={classes.tableCell}>{address}</TableCell>
-                            <TableCell className={classes.tableCell}>{schoolName}</TableCell>
-                            <TableCell className={classes.tableCell}>{numberOfPulpilFed}</TableCell>
-                            <TableCell className={classes.tableCell}>{amountPerMeal}</TableCell>
-                            <TableCell className={classes.tableCell}>{numberOfDaysPerCycle}</TableCell>
-                          </TableRow>
-                        </>
-                      )
-                    })}
-                  </TableBody>
-                </Table>
-              :
-              <div>No Data yet</div> }
-              </CardBody>
-            </Card>
-          </div>
-          
-        }
-      </GridItem>
-            
-    </GridContainer>
-    <Toast message={message} />
-        <AddButton handleClickOpen={handleClickOpen} title="Add new entity" />
+                      <TableHead style={{ color: "#9c27b0" }}>
+                        <TableRow className={classes.tableHeadRow}>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            ACTION
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            FIRST NAME
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            LAST NAME
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            GENDER
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            DATE OF BIRTH
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            ACCOUNT NO.
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            BANK NAME
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            BVN
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            MOBILE NUMBER
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            EMAIL
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            STATE
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            LGA
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            ADDRESS
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            SCHOOL NAME
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            NO. OF PUPILS TO FEED
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            AMOUNT PER MEAL
+                          </TableCell>
+                          <TableCell
+                            className={
+                              classes.tableCell + " " + classes.tableHeadCell
+                            }
+                          >
+                            NO. OF DAYS PER CYCLE
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {cook.map(
+                          (
+                            {
+                              _id,
+                              gender,
+                              firstName,
+                              lastName,
+                              birthday,
+                              accountNumber,
+                              bankName,
+                              bvn,
+                              phoneNumber,
+                              email,
+                              date_created_acc,
+                              state,
+                              address,
+                              lga,
+                              schoolName,
+                              image,
+                              status,
+                              pupilsFeed,
+                              numberOfPulpilFed,
+                              numberOfDaysPerCycle,
+                              amountPerMeal,
+                            },
+                            index
+                          ) => {
+                            return (
+                              <>
+                                <TableRow
+                                  key={_id}
+                                  className={classes.tableBodyRow}
+                                >
+                                  <TableCell className={classes.tableCell}>
+                                    <ViewListIcon
+                                      style={{ cursor: "pointer" }}
+                                      onMouseUp={function (event) {
+                                        setCookDetails({
+                                          _id,
+                                          gender,
+                                          firstName,
+                                          lastName,
+                                          accountNumber,
+                                          bankName,
+                                          bvn,
+                                          phoneNumber,
+                                          email,
+                                          state,
+                                          date_created_acc,
+                                          address,
+                                          birthday,
+                                          lga,
+                                          schoolName,
+                                          image,
+                                          numberOfPulpilFed,
+                                          numberOfDaysPerCycle,
+                                          amountPerMeal,
+                                          index,
+                                        });
+                                      }}
+                                      onClick={handleClickPop}
+                                    />
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {firstName}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {lastName}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {gender}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {birthday}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {accountNumber}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {bankName}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {bvn}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {phoneNumber}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {email}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {state}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {lga}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {address}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {schoolName}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {numberOfPulpilFed}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {amountPerMeal}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {numberOfDaysPerCycle}
+                                  </TableCell>
+                                </TableRow>
+                              </>
+                            );
+                          }
+                        )}
+                      </TableBody>
+                    </Table>
+                  ) : (
+                    <div>No Data yet</div>
+                  )}
+                </CardBody>
+              </Card>
+            </div>
+          )}
+        </GridItem>
+      </GridContainer>
+      <Toast message={message} />
+      <AddButton handleClickOpen={handleClickOpen} title="Add new entity" />
     </div>
   );
 }

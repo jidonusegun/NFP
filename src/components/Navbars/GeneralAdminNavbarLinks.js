@@ -116,10 +116,11 @@ export default function AdminNavbarLinks() {
       setIsLoading(false);
     }
   }
-
+ 
   function logOut() {
     window.localStorage.clear();
-    window.location.assign(`${baseUrl}`)
+    window.sessionStorage.clear();
+    window.location.assign('/')
     handleCloseProfile()
   }
 

@@ -39,7 +39,7 @@ export default function TableAggregator() {
   const classes = useStyles();
   const { openDialog, closeDialog, isOpen } = useDialog();
   // const uploadExcel = userForm(sendToServer);
-  const { handleClickPop, handleClickOpen } = useContext(dataContext);
+  const { handleClickPop, handleClickOpen, setAggregator, aggregator  } = useContext(dataContext);
   const [aggregatorDetails, setAggregatorDetails] = useState();
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,7 +57,7 @@ export default function TableAggregator() {
     getContent(
       `${baseUrl}/aggregators?state=${stateLogin}&status=APPROVED`,
       token
-    ).then((data) => setAccount(data.data));
+    ).then((data) => setAggregator(data.data));
     setIsLoading(false);
   }, [token, stateLogin, lgaLogin]);
 
@@ -108,7 +108,7 @@ export default function TableAggregator() {
 // console.log(account)
 
   const status = account.map(({status}) => status)
-console.log(status)
+// console.log(status)
   return (
     <div>
       <DialogContainer children={<AddAggregators content={account} />} />
@@ -195,7 +195,7 @@ console.log(status)
                   </div> */}
                 </CardHeader>
                 <CardBody>
-                  {account.length > 0 ? (
+                  {aggregator.length > 0 ? (
                     <Table className={classes.table}>
                       <TableHead style={{ color: "#9c27b0" }}>
                         <TableRow className={classes.tableHeadRow}>
@@ -287,10 +287,10 @@ console.log(status)
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {account.map(
+                        {aggregator.map(
                           ({
                             acctNumber, bankName, companyName, dayForConsumption, frequencyOfSupply, numberOfDaysPerCycle, numberOfPulpilFed, phoneNumber, registeredBy, state, status, tin, unitPrice, _id,
-                          }) => {
+                          }, index) => {
                             return (
                               <TableRow
                                 key={_id}
@@ -301,7 +301,7 @@ console.log(status)
                                     style={{ cursor: "pointer" }}
                                     onMouseUp={function (event) {
                                       setAggregatorDetails({
-                                        acctNumber, bankName, companyName, dayForConsumption, frequencyOfSupply, numberOfDaysPerCycle, numberOfPulpilFed, phoneNumber, registeredBy, state, status, tin, unitPrice, _id,
+                                        acctNumber, bankName, companyName, dayForConsumption, frequencyOfSupply, numberOfDaysPerCycle, numberOfPulpilFed, phoneNumber, registeredBy, state, status, tin, unitPrice, _id, index
                                       });
                                     }}
                                     onClick={handleClickPop}

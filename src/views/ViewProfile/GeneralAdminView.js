@@ -4,12 +4,12 @@ import Button from '@material-ui/core/Button';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
 // import { dataContext } from 'components/context/DataContext';
-import Logo from 'assets/img/loogos.png';
+// import Logo from 'assets/img/loogos.png';
 import {getContent} from 'utils';
 import config from 'utils/config';
 import Dialog from 'components/useDialog';
 import useDialog from 'components/useDialog/useHook';
-
+const Logo = '/media/img/loogos.png'
 const useStyles = makeStyles((theme) => ({
     root: {
       flexGrow: 1,

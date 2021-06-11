@@ -19,11 +19,14 @@ import Select from "@material-ui/core/Select";
 import { dataContext } from "components/context/DataContext";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import { postContent, getContent, postImageContent } from "utils";
-import loogos from "assets/img/loogos.png";
+// import loogos from "assets/img/loogos.png";
 import userForm from "../../hooks/useForm";
 import Loading from "components/isLoading";
 import Toast from "components/toast";
 import config from 'utils/config';
+import { Formik } from 'formik';
+
+const loogos = '/media/img/loogos.png'
 
 const styles = {
   cardCategoryWhite: {

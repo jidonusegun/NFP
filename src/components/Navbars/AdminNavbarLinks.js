@@ -96,7 +96,7 @@ export default function AdminNavbarLinks() {
   async function sendToServer() {
     try {
       if (changeUser.values.password === changeUser.values.newPassword) {
-        alert(changeUser.values.password)
+        // alert(changeUser.values.password)
         changeUser.setData("_id", userId);
         delete changeUser.values.newPassword;
         const { data } = await postContent(
@@ -120,7 +120,8 @@ export default function AdminNavbarLinks() {
 
   function logOut() {
     window.localStorage.clear();
-    window.location.assign(`${baseUrl}`)
+    window.sessionStorage.clear();
+    window.location.assign('/')
     handleCloseProfile()
   }
 
