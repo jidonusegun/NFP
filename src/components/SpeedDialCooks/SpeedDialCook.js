@@ -30,7 +30,7 @@ export default function SpeedDials({ deleteContent, details }) {
     handleClickOpenSuspend,
     handleClickOpen,
   } = useContext(dataContext);
-  console.log(details);
+  // console.log(details);
   return (
     <div>
       <List>

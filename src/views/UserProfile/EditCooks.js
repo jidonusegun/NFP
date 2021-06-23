@@ -198,7 +198,7 @@ if(userRole === "SUPER_ADMIN") {
           token
         ).then((data) => setSchools(data.data));
 
-      },[token, stateID, stateLogin, lgaLogin, details, cook, result])
+      },[token, stateID, stateLogin, lgaLogin, result])
 
       // console.log(addCook.values.firstName)
 
@@ -206,7 +206,8 @@ if(userRole === "SUPER_ADMIN") {
       setResult({[e.target.name]: e.target.value});
     }
 
-  // console.log(addCook.values);
+  console.log(result);
+  console.log(addCook.values.bankName);
   return (
     <div>
       <Formik
@@ -493,7 +494,7 @@ if(userRole === "SUPER_ADMIN") {
                 </GridContainer>
               <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
-                <FormControl className={classes.formControl}>
+                  <FormControl className={classes.formControl}>
                     <InputLabel
                       htmlFor="bankName"
                       style={{ color: "#D2D2D2", fontWeight: "normal" }}
@@ -503,9 +504,10 @@ if(userRole === "SUPER_ADMIN") {
                     <Select
                       native
                       value={addCook.values.bankName}
-                      onChange={(e) => {onChangeFunction(e);  addCook.getData(e); handleChange(e);}}
-                      className={classes.underline}
+                      defaultValue={addCook.values.bankName}
+                      onChange={(e) => {onChangeFunction(e); addCook.getData(e); handleChange(e)}}
                       onBlur={handleBlur}
+                      className={classes.underline}
                       style={{ width: "100%" }}
                       inputProps={{
                         name: "bankName",
@@ -720,8 +722,8 @@ if(userRole === "SUPER_ADMIN") {
                       native
                       value={addCook.values.lga}
                       onChange={(e) => {onChangeFunction(e); handleChange(e); addCook.getData(e)}}
-                      className={classes.underline}
                       onBlur={handleBlur}
+                      className={classes.underline}
                       style={{ width: "100%" }}
                       inputProps={{
                         name: "lga",
@@ -751,8 +753,8 @@ if(userRole === "SUPER_ADMIN") {
                       native
                       value={addCook.values.schoolName}
                       onChange={(e) => {onChangeFunction(e); handleChange(e); addCook.getData(e)}}
-                      className={classes.underline}
                       onBlur={handleBlur}
+                      className={classes.underline}
                       style={{ width: "100%" }}
                       inputProps={{
                         name: "schoolName",

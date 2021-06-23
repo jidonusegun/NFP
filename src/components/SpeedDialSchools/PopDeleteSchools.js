@@ -35,7 +35,7 @@ async function sendToServer() {
  
 const response = await deleteContent(`${baseUrl}/school/tempdelete/${details._id}`, token);
 // addCook.reset();
-console.log(response);
+// console.log(response);
 //   const body = await result;
 //   console.log(body);
 }

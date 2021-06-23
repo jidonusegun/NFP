@@ -47,7 +47,7 @@ export default function PopSuspend({ details }) {
       alert(message)
     }
   }
-  console.log(details);
+  // console.log(details);
   //   const body = await result;
   //   console.log(body);
 

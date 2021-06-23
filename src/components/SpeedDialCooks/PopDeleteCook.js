@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PopDelete({details}) {
   const deletePost = userForm(sendToServer);
-  console.log(details._id)
+  // console.log(details._id)
   const classes = useStyles();
   const { handleClickOpenDelete, handleCloseDelete  } = useContext(dataContext);
   const token = localStorage.getItem("token")
@@ -36,7 +36,7 @@ async function sendToServer() {
  
 const response = await postContent(`${baseUrl}/cook/tempdelete/${details._id}`, token);
 // addCook.reset();
-console.log(response);
+// console.log(response);
 //   const body = await result;
 //   console.log(body);
 }

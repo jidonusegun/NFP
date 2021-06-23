@@ -35,7 +35,7 @@ export default function PopSuspend({details}) {
   async function sendToServer() {
     try {
       setIsLoading(true)
-      console.log(addCook.values);
+      // console.log(addCook.values);
   const {message} = await patchContent({
     url:`${baseUrl}/admin/${details._id}/suspend`,
     data: addCook.values, token
@@ -67,7 +67,7 @@ export default function PopSuspend({details}) {
       const result = await postContent("/api/cooks/add_one/cook.php", FormData);
   
       const body = await result;
-      console.log(body);
+      // console.log(body);
   
       setReason({
         suspendReason: ""
